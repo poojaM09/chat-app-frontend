@@ -1,0 +1,42 @@
+.main-container {
+  /* height: calc(100vh - 71.78px); */
+  height: 100%;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+}
+.main-container .contact {
+  /* flex: 1; */
+  width: 300px;
+}
+.main-container .chat {
+width: calc(100% - 300px);
+/* height: calc(100vh - 71.78px); */
+}
+@media (max-width:576px) {
+  .main-container .chat, .main-container .contact {
+    width: 100%;
+  }
+  
+}
+
+
+.mobile-contact {
+  background-color: #fff; /* Background color for the contact list on mobile */
+  border-right: 1px solid #ccc; /* Divider between contact list and chat on mobile */
+  padding: 10px; /* Adjust padding as needed */
+  height: 100vh; /* Full height for mobile contact list */
+  overflow-y: auto; /* Enable scrolling if the contact list overflows the screen */
+}
+
+/* Style for individual contact items on mobile */
+.mobile-contact .contact-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee; /* Divider between contact items */
+  cursor: pointer;
+}
+
+/* Style for the selected contact item on mobile */
+.mobile-contact .contact-item.active {
+  background-color: #f0f0f0; /* Background color for the selected contact */
+}

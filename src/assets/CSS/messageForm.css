@@ -1,0 +1,18 @@
+.Form{
+    display: table-caption;
+    text-align: center;
+
+}
+.title{
+    padding-top: 22px;
+    text-align: center;
+}
+.InputValue{
+    border: 1px solid;
+}
+.body{
+    text-align: -webkit-center;
+}
+.Button{
+    margin: 21px;
+}

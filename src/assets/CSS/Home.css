@@ -1,0 +1,41 @@
+.Form{
+    display: table-caption;
+    text-align: center;
+
+}
+.title{
+    padding-top: 22px;
+    text-align: center;
+    color: #ff6c37 !important;
+    font-family: auto;
+}
+.InputValue{
+    border: 1px solid;
+    color: #ff6c37 !important;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 0 #ff6c37;
+}
+.body{
+    text-align: -webkit-center;
+}
+.lable{
+    margin: 10px;
+    font-family: unset;
+}
+.InputBox{
+    margin: 5px;
+}
+.Button{
+    display: flex;
+    margin: auto;
+    margin-top: 20px;
+    background-color: #ff6c37;
+    color: white !important;
+    border-color: white;
+
+}
+.Button:hover{
+    background-color: white !important;
+    color: #ff6c37 !important;
+    border: 1px solid #ff6c37;
+}
