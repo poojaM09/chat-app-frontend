@@ -21,11 +21,11 @@ function App() {
           <div className="content">
             <ToastContainer />
             <Routes>
-              <Route path="/" element={<ClientForm />} />
+              <Route path="/client" element={<ClientForm />} />
               <Route path="/chat" element={<Chats />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/home" element={<Home/>} />
+              <Route path="/" element={<Home/>} />
               <Route path="/client-chat" element={<ClientChatConatainer/>} />
               <Route path="/contact" element={<ContactAS/>} />
             </Routes>

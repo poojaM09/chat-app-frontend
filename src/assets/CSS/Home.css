@@ -149,6 +149,11 @@
     color: #FE7600 !important;
     border: 2px solid #FE7600;
   }
-  
+ .btn-sale{
+  width: 100%;
+    max-width: 440px;
+    display: grid;
+    gap: 10px;
+ } 
 
   

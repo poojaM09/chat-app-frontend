@@ -59,6 +59,11 @@ function Home() {
                 </Link>
               </div>
             </div>
+              <div style={{margin: "16px"}} className="btn-sale">
+                <Link to="/client">
+                  <button className="login-btn">Talk with sales</button>
+                </Link>
+              </div>
           </div>
         </div>
       </div>
