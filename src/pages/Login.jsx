@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/feature/authSlice";
 import { useEffect } from "react";
 import { errorToast } from "../Components/Toast";
+import '../assets/CSS/loginBdD.css'
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import login from "../../public/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 
@@ -29,18 +29,20 @@ function Login() {
       errorToast(errorMsg);
     }
   }, [errorMsg]);
-  
+
   if (isLoggin) {
     navigate("/chat");
   }
   return (
     <>
       <Container className="p-4  Welcome">
-        <Row>
-          <Col md={12}>
+        <Row className="border" style={{ borderRadius: "8px", boxShadow: 'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%" }}>
+          <Col md={8} className="login-right-image">
+          </Col>
+          <Col md={4}>
             <div className="register-form ">
-              <h1>Login</h1>
-              <form onSubmit={handleSubmit}>
+              <h1 className="Title">Login</h1>
+              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <div className="input-container">
                   <div className="input">
                     <FontAwesomeIcon icon={faUser} />

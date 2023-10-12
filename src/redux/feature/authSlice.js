@@ -11,6 +11,7 @@ let user = null;
 
 if (token) {
   user = jwtDecode(token);
+  console.log(user,'useruseruser')
 }
 let initialState = {
   user: {

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { errorToast } from "../Components/Toast";
 import "../../src/assets/CSS/register.css";
 import { Link } from "react-router-dom";
+import screen from "../../public/screen.jpg";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import login from "../../public/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,15 +33,20 @@ function Register() {
     }
   };
   return (
-    <Container className="p-4  Welcome">
-      <Row>
+    <div className="Welcome">
+      <Row className="border" style={{ borderRadius: "8px",boxShadow: 'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
         {/* <Col md={6}>
           <img src={login} className="w-100" />
         </Col> */}
-        <Col md={12} className="p-0">
+        <Col md={8} className="register-right-images">
+        {/* <div className="title-register">
+          <h3>Welcome To Plutus</h3>
+          </div> */}
+        </Col>
+        <Col md={4} >
           <div className="register-form ">
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit}>
+            <h1 className="Title">Register</h1>
+            <form onSubmit={handleSubmit} style={{width:'100%'}}>
               <div className="input-container">
                 <div className="input">
                   {" "}
@@ -88,7 +94,7 @@ function Register() {
           </div>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 }
 

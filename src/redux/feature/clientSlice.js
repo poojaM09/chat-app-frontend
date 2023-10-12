@@ -9,6 +9,7 @@ let user = null;
 
 if (token) {
     user = jwtDecode(token);
+    console.log(user,'useruser')
 }
 
 let initialState = {

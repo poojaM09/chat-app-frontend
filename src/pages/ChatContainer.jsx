@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { postdata, postimage } from "../Utils/http.class";
 import moment from "moment";
 import { socket } from "../socket";
-import noDP from "../../public/noDP.jpg";
+import noDP from "../../public/profile-user.png";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import video from "../../public/video.jpg";
@@ -18,8 +18,8 @@ import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-
 
 let userList = [];
 
-function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide , setShowChat }) {
-  console.log(handlehide,'handlehide')
+function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
+  console.log(handlehide, 'handlehide')
   console.log(onlineUser, 'onlineUseronlineUserchat')
   const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
@@ -187,7 +187,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       <div className="chat-container">
         <div className="back-chat-icon">
           {!isMobile ? (
-            <div className="back-icon" onClick={() =>  handlehide()}>
+            <div className="back-icon" onClick={() => handlehide()}>
               <FontAwesomeIcon icon={faArrowLeft} />
             </div>
           ) : null}
@@ -276,6 +276,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "190px",
                           width: "213px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -289,6 +290,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "200px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -301,6 +303,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "120px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -313,6 +316,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "120px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -325,6 +329,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "120px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -337,6 +342,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "120px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);
@@ -349,6 +355,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           height: "120px",
                           width: "120px",
                           border: "2px solid #d9d9d9",
+                          borderRadius: "10px"
                         }}
                         onClick={() => {
                           handleDownload(data.attechment);

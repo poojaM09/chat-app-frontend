@@ -13,6 +13,9 @@ body{
   justify-content: center;
   align-items: center;
  height: calc(100vh - 71.78px);
+ width: 100%;
+    max-width: 100%;
+    padding: 0 !important;
 }
 ::-webkit-scrollbar {
   width: 5px;
@@ -48,4 +51,5 @@ body{
 }
 .content{
   height: 100% !important;
+  width: 100%;
 }

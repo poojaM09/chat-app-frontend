@@ -1,6 +1,6 @@
 
 import { useEffect } from "react";
-import noDP from "../../public/noDP.jpg";
+import noDP from "../../public/profile-user.png";
 import "../assets/CSS/contact.css";
 import { useState } from "react";
 import { useSelector } from "react-redux";

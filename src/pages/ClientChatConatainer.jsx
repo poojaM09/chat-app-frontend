@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import "../assets/CSS/chatcontainer.css";
 import { socket } from "../socket";
 import "react-toastify/dist/ReactToastify.css";
-import noDP from "../../public/noDP.jpg";
+// import noDP from "../../public/noDP.jpg";
+import noDP from "../../public/profile-user.png";
+import logo from "../../public/profile-user.png";
 import moment from "moment";
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
@@ -219,7 +221,7 @@ function ClientChatConatainer() {
         <>
             <div className="chat-container">
                 <div className="client-container">
-                    <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img>
+                    <img className="profile-img" src={logo} alt=" " style={{ width: "50px", height: "50px" }}></img>
                     <p className="Client-Name">{"Plutustec"}</p>
                 </div>
                 <div id="scrollTop" className="messages-container" ref={scroll}>

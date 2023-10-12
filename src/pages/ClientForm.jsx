@@ -6,7 +6,8 @@ import { loginUser } from "../redux/feature/clientSlice";
 import { useEffect, useState } from "react";
 import { errorToast } from "../Components/Toast";
 import { Link } from "react-router-dom";
-import "../../src/assets/CSS/register.css";
+// import "../../src/assets/CSS/register.css";
+import "../../src/assets/CSS/clientForm.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import login from "../../public/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -77,23 +78,16 @@ function ClientForm() {
         <>
             {oUser.length > 0 ?
                 <Container className="p-4  Welcome">
-                    <Row className="main-contact-form">
+                    <Row className="border" style={{borderRadius:"8px", boxShadow:'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
 
-                        <Col md={6}>
-                            <div className="main-text">
-                                <h3 className="text-title">Plutus Technologies</h3>
-                                <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
-                                    We remain committed to being at the forefront as a custom software development company.
-                                    Innovative and technologically driven, we are constantly pushing the boundaries of our industry
-                                    and setting new standards of excellence.</span>
-                            </div>
+                        <Col md={8} className="register-right-image">
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={4}>
 
-                            <div className="register-form contact-form-register">
-                                <p className="form-text-register"> Please fill out the form.</p>
-                                <form onSubmit={handleSubmit} className="form-text-register">
+                            <div className="register-form ">
+                                <p className="Title"> Please fill out the form.</p>
+                                <form onSubmit={handleSubmit} style={{width:'100%'}}>
                                     <div className="input-container">
                                         <div className="input">
                                             <FontAwesomeIcon icon={faUser} />
@@ -103,6 +97,7 @@ function ClientForm() {
                                                 name="name"
                                                 onChange={handleChange}
                                                 value={values.name}
+                                                className="Input-Field"
                                             />
                                         </div>
                                     </div>
@@ -115,6 +110,7 @@ function ClientForm() {
                                                 name="email"
                                                 onChange={handleChange}
                                                 value={values.email}
+                                                className="Input-Field"
                                             />
                                         </div>
                                     </div>
@@ -127,6 +123,7 @@ function ClientForm() {
                                                 placeholder="Enter Contact Number"
                                                 onChange={handleChange}
                                                 value={values.contactNumber}
+                                                className="Input-Field"
                                             />
                                         </div>
                                     </div>
@@ -140,24 +137,24 @@ function ClientForm() {
                 </Container>
                 :
                 <Container className="p-4  Welcome">
-                    <Row className="main-contact-form">
+                    <Row className="border" style={{borderRadius:"8px", boxShadow:'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
 
-                        <Col md={6}>
-                            <div className="main-text">
+                        <Col md={8} className="register-right-image">
+                            {/* <div className="main-text">
                                 <h3 className="text-title">Plutus Technologies</h3>
                                 <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
                                     We remain committed to being at the forefront as a custom software development company.
                                     Innovative and technologically driven, we are constantly pushing the boundaries of our industry
                                     and setting new standards of excellence.</span>
-                            </div>
+                            </div> */}
                         </Col>
 
-                        <Col md={6}>
+                        <Col md={4}>
 
-                            <div className="register-form contact-form-register">
-{/* <h1>Sign In</h1> */}
-                                <p className="form-text-register">Currently BDS are not available , please leave the message</p>
-                                <form className="form-text-register">
+                            <div className="register-form">
+                                {/* <h1>Sign In</h1> */}
+                                <p className="Title">Currently BDS are not available , please leave the message</p>
+                                <form  style={{width:'100%'}}>
                                     <div>
                                         <div className="input-container">
                                             <div className="input">
@@ -213,9 +210,6 @@ function ClientForm() {
                                     </div>
                                     <span > Or click on this Link <a href="https://plutustec.com/contact-us" target="_blank"> <b>Contact-us</b> </a>for fill contact page</span>
                                 </form>
-                                {/* <div>
-                   New User? <Link to="/register">Create Account</Link>
-                 </div> */}
                             </div>
                         </Col>
                     </Row>
