@@ -9,27 +9,19 @@ import { socket } from "../socket";
 import logo from "../../public/fevicon-logo.svg";
 import noDP from "../../public/profile-user.png";
 import "../../src/assets/CSS/navigationbar.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function NavigationBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [users, setUsers] = useState([])
-  console.log(users, 'usersusers1111')
   const { isLoggin, user } = useSelector((state) => state.auth);
-  const userToken = localStorage.getItem('user') 
+
   console.log(user, 'user2222')
   const logout = () => {
     socket.emit("end-connection");
     dispatch(logoutUser());
     navigate("/login");
   };
-  useEffect(() => {
-    if(userToken){
-          setUsers(user)
-    }
-  }, [user])
-
   const logoutClients = () => {
     socket.emit("end-connection");
     dispatch(logoutClient());
@@ -39,19 +31,19 @@ function NavigationBar() {
   return (
     <Navbar className="px-4 w-100 navbar">
       <Container fluid>
-        <Link >
+        {/* <Link to="/chat"> */}
         {" "}
-        <img src={logo} width="100" height="50"></img>
-
+    <img src={logo} width="100" height="50"></img>
+   
         {/* <p className="header-title">Plutus Chat</p> */}
-        </Link>
+        {/* </Link> */}
         {!isLoggin ? (
           <>
             <Nav>
               <Stack direction="horizontal">
                 <h4>
                   {location.pathname !== "/login" &&
-                    location.pathname !== "/register" && location.pathname !== "/" && location.pathname !== "/home" ? (
+                    location.pathname !== "/register" && location.pathname !== "/" &&  location.pathname !== "/home" ? (
                     <Link to="/login">login</Link>
                   ) : null}
                 </h4>
@@ -59,7 +51,7 @@ function NavigationBar() {
             </Nav>
           </>
         ) : (
-          isLoggin && !users.password ? (
+          isLoggin && !user.password ? (
             <Dropdown className="dropdown">
               <Dropdown.Toggle id="dropdown-basic">
                 <img
@@ -67,7 +59,7 @@ function NavigationBar() {
                   height="30px"
                   style={{ borderRadius: "50%" }}
                 ></img>{" "}
-                {users?.name && users?.name}
+                {user?.name && user?.name}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>Profile</Dropdown.Item>

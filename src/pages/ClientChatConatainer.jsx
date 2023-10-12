@@ -6,7 +6,7 @@ import { socket } from "../socket";
 import "react-toastify/dist/ReactToastify.css";
 // import noDP from "../../public/noDP.jpg";
 import noDP from "../../public/profile-user.png";
-import logo from "../../public/profile-user.png";
+import logo from "../../public/fevicon-logo.svg";
 import moment from "moment";
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
