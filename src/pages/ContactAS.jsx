@@ -10,11 +10,11 @@ function ContactAS() {
     <Container className="p-4  Welcome">
       <Row>
         <Col md={6}>
-          {/* <img src={login} className="w-100" /> */}
-        </Col>
+{/* <img src={login} className="w-100" /> */}
+          </Col>
         <Col md={6}>
           <div className="register-form">
-            {/* <h1>Sign In</h1> */}
+{/* <h1>Sign In</h1> */}
             <form>
               <div className="input-container">
                 <div className="input">

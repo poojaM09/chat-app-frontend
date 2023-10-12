@@ -113,10 +113,7 @@
    background-color: #f6f6f6;
    margin: 0 5px;
 }
-/* 
-.chat-input {
-  height: 60px;
-} */
+
 .time {
   margin-left: 5px;
   font-size: small;
@@ -129,10 +126,8 @@
   justify-content: center;
 }
 .view-more-button {
-  /* width: 10%; */
   width: max-content;
   padding: 6px 10px;
-  /* margin: 0% 40%; */
   border-radius: 50px;
 }
 .type {
@@ -164,7 +159,7 @@ height: 50px !important;
   background-color: rgb(14, 194, 14);
   position: absolute;
   bottom: 9px;
-  left: 60%;
+  left: 64%;
   top: 3px;
 }
 .online-user{

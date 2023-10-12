@@ -41,13 +41,13 @@
 }
 
 .contact-conainer .wrapper .contact-img .online {
-  height: 15px;
-  width: 15px;
+  height: 12px;
+  width: 12px;
   border-radius: 50%;
   background-color: rgb(14, 194, 14);
   position: absolute;
   bottom: 8px;
-  left: 45px;
+  left: 37px;
 }
 
 .contact-conainer .wrapper .contact-name {

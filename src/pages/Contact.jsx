@@ -171,7 +171,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
-            console.log(data._id,'sssssss')
+console.log(data._id,'sssssss')
             const userNote = userNotification(data);
             const lastMessage = getLastMessage(data._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';

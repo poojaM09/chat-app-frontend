@@ -17,7 +17,7 @@ function NavigationBar() {
   const [users, setUsers] = useState([])
   console.log(users, 'usersusers1111')
   const { isLoggin, user } = useSelector((state) => state.auth);
-
+  const userToken = localStorage.getItem('user') 
   console.log(user, 'user2222')
   const logout = () => {
     socket.emit("end-connection");
@@ -25,7 +25,9 @@ function NavigationBar() {
     navigate("/login");
   };
   useEffect(() => {
-    setUsers(user)
+    if(userToken){
+          setUsers(user)
+    }
   }, [user])
 
   const logoutClients = () => {
@@ -57,7 +59,7 @@ function NavigationBar() {
             </Nav>
           </>
         ) : (
-          isLoggin && !user.password ? (
+          isLoggin && !users.password ? (
             <Dropdown className="dropdown">
               <Dropdown.Toggle id="dropdown-basic">
                 <img

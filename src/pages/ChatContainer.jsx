@@ -21,11 +21,11 @@ let userList = [];
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
   console.log(handlehide, 'handlehide')
   console.log(onlineUser, 'onlineUseronlineUserchat')
-  const [message, setMessage] = useState([]);
+    const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
-  const [data, setData] = useState(5);
+    const [data, setData] = useState(5);
   const [loadding, setLoadding] = useState(true);
-  const [showImg, setShowImg] = useState(false);
+    const [showImg, setShowImg] = useState(false);
   const [Img, setImg] = useState(null);
   const scroll = useRef(null);
   const [chatGptImg, setChatGptImg] = useState(false);
@@ -227,7 +227,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           </div>
         </div>
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {loadding ? (
+                    {loadding ? (
             <div className="loader-container">
               <Loader />
             </div>
