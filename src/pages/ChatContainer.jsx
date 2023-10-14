@@ -15,6 +15,9 @@ import xls from "../../public/xls.png";
 import ChatInput from "./ChatInput";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 let userList = [];
@@ -40,6 +43,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [xlsdownloading, setxlsDownloading] = useState(false);
   const [docdownloading, setdocDownloading] = useState(false);
   const [pdfdownloading, setpdfDownloading] = useState(false);
+  const [noMoreMessages, setNoMoreMessages] = useState(false);
+  console.log(data, 'data')
 
   console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
@@ -111,7 +116,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
   const viewMore = async () => {
-    setData(data + 5);
+    // Load more messages and check if there are more messages
+    const newData = data + 5;
+    if (newData >= message.length) {
+      setNoMoreMessages(true);
+    }
+    setData(newData);
   };
   const handleScroll = () => {
     const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
@@ -175,140 +185,93 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     }
   }, [message]);
 
-  // const handleDownload = (img) => { 
-  //   if (!imgdownloading) {
-  //     setImgDownloading(true);
-  //     let URL;
-  //     if (chatGptImg) {
-  //       URL = img;
-  //     } else {
-  //       URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-  //     }
-  //     saveAs(URL, img);
-
-  //     // Simulate download completion with a delay
-  //     setTimeout(() => {
-  //       setImgDownloading(false);
-  //     }, 2000);
-  //   }
-  // };
-
   const handleDownload = (img) => {
-    console.log(img,'image')
-
-    console.log(img, 'gggdgdgdg')
     const lastIndex = img.lastIndexOf(".");
-    // if (lastIndex !== -1) {
-      const part2 = img.substring(lastIndex + 1);
-      console.log("Part 2:", part2);
-    // } 
-    if (!imgdownloading && part2 == 'png' || !imgdownloading && part2 == 'jpeg' || !imgdownloading && part2 == 'jpg') {
-      setImgDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
+    const part2 = img.substring(lastIndex + 1);
 
+    const downloadFile = (URL, filename, onSuccess) => {
+      fetch(URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('File not found');
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          onSuccess();
+        })
+        .catch((error) => {
+          // Handle download error, e.g., 404
+          setImgDownloading(false);
+          setmp4Downloading(false);
+          setzipDownloading(false);
+          setpptDownloading(false);
+          setxlsDownloading(false);
+          setdocDownloading(false);
+          setpdfDownloading(false);
+
+          toast.error('File not found. Please try again later.', {
+            position: "top-center",
+            autoClose: 3000, // Duration in milliseconds
+          });
+        });
+    };
+
+    if (
+      !imgdownloading &&
+      (part2 === 'png' || part2 === 'jpeg' || part2 === 'jpg')
+    ) {
+      setImgDownloading(true);
+    } else if (!mp4downloading && part2 === 'mp4') {
+      setmp4Downloading(true);
+    } else if (!zipdownloading && part2 === 'zip') {
+      setzipDownloading(true);
+    } else if (!pptdownloading && part2 === 'ppt') {
+      setpptDownloading(true);
+    } else if (
+      (!xlsdownloading && part2 === 'xls') ||
+      (!xlsdownloading && part2 === 'xlsx')
+    ) {
+      setxlsDownloading(true);
+    } else if (
+      (!docdownloading && part2 === 'doc') ||
+      (!docdownloading && part2 === 'docx')
+    ) {
+      setdocDownloading(true);
+    } else if (!pdfdownloading) {
+      setpdfDownloading(true);
+    }
+
+    let URL;
+    if (chatGptImg) {
+      URL = img;
+    } else {
+      URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
+    }
+
+    downloadFile(URL, img, () => {
       // Simulate download completion with a delay
       setTimeout(() => {
         setImgDownloading(false);
-      }, 2000);
-    }
-    else if (!mp4downloading && part2 == 'mp4') {
-      setmp4Downloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setmp4Downloading(false);
-      }, 2000);
-    }
-    else if (!zipdownloading && part2 == "zip") {
-      setzipDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setzipDownloading(false);
-      }, 2000);
-    }
-    else if (!pptdownloading && part2 == 'ppt') {
-      setpptDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setpptDownloading(false);
-      }, 2000);
-    }
-    else if (!xlsdownloading && part2 == "xls" || !xlsdownloading && part2 == "xlsx" ) {
-      setxlsDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setxlsDownloading(false);
-      }, 2000);
-    }
-    else if (!docdownloading && part2 == "doc" || !docdownloading && part2 == "docx") {
-      setdocDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setdocDownloading(false);
-      }, 2000);
-    }
-    else if (!pdfdownloading) {
-      setpdfDownloading(true);
-      let URL;
-      if (chatGptImg) {
-        URL = img;
-      } else {
-        URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-      }
-      saveAs(URL, img);
-
-      // Simulate download completion with a delay
-      setTimeout(() => {
         setpdfDownloading(false);
       }, 2000);
-    }
-
+    });
   };
+
+
+
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
   console.log(currentChat, 'currentChat')
   console.log(onlineUser, 'onlineUser')
@@ -358,6 +321,13 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           </div>
         </div>
         <div id="scrollTop" className="messages-container" ref={scroll}>
+          {!noMoreMessages && (
+            <div className="view-btn">
+              <button className="view-more-button" onClick={() => viewMore()}>
+                View more
+              </button>
+            </div>
+          )}
           {loadding ? (
             <div className="loader-container">
               <Loader />
