@@ -3,6 +3,7 @@ import { postdata, postimage } from "../Utils/http.class";
 import moment from "moment";
 import { socket } from "../socket";
 import noDP from "../../public/profile-user.png";
+import BDProfile from "../../public/fevicon-logo.svg";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
@@ -20,7 +21,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-let userList = [];
+
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
   console.log(handlehide, 'handlehide')
@@ -271,10 +272,14 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
 
+  const storedDataString = localStorage.getItem('userList')
+  const userList = JSON.parse(storedDataString);
 
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
-  console.log(currentChat, 'currentChat')
+  console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
+
+
   return (
     <>
       {/* <ToastContainer /> */}
@@ -301,7 +306,19 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 :
                 <div className="user-profile">
                   <div className="online-user">
-                    <img className="profile-img" src={noDP} alt=" "></img>
+                    {userList.map((data) => {
+                      console.log("data.id:", data._id);
+                      console.log("currentChat._id:", currentChat._id);
+                      console.log("data?.contactNumber:", data?.contactNumber);
+
+                      if (data._id === currentChat._id) {
+                        if (data?.contactNumber) {
+                          return <img className="profile-img" src={noDP} alt=" " key={data.id} />;
+                        } else {
+                          return <img className="imgs" src={BDProfile} alt=" " key={data.id} />;
+                        }
+                      }
+                    })}
                   </div>
                   <div>
                     <div> {currentChat?.name}</div>
@@ -319,7 +336,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
             </div>
 
           </div>
-        </div>
+        </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
           {!noMoreMessages && (
             <div className="view-btn">
@@ -345,8 +362,30 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data.message && (
                     <>
+                      {console.log(data, 'data212121212')}
                       <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
-                        <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div>
+                        {userList.map((Users) => {
+                          if (Users._id === data?.from) {
+                            console.log(Users._id === data?.from,'Users._id === data?.from')
+                            if (Users?.contactNumber ){
+                              console.log(Users?.contactNumber,'gfdfdsf')
+                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                            } else {
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                            }
+                          }
+                          if (Users._id === data?.to) {
+                            console.log(Users._id === data?.to,'Users._id === data?.toUsers._id === data?.to')
+                            if (Users?.contactNumber ){
+                              console.log(Users?.contactNumber,'gfdfdsf')
+                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                            } else {
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                            }
+                          }
+                        })}
+                        {/* <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div> */}
+
                         <div>
                           <div className="time-user-chat">
                             <div>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <div className="you-text"> {currentChat?.name}</div>}</div>
@@ -738,7 +777,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           ) : null}
           <div ref={scroll}></div>
         </div>
-      </div>
+      </div >
       <div className="chat-send-msg-input">
         {/* <div className="type"></div> */}
         <div className="chat-input">

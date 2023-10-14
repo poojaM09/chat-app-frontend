@@ -19,8 +19,6 @@ width: calc(100% - 300px);
   }
   
 }
-
-
 .mobile-contact {
   background-color: #fff; /* Background color for the contact list on mobile */
   border-right: 1px solid #ccc; /* Divider between contact list and chat on mobile */

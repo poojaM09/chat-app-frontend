@@ -272,3 +272,15 @@
   width: 15px;
   height: 20px;
 }
+
+.imgs{
+  border: 1px solid #ff895f;
+  padding: 3px 6px 3px 3px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+
+}
+.imgsFix{
+  padding: 2px
+}
