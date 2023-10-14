@@ -31,12 +31,8 @@ function NavigationBar() {
   return (
     <Navbar className="px-4 w-100 navbar">
       <Container fluid>
-        {/* <Link to="/chat"> */}
         {" "}
     <img src={logo} width="100" height="50"></img>
-   
-        {/* <p className="header-title">Plutus Chat</p> */}
-        {/* </Link> */}
         {!isLoggin ? (
           <>
             <Nav>
