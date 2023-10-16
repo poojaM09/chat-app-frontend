@@ -3,7 +3,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { errorToast } from "../Components/Toast";
 // import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import NavigationBar from "../Components/NavigationBar";
+import Carousel from 'react-bootstrap/Carousel';
 import '../assets/CSS/Home.css'
+import CompanySite from "../../public/Company_Info.png" 
 
 function Home() {
   const notify = () => errorToast("errrrooo");
@@ -39,31 +42,41 @@ function Home() {
           </Col>
         </Row>
       </div> */}
-      <div className="Welcome-chat">
-        <div className="section">
-          <h1>Plutus</h1>
-          <div className="section-head">Building Your Vision, One Pixel At A Time</div>
+      <div className="welcome-chat"> 
+        <div className="information-detail">
+          <img src={CompanySite} className="mb-4 mx-auto img-fluid" alt="Slide" />
+          <Carousel fade>
+            <Carousel.Item>  
+              <h1 className="slider-title mb-3 text-center">We are</h1>
+              <div className="slider-text text-center">Web & mobile app development company</div>
+            </Carousel.Item>
+            <Carousel.Item>  
+              <h1 className="slider-title mb-3 text-center">We've helped</h1>
+              <div className="slider-text text-center">Businesses increase their revenue on an average by 190%</div>
+            </Carousel.Item>
+            <Carousel.Item> 
+              <h1 className="slider-title mb-3 text-center">We provide</h1>
+              <div className="slider-text text-center">CMS & E-commerce ● Mobile applications ● Web application ● SEO & Digital marketing ● Responsive design</div>
+            </Carousel.Item>
+          </Carousel> 
         </div>
-        <div className="chat-button">
-          <div className="login-section">
-            <h4 className="d-flex justify-content-center font-weight-bold">Get started</h4>
-            <div className="both-btn">
-              <div>
-                <Link to="/register">
-                  <button className="login-btn">Register</button>
-                </Link>
-              </div>
-              <div>
-                <Link to="/login">
-                  <button className="login-btn">Login</button>
-                </Link>
-              </div>
+        <div className="chat-button">        
+          <NavigationBar /> 
+          <div className="login-section">    
+            <h4 className="big-title mb-5 text-center">Welcome!<br/>Let's get started!</h4>
+            <div className="both-btn"> 
+              <Link to="/register"  className="login-btn">
+                Register
+              </Link>  
+              <Link to="/login" className="login-btn">
+                Login
+              </Link> 
             </div>
-              <div style={{margin: "16px"}} className="btn-sale">
-                <Link to="/client">
-                  <button className="login-btn">Talk with sales</button>
-                </Link>
-              </div>
+            <div className="btn-sale">
+              <Link to="/client" className="login-btn">
+                Talk with sales
+              </Link>
+            </div>
           </div>
         </div>
       </div>

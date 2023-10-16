@@ -3,7 +3,6 @@ import Chats from "./pages/Chats";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import "bootstrap/dist/css/bootstrap.css";
-import NavigationBar from "./Components/NavigationBar";
 import Home from "./pages/Home";
 import { ToastContainer, toast } from "react-toastify";
 import "./index.css";
@@ -15,9 +14,6 @@ function App() {
     <BrowserRouter>
       <>
         <div className="app-container">
-          <div className="nav-bar">
-            <NavigationBar />
-          </div>
           <div className="content">
             <ToastContainer />
             <Routes>

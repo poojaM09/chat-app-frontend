@@ -1,5 +1,5 @@
-.navbar {
-  background-color: white;
+.header { 
+  background-color: #ffffff;
   border-bottom: 1px solid #d9d9d9;
 }
 
@@ -24,10 +24,7 @@
   left: auto;
 }
 /* dropdown-menu show */
-/* media query */
-@media (max-width: 768px) {
-
-}
+/* media query */ 
 .header-title{
   color: #7A8794 !important;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;

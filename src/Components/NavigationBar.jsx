@@ -6,7 +6,7 @@ import { logoutUser } from "../redux/feature/authSlice";
 import { logoutClient } from "../redux/feature/clientSlice";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../socket";
-import logo from "../../public/fevicon-logo.svg";
+import logo from "../../public/Plutus_logo.svg";
 import noDP from "../../public/profile-user.png";
 import "../../src/assets/CSS/navigationbar.css";
 import { useEffect } from "react";
@@ -29,11 +29,12 @@ function NavigationBar() {
   };
 
   return (
-    <Navbar className="px-4 w-100 navbar">
-      <Container fluid>
+    <Navbar className="p-0 w-100 navbar"> 
         {/* <Link to="/chat"> */}
         {" "}
-    <img src={logo} width="100" height="50"></img>
+        <div className="header w-100 px-3 py-2">
+          <img src={logo} width="211" height="79" />
+        </div>  
    
         {/* <p className="header-title">Plutus Chat</p> */}
         {/* </Link> */}
@@ -96,8 +97,7 @@ function NavigationBar() {
               </Dropdown>
             </nav>
           )
-        )}
-      </Container>
+        )} 
     </Navbar>
   );
 }
