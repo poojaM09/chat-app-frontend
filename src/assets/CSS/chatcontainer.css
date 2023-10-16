@@ -5,6 +5,7 @@
   gap: 0px;
   text-transform: capitalize;
 }
+
 /* @media (max-width: 768px) {
   .chat-container{
     display: none;
@@ -20,25 +21,31 @@
   justify-content: space-between;
   width: 100%;
 }
-.back-chat-icon{
+
+.back-chat-icon {
   display: flex;
   align-items: center;
   padding: 5px;
 }
-.back-icon{
- padding:  0 4px;
+
+.back-icon {
+  padding: 0 4px;
 }
-.user-profile{
+
+.user-profile {
   display: flex;
 }
-.icon-color svg path{
+
+.icon-color svg path {
   color: #7A8794 !important;
 }
-.search-user-msg{
+
+.search-user-msg {
   margin: 0 20px;
   gap: 20px;
   display: flex;
 }
+
 .chat-container .user-container img {
   margin: 0px 10px;
   height: 50px;
@@ -46,10 +53,11 @@
   border-radius: 50px;
   cursor: pointer;
 }
+
 .chat-container .messages-container {
   width: 100%;
   padding: 10px;
-  height: 510px;
+  height: 592px;
   font-size: 14px;
   color: black;
   display: flex;
@@ -58,18 +66,35 @@
   /* border-bottom: 1px solid #D9D9D9; */
   border-top: 1px solid #D9D9D9;
   gap: 20px;
+  padding-bottom: 50px;
+}
+@media (max-width: 1023px) {
+  .chat-container .messages-container{
+    padding-bottom: 0;
+  }
+}
+
+
+@media (max-width: 1440px) {
+  .chat-container .messages-container {
+    height: 645px !important;
+    padding-bottom: 36px;
+  }
 }
 
 @media (max-width: 1024px) {
-  .chat-container .messages-container{
-    height: 480px !important;
+  .chat-container .messages-container {
+    height: 430px !important;
+    padding-bottom: 0;
   }
 }
+
 .messages-container .messages-send {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
+
 .loader-container {
   width: 100%;
   height: 580px;
@@ -83,6 +108,12 @@
   flex-direction: column;
   align-items: flex-start;
 }
+@media (max-width: 1023px) {
+  .messages-container .messages-rececive{
+    padding-bottom: 0;
+  }
+}
+
 .messages-container .messages-send .sender-msg,
 .messages-container .messages-rececive .receiver-msg {
   margin: 5px;
@@ -92,6 +123,7 @@
   text-wrap: wrap;
   position: relative;
 }
+
 .messages-container .messages-send .sender-msg {
   border-radius: 10px 0px 10px 10px;
   color: #ff6c37 !important;
@@ -102,16 +134,17 @@
   background-color: #fff;
   margin: 0;
 }
+
 .messages-container .messages-rececive .receiver-msg {
-   border-radius: 0px 10px 10px 10px;
-   box-shadow: 0 0 8px 0 rgba(0,0,0,.2);
-   color: #000;
-   display: inline-block;
-   font-size: 14px;
-   overflow: hidden;
-   padding: 10px;
-   background-color: #f6f6f6;
-   margin: 0 5px;
+  border-radius: 0px 10px 10px 10px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, .2);
+  color: #000;
+  display: inline-block;
+  font-size: 14px;
+  overflow: hidden;
+  padding: 10px;
+  background-color: #f6f6f6;
+  margin: 0 5px;
 }
 
 .time {
@@ -120,39 +153,46 @@
   color: #7A8794 !important;
   font-family: Roboto;
 }
+
 .view-btn {
   width: 100%;
   display: flex;
   justify-content: center;
 }
+
 .view-more-button {
   width: max-content;
   padding: 6px 10px;
   border-radius: 50px;
 }
+
 .type {
   padding: 0px 10px;
   padding-bottom: 20px;
   height: 10px;
 }
+
 @media (max-width: 768px) {
-  .profile-img{
+  .profile-img {
     width: 35px !important;
     height: 35px !important;
   }
 }
 
-.chat-msg-data .profile-img , .your-message .profile-img{
-width: 50px !important;
-height: 50px !important;
+.chat-msg-data .profile-img,
+.your-message .profile-img {
+  width: 50px !important;
+  height: 50px !important;
 }
 
-.user-status{
+
+.user-status {
   font-family: Roboto;
   font-size: 14px;
   color: #7A8794 !important;
 }
-.online{
+
+.online {
   height: 13px;
   width: 13px;
   border-radius: 50%;
@@ -162,37 +202,85 @@ height: 50px !important;
   left: 64%;
   top: 3px;
 }
-.online-user{
+
+.online-user {
   position: relative;
 }
 
-.time-user-chat, .chat-msg-data , .your-message{
+.time-user-chat,
+.chat-msg-data,
+.your-message {
   display: flex;
   align-items: center;
 }
-.your-message , .chat-msg-data {
+
+.your-message,
+.chat-msg-data {
   gap: 0.5rem !important;
 }
-.your-message, .your-message .time-user-chat{
-flex-direction: row-reverse;
+
+.your-message,
+.your-message .time-user-chat {
+  flex-direction: row-reverse;
 }
-.chat-send-msg-input{
+
+.chat-send-msg-input {
   position: sticky;
   bottom: 0;
   background: white;
   border-top: 1px solid #D9D9D9;
 }
 
-.client-container{
-    margin: 0 10px; 
-    display: flex;
-    align-items: center;
+.client-container {
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
 }
-.Client-Name{
+
+.Client-Name {
   margin: 20px;
   font-size: 18px;
   font-family: Roboto;
 }
 
+.loader-icon {
+  /* Define the styles for your loader icon here */
+  /* For example, you can use a CSS spinner or custom icon */
+  /* Here, we'll use a simple spinner as an example */
+  border: 4px solid rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 2s linear infinite;
+}
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
 
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.seenIcon {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  width: 15px;
+  height: 20px;
+}
+
+.imgs{
+  border: 1px solid #ff895f;
+  padding: 3px 6px 3px 3px;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+
+}
+.imgsFix{
+  padding: 2px
+}

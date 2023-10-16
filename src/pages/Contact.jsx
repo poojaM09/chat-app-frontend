@@ -1,6 +1,7 @@
 
 import { useEffect } from "react";
 import noDP from "../../public/profile-user.png";
+import BDProfile from "../../public/fevicon-logo.svg";
 import "../assets/CSS/contact.css";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -145,6 +146,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       viewMessage();
     });
   }, []);
+  localStorage.setItem("userList",JSON.stringify(userList))
 
   return (
     <>
@@ -168,10 +170,11 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
         </div>
         {search == ""
           ? userList?.map((data, index) => {
+           
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
-console.log(data._id,'sssssss')
+            console.log(data._id,'sssssss')
             const userNote = userNotification(data);
             const lastMessage = getLastMessage(data._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';
@@ -191,7 +194,12 @@ console.log(data._id,'sssssss')
                 }}
               >
                 <div className="contact-img">
-                  <img className="img" src={noDP} alt=" " />
+                  {console.log(data,'dasasasata')}
+                  {data.contactNumber ? (
+                     <img className="img" src={noDP} alt=" " />
+                  ):
+                  <img className="imgs" src={BDProfile} alt=" " />
+                  }
                   {isOnline ? <div className="online"></div> : null}
                 </div>
                 <div className="contact-name">{data?.name}</div>

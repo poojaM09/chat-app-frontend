@@ -11,6 +11,7 @@ import moment from "moment";
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
+import ImageSend from "../../public/double-tick-icon.svg"
 import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
@@ -185,7 +186,7 @@ function ClientChatConatainer() {
             });
         }
     }, []);
-    
+
     useEffect(() => {
         {
             getMsg && setMessage([...message, getMsg]);
@@ -221,15 +222,15 @@ function ClientChatConatainer() {
         <>
             <div className="chat-container">
                 <div className="client-container">
-                    <img className="profile-img" src={logo} alt=" " style={{ width: "50px", height: "50px" }}></img>
+                    <img className="profile-img" src={logo} alt=" " style={{ width: "50px", height: "50px", border: '1px solid #ff6c37', borderRadius: '100px', padding: '4px 7px 4px 4px' }}></img>
                     <p className="Client-Name">{"Plutustec"}</p>
                 </div>
                 <div id="scrollTop" className="messages-container" ref={scroll}>
                     {message.length > 10 && (
                         <div className="view-btn">
                             <button className="view-more-button" onClick={() => viewMore()}>
-                            View more
-                        </button>
+                                View more
+                            </button>
                         </div>
                     )}
                     {loadding ? (
@@ -250,7 +251,14 @@ function ClientChatConatainer() {
                                     {data.message && (
                                         <>
                                             <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
-                                                <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div>
+                                                <div>
+                                                    {data.fromSelf ?
+                                                        <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
+                                                        :
+
+                                                        <img className="profile-img" src={logo} alt=" " style={{ width: "70px", height: "70px", border: '1px solid #ff6c37', borderRadius: '100px', padding: '4px 7px 4px 4px' }} />
+                                                    }
+                                                </div>
                                                 <div>
                                                     <div className="time-user-chat">
                                                         <div>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <div className="you-text"> {'Plutustec'}</div>}</div>
@@ -274,90 +282,126 @@ function ClientChatConatainer() {
                                     {data.attechment &&
                                         (data.attechment &&
                                             (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
-                                            <img
-                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                                style={{
-                                                    height: "190px",
-                                                    width: "213px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                                <div style={{position:"relative"}}>
+                                                    <img src={ImageSend} className="seenIcon" />
+                                                    <img
+                                                        src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                        style={{
+                                                            height: "190px",
+                                                            width: "213px",
+                                                            border: "2px solid #d9d9d9",
+                                                            position: ""
+                                                        }}
+                                                        onClick={() => {
+                                                            handleDownload(data.attechment);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </>
                                         ) : data.attechment && ext == "mp4" ? (
-                                            <video
-                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                                autoPlay
-                                                style={{
-                                                    height: "105px",
-                                                    width: "200px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <video
+                                                    src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                    autoPlay
+                                                    style={{
+                                                        height: "105px",
+                                                        width: "200px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ) : data.attechment && ext == "ppt" ? (
-                                            <img
-                                                src={ppt}
-                                                style={{
-                                                    height: "120px",
-                                                    width: "120px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <img
+                                                    src={ppt}
+                                                    style={{
+                                                        height: "120px",
+                                                        width: "120px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ) : data.attechment && ext == "zip" ? (
-                                            <img
-                                                src={zip}
-                                                style={{
-                                                    height: "120px",
-                                                    width: "120px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <img
+                                                    src={zip}
+                                                    style={{
+                                                        height: "120px",
+                                                        width: "120px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
-                                            <img
-                                                src={xls}
-                                                style={{
-                                                    height: "120px",
-                                                    width: "120px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <img
+                                                    src={xls}
+                                                    style={{
+                                                        height: "120px",
+                                                        width: "120px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ) : data.attechment && (ext == "docx" || ext == "doc") ? (
-                                            <img
-                                                src={doc}
-                                                style={{
-                                                    height: "120px",
-                                                    width: "120px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <img
+                                                    src={doc}
+                                                    style={{
+                                                        height: "120px",
+                                                        width: "120px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ) : (
-                                            <img
-                                                src={pdf}
-                                                style={{
-                                                    height: "120px",
-                                                    width: "120px",
-                                                    border: "2px solid #d9d9d9",
-                                                }}
-                                                onClick={() => {
-                                                    handleDownload(data.attechment);
-                                                }}
-                                            />
+                                            <>
+                                            <div style={{position:"relative"}}>
+                                                <img src={ImageSend} className="seenIcon" />
+                                                <img
+                                                    src={pdf}
+                                                    style={{
+                                                        height: "120px",
+                                                        width: "120px",
+                                                        border: "2px solid #d9d9d9",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleDownload(data.attechment);
+                                                    }}
+                                                />
+                                                </div>
+                                            </>
                                         ))}
                                 </div>
                             );

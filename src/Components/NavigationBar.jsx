@@ -28,16 +28,13 @@ function NavigationBar() {
     navigate("/");
   };
 
-  return (
+  return ( 
     <Navbar className="p-0 w-100 navbar"> 
         {/* <Link to="/chat"> */}
         {" "}
         <div className="header w-100 px-3 py-2">
           <img src={logo} width="211" height="79" />
-        </div>  
-   
-        {/* <p className="header-title">Plutus Chat</p> */}
-        {/* </Link> */}
+        </div>   
         {!isLoggin ? (
           <>
             <Nav>

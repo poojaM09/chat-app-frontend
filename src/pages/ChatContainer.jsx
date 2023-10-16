@@ -3,8 +3,10 @@ import { postdata, postimage } from "../Utils/http.class";
 import moment from "moment";
 import { socket } from "../socket";
 import noDP from "../../public/profile-user.png";
+import BDProfile from "../../public/fevicon-logo.svg";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
+import ImageSend from "../../public/double-tick-icon.svg"
 import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
@@ -14,25 +16,36 @@ import xls from "../../public/xls.png";
 import ChatInput from "./ChatInput";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-let userList = [];
+
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
   console.log(handlehide, 'handlehide')
   console.log(onlineUser, 'onlineUseronlineUserchat')
-    const [message, setMessage] = useState([]);
+  const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
-    const [data, setData] = useState(5);
+  const [data, setData] = useState(5);
   const [loadding, setLoadding] = useState(true);
-    const [showImg, setShowImg] = useState(false);
+  const [showImg, setShowImg] = useState(false);
   const [Img, setImg] = useState(null);
   const scroll = useRef(null);
   const [chatGptImg, setChatGptImg] = useState(false);
   const msgBox = document.getElementById("scrollTop");
-
   const [width, setWidth] = useState(window.innerWidth);
   const isMobile = width >= 768;
+  const [imgdownloading, setImgDownloading] = useState(false);
+  const [mp4downloading, setmp4Downloading] = useState(false);
+  const [pptdownloading, setpptDownloading] = useState(false);
+  const [zipdownloading, setzipDownloading] = useState(false);
+  const [xlsdownloading, setxlsDownloading] = useState(false);
+  const [docdownloading, setdocDownloading] = useState(false);
+  const [pdfdownloading, setpdfDownloading] = useState(false);
+  const [noMoreMessages, setNoMoreMessages] = useState(false);
+  console.log(data, 'data')
 
   console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
@@ -104,7 +117,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
   const viewMore = async () => {
-    setData(data + 5);
+    // Load more messages and check if there are more messages
+    const newData = data + 5;
+    if (newData >= message.length) {
+      setNoMoreMessages(true);
+    }
+    setData(newData);
   };
   const handleScroll = () => {
     const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
@@ -168,19 +186,100 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     }
   }, [message]);
 
-  const handleDownload = (Img) => {
+  const handleDownload = (img) => {
+    const lastIndex = img.lastIndexOf(".");
+    const part2 = img.substring(lastIndex + 1);
+
+    const downloadFile = (URL, filename, onSuccess) => {
+      fetch(URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('File not found');
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          onSuccess();
+        })
+        .catch((error) => {
+          // Handle download error, e.g., 404
+          setImgDownloading(false);
+          setmp4Downloading(false);
+          setzipDownloading(false);
+          setpptDownloading(false);
+          setxlsDownloading(false);
+          setdocDownloading(false);
+          setpdfDownloading(false);
+
+          toast.error('File not found. Please try again later.', {
+            position: "top-center",
+            autoClose: 3000, // Duration in milliseconds
+          });
+        });
+    };
+
+    if (
+      !imgdownloading &&
+      (part2 === 'png' || part2 === 'jpeg' || part2 === 'jpg')
+    ) {
+      setImgDownloading(true);
+    } else if (!mp4downloading && part2 === 'mp4') {
+      setmp4Downloading(true);
+    } else if (!zipdownloading && part2 === 'zip') {
+      setzipDownloading(true);
+    } else if (!pptdownloading && part2 === 'ppt') {
+      setpptDownloading(true);
+    } else if (
+      (!xlsdownloading && part2 === 'xls') ||
+      (!xlsdownloading && part2 === 'xlsx')
+    ) {
+      setxlsDownloading(true);
+    } else if (
+      (!docdownloading && part2 === 'doc') ||
+      (!docdownloading && part2 === 'docx')
+    ) {
+      setdocDownloading(true);
+    } else if (!pdfdownloading) {
+      setpdfDownloading(true);
+    }
+
     let URL;
     if (chatGptImg) {
-      URL = Img;
-      saveAs(URL, "image.png");
+      URL = img;
     } else {
-      URL = `https://chat-app-backend-l2a8.onrender.com/public/${Img}`;
-      saveAs(URL, Img);
+      URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
     }
+
+    downloadFile(URL, img, () => {
+      // Simulate download completion with a delay
+      setTimeout(() => {
+        setImgDownloading(false);
+        setmp4Downloading(false);
+        setzipDownloading(false);
+        setpptDownloading(false);
+        setxlsDownloading(false);
+        setdocDownloading(false);
+        setpdfDownloading(false);
+      }, 2000);
+    });
   };
+
+
+  const storedDataString = localStorage.getItem('userList')
+  const userList = JSON.parse(storedDataString);
+
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
-  console.log(currentChat, 'currentChat')
+  console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
+
+
   return (
     <>
       {/* <ToastContainer /> */}
@@ -207,7 +306,19 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 :
                 <div className="user-profile">
                   <div className="online-user">
-                    <img className="profile-img" src={noDP} alt=" "></img>
+                    {userList.map((data) => {
+                      console.log("data.id:", data._id);
+                      console.log("currentChat._id:", currentChat._id);
+                      console.log("data?.contactNumber:", data?.contactNumber);
+
+                      if (data._id === currentChat._id) {
+                        if (data?.contactNumber) {
+                          return <img className="profile-img" src={noDP} alt=" " key={data.id} />;
+                        } else {
+                          return <img className="imgs" src={BDProfile} alt=" " key={data.id} />;
+                        }
+                      }
+                    })}
                   </div>
                   <div>
                     <div> {currentChat?.name}</div>
@@ -225,9 +336,16 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
             </div>
 
           </div>
-        </div>
+        </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-                    {loadding ? (
+          {!noMoreMessages && (
+            <div className="view-btn">
+              <button className="view-more-button" onClick={() => viewMore()}>
+                View more
+              </button>
+            </div>
+          )}
+          {loadding ? (
             <div className="loader-container">
               <Loader />
             </div>
@@ -244,8 +362,30 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data.message && (
                     <>
+                      {console.log(data, 'data212121212')}
                       <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
-                        <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div>
+                        {userList.map((Users) => {
+                          if (Users._id === data?.from) {
+                            console.log(Users._id === data?.from,'Users._id === data?.from')
+                            if (Users?.contactNumber ){
+                              console.log(Users?.contactNumber,'gfdfdsf')
+                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                            } else {
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                            }
+                          }
+                          if (Users._id === data?.to) {
+                            console.log(Users._id === data?.to,'Users._id === data?.toUsers._id === data?.to')
+                            if (Users?.contactNumber ){
+                              console.log(Users?.contactNumber,'gfdfdsf')
+                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                            } else {
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                            }
+                          }
+                        })}
+                        {/* <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div> */}
+
                         <div>
                           <div className="time-user-chat">
                             <div>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <div className="you-text"> {currentChat?.name}</div>}</div>
@@ -266,103 +406,364 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                     </>
                   )}
-                  {console.log(video, 'video')}
+                  {console.log(data.attechment, 'video')}
                   {data.attechment &&
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
-                      <img
-                        src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                        style={{
-                          height: "190px",
-                          width: "213px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
+                      <div style={{ position: "relative" }}>
+                        {imgdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <img
+                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                style={{
+                                  height: '190px',
+                                  width: '213px',
+                                  border: '2px solid #d9d9d9',
+                                  borderRadius: '10px',
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {imgdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              style={{
+                                height: '190px',
+                                width: '213px',
+                                border: '2px solid #d9d9d9',
+                                borderRadius: '10px',
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
                     ) : data.attechment && ext == "mp4" ? (
-                      <video
-                        src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                        autoPlay
-                        style={{
-                          height: "120px",
-                          width: "200px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ) : data.attechment && ext == "ppt" ? (
-                      <img
-                        src={ppt}
-                        style={{
-                          height: "120px",
-                          width: "120px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ) : data.attechment && ext == "zip" ? (
-                      <img
-                        src={zip}
-                        style={{
-                          height: "120px",
-                          width: "120px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
-                      <img
-                        src={xls}
-                        style={{
-                          height: "120px",
-                          width: "120px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ) : data.attechment && (ext == "docx" || ext == "doc") ? (
-                      <img
-                        src={doc}
-                        style={{
-                          height: "120px",
-                          width: "120px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ) : (
-                      <img
-                        src={pdf}
-                        style={{
-                          height: "120px",
-                          width: "120px",
-                          border: "2px solid #d9d9d9",
-                          borderRadius: "10px"
-                        }}
-                        onClick={() => {
-                          handleDownload(data.attechment);
-                        }}
-                      />
-                    ))}
 
+                      <div style={{ position: 'relative' }}>
+                        {mp4downloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <video
+                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                autoPlay
+                                style={{
+                                  height: "120px",
+                                  width: "200px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {mp4downloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <video
+                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              autoPlay
+                              style={{
+                                height: "120px",
+                                width: "200px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+
+                    ) : data.attechment && ext == "ppt" ? (
+
+
+                      <div style={{ position: 'relative' }}>
+                        {pptdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <img
+                                src={ppt}
+                                style={{
+                                  height: "120px",
+                                  width: "120px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {pptdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={ppt}
+                              style={{
+                                height: "120px",
+                                width: "120px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+
+
+                    ) : data.attechment && ext == "zip" ? (
+                      <div style={{ position: 'relative' }}>
+                        {zipdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <img
+                                src={zip}
+                                style={{
+                                  height: "120px",
+                                  width: "120px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {zipdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={zip}
+                              style={{
+                                height: "120px",
+                                width: "120px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+                    ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
+                      <div style={{ position: 'relative' }}>
+                        {xlsdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <img
+                                src={xls}
+                                style={{
+                                  height: "120px",
+                                  width: "120px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {xlsdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={xls}
+                              style={{
+                                height: "120px",
+                                width: "120px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+
+                            />
+                          </>
+                        )}
+                      </div>
+                    ) : data.attechment && (ext == "docx" || ext == "doc") ? (
+
+                      <div style={{ position: 'relative' }}>
+                        {docdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+                              <img
+                                src={doc}
+                                style={{
+                                  height: "120px",
+                                  width: "120px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {docdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={doc}
+                              style={{
+                                height: "120px",
+                                width: "120px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ position: 'relative' }}>
+                        {pdfdownloading ? (
+                          <>
+                            <div style={{ position: 'relative' }}>
+
+                              <img
+                                src={pdf}
+                                style={{
+                                  height: "120px",
+                                  width: "120px",
+                                  border: "2px solid #d9d9d9",
+                                  borderRadius: "10px"
+                                }}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                              {pdfdownloading && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                  }}
+                                >
+                                  <Loader />
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <img src={ImageSend} className="seenIcon" />
+                            <img
+                              src={pdf}
+                              style={{
+                                height: "120px",
+                                width: "120px",
+                                border: "2px solid #d9d9d9",
+                                borderRadius: "10px"
+                              }}
+                              onClick={() => {
+                                handleDownload(data.attechment);
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
+                    ))}
                 </div>
               );
             })
@@ -376,7 +777,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           ) : null}
           <div ref={scroll}></div>
         </div>
-      </div>
+      </div >
       <div className="chat-send-msg-input">
         {/* <div className="type"></div> */}
         <div className="chat-input">
