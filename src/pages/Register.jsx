@@ -6,9 +6,8 @@ import "../../src/assets/CSS/register.css";
 import { Link } from "react-router-dom";
 import screen from "../../public/screen.jpg";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import login from "../../public/login.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import login from "../../public/login.png"; 
+import logo from "../../public/Plutus_logo.svg";
 
 
 function Register() {
@@ -33,67 +32,66 @@ function Register() {
     }
   };
   return (
-    <div className="Welcome">
-      <Row className="border" style={{ borderRadius: "8px",boxShadow: 'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
-        {/* <Col md={6}>
-          <img src={login} className="w-100" />
-        </Col> */}
-        <Col md={8} className="register-right-images">
-        {/* <div className="title-register">
-          <h3>Welcome To Plutus</h3>
-          </div> */}
-        </Col>
-        <Col md={4} >
-          <div className="register-form ">
-            <h1 className="Title">Register</h1>
-            <form onSubmit={handleSubmit} style={{width:'100%'}}>
-              <div className="input-container">
-                <div className="input">
-                  {" "}
-                  <FontAwesomeIcon icon={faUser} />
-                  <input
-                    type="text"
-                    name="name"
-                    onChange={handleChange}
-                    value={values.name}
-                    placeholder="enter username "
-                  />
+    <div className="login-wrapper d-flex align-items-center position-relative">
+      <div class="login-bg"></div>
+      <Container className="Welcome">
+        <Row className="p-0 m-0 w-100 h-100">
+          {/* <Col md={6}>
+            <img src={login} className="w-100" />
+          </Col> */}
+          <Col lg={6} className="register-right-images">
+          {/* <div className="title-register">
+            <h3>Welcome To Plutus</h3>
+            </div> */}
+          </Col>
+          <Col lg={6} className="px-3 px-lg-0">
+            <div className="register-form ">
+              <img src={logo} className="mb-3" width="211" height="79" />
+              <form onSubmit={handleSubmit} className="my-auto">
+                <h1 className="slider-title mb-5 text-center">Register</h1>
+                <div className="form-group mb-4">
+                  <div className="input">
+                    {" "}
+                    <input
+                      type="text"
+                      name="name"
+                      onChange={handleChange}
+                      value={values.name}
+                      placeholder="Enter username "
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="input-container">
-                <div className="input">
-                  <FontAwesomeIcon icon={faEnvelope} />
-                  <input
-                    type="text"
-                    name="email"
-                    onChange={handleChange}
-                    value={values.email}
-                    placeholder="enter email"
-                  />
+                <div className="form-group mb-4">
+                  <div className="input">
+                    <input
+                      type="text"
+                      name="email"
+                      onChange={handleChange}
+                      value={values.email}
+                      placeholder="Enter email"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="input-container">
-                <div className="input">
-                  <FontAwesomeIcon icon={faLock} />
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="enter password"
-                    onChange={handleChange}
-                    value={values.password}
-                  />
+                <div className="form-group mb-4">
+                  <div className="input">
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Enter password"
+                      onChange={handleChange}
+                      value={values.password}
+                    />
+                  </div>
                 </div>
+                  <Button className="login-btn mb-0" type="Submit">Register</Button>
+              </form>
+              <div>
+                Already have an account? <Link className="text-orange" to="/login">Login</Link>
               </div>
-              <div className="input-submit">
-                <Button className="submit-button" type="Submit">Register</Button>
-              </div>
-            </form>
-            <div>
-              Already have an account? <Link to="/login">Login</Link>
             </div>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import login from "../../public/login.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faEnvelope, faMobileAlt, faComment } from "@fortawesome/free-solid-svg-icons";
 import { getdata } from "../Utils/http.class";
+import logo from "../../public/Plutus_logo.svg";
 
 
 let userList = [];
@@ -75,24 +76,22 @@ function ClientForm() {
         navigate("/client-chat");
     }
     return (
-        <>
+        <div className="login-wrapper d-flex align-items-center position-relative">
+            <div class="login-bg"></div>
             {oUser.length > 0 ?
-                <Container className="p-4  Welcome">
-                    <Row className="border" style={{borderRadius:"8px", boxShadow:'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
-
-                        <Col md={8} className="register-right-image">
+                <Container className="Welcome">
+                    <Row className="p-0 m-0 w-100 h-100">
+                        <Col lg={6} className="register-right-image">
                         </Col>
-
-                        <Col md={4}>
-
+                        <Col lg={6} className="px-3 px-lg-0">
                             <div className="register-form ">
-                                <p className="Title"> Please fill out the form.</p>
-                                <form onSubmit={handleSubmit} style={{width:'100%'}}>
-                                    <div className="input-container">
+                                <img src={logo} className="mb-3" width="211" height="79" />
+                                <form onSubmit={handleSubmit} className="my-auto">
+                                    <p className="medium-title text-center"> Please fill out the form.</p>
+                                    <div className="form-group mb-4">
                                         <div className="input">
-                                            <FontAwesomeIcon icon={faUser} />
                                             <input
-                                                placeholder="Enter Name"
+                                                placeholder="Enter name"
                                                 type="text"
                                                 name="name"
                                                 onChange={handleChange}
@@ -101,11 +100,10 @@ function ClientForm() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="input-container">
+                                    <div className="form-group mb-4">
                                         <div className="input">
-                                            <FontAwesomeIcon icon={faEnvelope} />
                                             <input
-                                                placeholder="Enter Email"
+                                                placeholder="Enter email"
                                                 type="text"
                                                 name="email"
                                                 onChange={handleChange}
@@ -114,32 +112,28 @@ function ClientForm() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="input-container">
+                                    <div className="form-group mb-4">
                                         <div className="input">
-                                            <FontAwesomeIcon icon={faMobileAlt} />
                                             <input
                                                 type="number"
                                                 name="contactNumber"
-                                                placeholder="Enter Contact Number"
+                                                placeholder="Enter contact number"
                                                 onChange={handleChange}
                                                 value={values.contactNumber}
                                                 className="Input-Field"
                                             />
                                         </div>
                                     </div>
-                                    <div className="input-submit">
-                                        <Button className="submit-button" type="Submit">Talk with sales</Button>
-                                    </div>
+                                    <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
                                 </form>
                             </div>
                         </Col>
                     </Row>
                 </Container>
                 :
-                <Container className="p-4  Welcome">
-                    <Row className="border" style={{borderRadius:"8px", boxShadow:'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%"}}>
-
-                        <Col md={8} className="register-right-image">
+                <Container className="Welcome">
+                    <Row className="p-0 m-0 w-100 h-100">
+                        <Col md={6} className="register-right-image">
                             {/* <div className="main-text">
                                 <h3 className="text-title">Plutus Technologies</h3>
                                 <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
@@ -148,74 +142,67 @@ function ClientForm() {
                                     and setting new standards of excellence.</span>
                             </div> */}
                         </Col>
-
-                        <Col md={4}>
-
+                        <Col md={6} className="px-3 px-lg-0">
                             <div className="register-form">
-                                {/* <h1>Sign In</h1> */}
-                                <p className="Title">Currently BDS are not available , please leave the message</p>
-                                <form  style={{width:'100%'}}>
-                                    <div>
-                                        <div className="input-container">
-                                            <div className="input">
-                                                <FontAwesomeIcon icon={faUser} />
-                                                <input
-                                                    placeholder="Enter Name"
-                                                    type="text"
-                                                    name="name"
-                                                // onChange={handleChange}
-                                                // value={values.name}
-                                                />
+                                <img src={logo} className="mb-3" width="211" height="79" />
+                                <div className="my-auto">
+                                    <p className="medium-title text-center">Currently team is not available, <br />please send the message on this link <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">www.plutustec.com/contact-us</a> <br />to share your details</p>
+                                    <form className="d-none">
+                                        <div>
+                                            <div className="form-group mb-4">
+                                                <div className="input">
+                                                    <input
+                                                        placeholder="Enter Name"
+                                                        type="text"
+                                                        name="name"
+                                                    // onChange={handleChange}
+                                                    // value={values.name}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-container">
-                                            <div className="input">
-                                                <FontAwesomeIcon icon={faEnvelope} />
-                                                <input
-                                                    placeholder="Enter Email"
-                                                    type="text"
-                                                    name="email"
-                                                // onChange={handleChange}
-                                                // value={values.email}
-                                                />
+                                            <div className="form-group mb-4">
+                                                <div className="input">
+                                                    <input
+                                                        placeholder="Enter Email"
+                                                        type="text"
+                                                        name="email"
+                                                    // onChange={handleChange}
+                                                    // value={values.email}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-container">
-                                            <div className="input">
-                                                <FontAwesomeIcon icon={faMobileAlt} />
-                                                <input
-                                                    type="number"
-                                                    name="contactNumber"
-                                                    placeholder="Enter Contact Number"
-                                                // onChange={handleChange}
-                                                // value={values.contactNumber}
-                                                />
+                                            <div className="form-group mb-4">
+                                                <div className="input">
+                                                    <input
+                                                        type="number"
+                                                        name="contactNumber"
+                                                        placeholder="Enter Contact Number"
+                                                    // onChange={handleChange}
+                                                    // value={values.contactNumber}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="input-container">
-                                            <div className="input">
-                                                <FontAwesomeIcon icon={faComment} />
-                                                <input
-                                                    type="text"
-                                                    name="message"
-                                                    placeholder="Enter Message"
-                                                // onChange={handleChange}
-                                                // value={values.contactNumber}
-                                                />
+                                            <div className="form-group mb-4">
+                                                <div className="input">
+                                                    <input
+                                                        type="text"
+                                                        name="message"
+                                                        placeholder="Enter Message"
+                                                    // onChange={handleChange}
+                                                    // value={values.contactNumber}
+                                                    />
+                                                </div>
                                             </div>
+                                            <Button className="login-btn mb-0" type="Submit">Send To Mail</Button>
                                         </div>
-                                        <div className="input-submit">
-                                            <Button className="submit-button" type="Submit">Send To Mail</Button>
-                                        </div>
-                                    </div>
-                                    <span > Or click on this Link <a href="https://plutustec.com/contact-us" target="_blank"> <b>Contact-us</b> </a>for fill contact page</span>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </Col>
                     </Row>
                 </Container>
             }
-        </>
+        </div>
     );
 }
 

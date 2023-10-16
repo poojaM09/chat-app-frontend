@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import logo from "../../public/Plutus_logo.svg";
 
 function Login() {
   const dispatch = useDispatch();
@@ -34,20 +35,21 @@ function Login() {
     navigate("/chat");
   }
   return (
-    <>
-      <Container className="p-4  Welcome">
-        <Row className="border" style={{ borderRadius: "8px", boxShadow: 'rgb(191 190 190 / 57%) 0px 0px 2px 2px',width: "100%",height:"100%" }}>
-          <Col md={8} className="login-right-image">
+    <div className="login-wrapper d-flex align-items-center position-relative">
+      <div class="login-bg"></div>
+      <Container className="Welcome">
+        <Row className="p-0 m-0 w-100 h-100">
+          <Col lg={6} className="login-right-image p-0">
           </Col>
-          <Col md={4}>
-            <div className="register-form ">
-              <h1 className="Title">Login</h1>
-              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                <div className="input-container">
+          <Col lg={6} className="px-3 px-lg-0">
+            <div className="register-form">
+              <img src={logo} className="mb-3" width="211" height="79" />
+              <form onSubmit={handleSubmit} className="w-100 my-auto">
+                <h1 className="slider-title mb-5 text-center">Login</h1>
+                <div className="form-group mb-4">
                   <div className="input">
-                    <FontAwesomeIcon icon={faUser} />
                     <input
-                      placeholder="enter email"
+                      placeholder="Enter email"
                       type="text"
                       name="email"
                       onChange={handleChange}
@@ -56,30 +58,27 @@ function Login() {
                     />
                   </div>
                 </div>
-                <div className="input-container">
+                <div className="form-group mb-4">
                   <div className="input">
-                    <FontAwesomeIcon icon={faLock} />
                     <input
-                      placeholder="enter password"
+                      placeholder="Enter password"
                       type="password"
                       name="password"
                       onChange={handleChange}
                       value={values.password}
                     />
                   </div>
-                </div>
-                <div className="input-submit">
-                  <Button className="submit-button" type="Submit">Login</Button>
-                </div>
+                </div> 
+                <Button className="login-btn mb-0" type="Submit">Login</Button> 
               </form>
-              <div>
-                New User? <Link to="/register">Create Account</Link>
+              <div className="mt-3">
+                New User? <Link to="/register" className="text-orange">Create Account</Link>
               </div>
             </div>
           </Col>
         </Row>
       </Container>
-    </>
+    </div>
   );
 }
 

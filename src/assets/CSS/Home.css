@@ -69,30 +69,43 @@
 a, a:hover{
   text-decoration: none;
 }
+.text-orange,.text-orange b{
+  color: #ff6c37 !important;
+}
 .welcome-chat {
   display: flex;
   height: 100vh;
   width: 100%;  
+  overflow-y: auto;
+  flex-wrap: wrap;
 }
 .welcome-chat .img-fluid{
   max-width: 700px; 
   width: 100%;
 }
+/* typography */
 .big-title{
   font-size: 48px;
   line-height: 150%;
-  color: #303030;
+  color: #212121;
   font-weight: normal;
 }
+.medium-title{
+  font-size: 24px;
+  line-height: 150%;
+  color: #212121;
+  font-weight: normal;
+}
+/* typography */
 .information-detail {
   position: relative;
   flex-direction: column;
   padding: 22px;
-  color: #FE7600;
-  background-color: rgb(255 108 55 / 20%);
-  width: 60%;
+  color: #ff6c37;
+  background-color: rgb(255 108 55 / 20%); 
   display: flex;
   justify-content: center;
+  height: 100%;
 }
 .slider-title{
   font-size: 64px;
@@ -112,8 +125,7 @@ a, a:hover{
   font-weight: 700;
 }
 .chat-button {
-  position: relative;
-  width: 40%;
+  position: relative; 
 }
 .both-btn{
   margin-top: 10px;
@@ -132,14 +144,15 @@ a, a:hover{
   justify-content: center;
   height: calc(100vh - 96px);
 }
-.login-btn{
+.login-btn,.login-btn:focus,.login-btn:active{
   width: 100%;
-  background-color: #ff6c37;
+  background-color: #ff6c37 !important;
+  border: 1px solid #ff6c37 !important;
   color: white !important;
   border: none;
   height: 60px;
   border-radius: 8px;
-  padding: 4px;
+  padding: 8px 30px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -149,9 +162,12 @@ a, a:hover{
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 500;
+  min-width: 220px;
+  box-shadow: none !important;
 }
 .login-btn:hover{
-  background-color: #ed5d29;
+  background-color: #ed5d29 !important;
+  border: 1px solid #ed5d29 !important;
   color: #ffffff !important; 
 }
 .btn-sale{
@@ -161,10 +177,4 @@ a, a:hover{
 .carousel-control-prev,.carousel-control-next,.carousel-indicators{
   display: none !important;
 }
-
-
-@media (max-width: 991px){
-  .information-detail{
-    width: 100%;
-  }
-}
+ 

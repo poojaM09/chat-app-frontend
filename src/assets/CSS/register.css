@@ -6,11 +6,10 @@
   margin-top: 80px;
   height: 100%;
   margin: 0;
-
-
-  @media (max-width:768px) {
-      padding-bottom: 81px;
-  }
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
+  border-radius: 0 8px 8px 0;
+  background-color: #ffffff; 
 }
 .contact-form-register{
   padding: 30px 15px;
@@ -35,24 +34,7 @@
 
 .form-text-register{
   text-align: center;
-}
-.input {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid #FE7600;
-  border-radius: 8px;
-  align-items: center;
-
-  /* border-bottom: 1px solid skyblue; */
-}
-input {
-  border: none;
-  outline: none;
-  width: 250px;
-}
+} 
 .input-submit {
   margin: 20px 0px;
   display: flex;
