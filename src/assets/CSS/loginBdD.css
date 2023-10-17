@@ -30,7 +30,7 @@
 }
 
 @media (max-width: 991px) { 
-  .login-right-image,.register-right-image{
+  .login-right-image,.register-right-image,.register-right-images{
     display: none;
   }
   .register-form{

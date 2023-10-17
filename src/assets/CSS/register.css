@@ -79,34 +79,14 @@
 }
 
 .register-right-images{
-  background: url('../../../public/LoginPage.jpg');
-  width: 600px;
+  background: url('../../../public/bde-register.jpg');
+  width: 100%; 
   height: 100%;
   background-size: cover !important;
   border-radius: 8px 0 0 8px;
   position: relative;
-  background-position: center !important;
-  
-  @media (max-width:768px) {
-   display: none;
-}
-  }
-  
-  .register-right-images::after{
-      content: '';
-      background-color: #000;
-      position: absolute;
-      top:  0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.3;
-      border-radius: 8px 0 0 8px;
-  
-  }
-  
+  background-position: center !important; 
+  } 
   .title-register{
       position: absolute;
       top: 34%;
