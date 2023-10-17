@@ -1,8 +1,7 @@
 .contact-conainer {
   display: flex;
-  flex-direction: column;
-  /* height: calc(100vh - 71.78px); */
-  overflow-y: scroll;
+  flex-direction: column; 
+  overflow-y: auto;
   height: 100%;
 }
 

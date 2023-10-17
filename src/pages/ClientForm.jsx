@@ -133,7 +133,7 @@ function ClientForm() {
                 :
                 <Container className="Welcome">
                     <Row className="p-0 m-0 w-100 h-100">
-                        <Col md={6} className="register-right-image">
+                        <Col lg={6} className="register-right-image">
                             {/* <div className="main-text">
                                 <h3 className="text-title">Plutus Technologies</h3>
                                 <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
@@ -142,7 +142,7 @@ function ClientForm() {
                                     and setting new standards of excellence.</span>
                             </div> */}
                         </Col>
-                        <Col md={6} className="px-3 px-lg-0">
+                        <Col lg={6} className="px-3 px-lg-0">
                             <div className="register-form">
                                 <img src={logo} className="mb-3" width="211" height="79" />
                                 <div className="my-auto">

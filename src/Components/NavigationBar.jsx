@@ -30,10 +30,10 @@ function NavigationBar() {
   };
 
   return ( 
-    <Navbar className="p-0 w-100 navbar"> 
+    <Navbar className="p-0 w-100 header  navbar"> 
         {/* <Link to="/chat"> */}
         {" "}
-        <div className="header w-100 px-3 py-2">
+        <div className="w-100 px-3 py-2">
           <img src={logo} width="211" height="79" />
         </div>   
         {!isLoggin ? (
@@ -74,12 +74,9 @@ function NavigationBar() {
           ) : (
             <nav>
               <Dropdown className="dropdown">
-                <Dropdown.Toggle id="dropdown-basic">
-                  <img
-                    src={noDP}
-                    height="30px"
-                    style={{ borderRadius: "50%" }}
-                  ></img>{" "}
+                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
+                  
+                  <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name.charAt(0) && user?.name.charAt(0)}</span>
                   {user?.name && user?.name}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
