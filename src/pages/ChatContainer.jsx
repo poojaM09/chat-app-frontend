@@ -46,7 +46,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [pdfdownloading, setpdfDownloading] = useState(false);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   console.log(data, 'data')
-
+console.log(message,'ggdgggdsds')
   console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
@@ -117,13 +117,19 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
   const viewMore = async () => {
-    // Load more messages and check if there are more messages
+// Load more messages and check if there are more messages
     const newData = data + 5;
-    if (newData >= message.length) {
+        if (newData >= message.length) {
       setNoMoreMessages(true);
     }
     setData(newData);
   };
+
+  useEffect(() => {
+    if (message.length > data) {
+      setNoMoreMessages(false);
+    }
+  }, [message, data]);
   const handleScroll = () => {
     const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
     if (scrolldown >= msgBox.scrollHeight) {
@@ -338,9 +344,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {!noMoreMessages && (
+          {!noMoreMessages && message.length >= 3 && (
             <div className="view-btn">
-              <button className="view-more-button" onClick={() => viewMore()}>
+              <button className="view-more-button" onClick={viewMore}>
                 View more
               </button>
             </div>
@@ -366,18 +372,18 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                         {userList.map((Users) => {
                           if (Users._id === data?.from) {
-                            console.log(Users._id === data?.from,'Users._id === data?.from')
-                            if (Users?.contactNumber ){
-                              console.log(Users?.contactNumber,'gfdfdsf')
+                            console.log(Users._id === data?.from, 'Users._id === data?.from')
+                            if (Users?.contactNumber) {
+                              console.log(Users?.contactNumber, 'gfdfdsf')
                               return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
                             }
                           }
                           if (Users._id === data?.to) {
-                            console.log(Users._id === data?.to,'Users._id === data?.toUsers._id === data?.to')
-                            if (Users?.contactNumber ){
-                              console.log(Users?.contactNumber,'gfdfdsf')
+                            console.log(Users._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
+                            if (Users?.contactNumber) {
+                              console.log(Users?.contactNumber, 'gfdfdsf')
                               return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
@@ -411,6 +417,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
                       <div style={{ position: "relative" }}>
+                        {console.log(imgdownloading, 'imgdownloading')}
                         {imgdownloading ? (
                           <>
                             <div style={{ position: 'relative' }}>
@@ -562,8 +569,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           </>
                         )}
                       </div>
-
-
                     ) : data.attechment && ext == "zip" ? (
                       <div style={{ position: 'relative' }}>
                         {zipdownloading ? (

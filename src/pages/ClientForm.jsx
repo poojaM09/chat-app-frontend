@@ -72,9 +72,14 @@ function ClientForm() {
         }
     }, [errorMsg]);
 
-    if (isLoggin) {
-        navigate("/client-chat");
-    }
+    useEffect(() => {
+        // Check if isLoggin is true, and navigate to the /client-chat route
+        if (isLoggin) {
+            window.location.href="/client-chat"
+            // navigate("/client-chat");
+            window.location.reload(); // Refresh the page
+        }
+    }, [isLoggin]);
     return (
         <div className="login-wrapper d-flex align-items-center position-relative">
             <div class="login-bg"></div>
