@@ -11,6 +11,7 @@ import ClientChatConatainer from "./ClientChatConatainer";
 import { socket } from "../socket";
 import { getdata } from "../Utils/http.class";
 import "../assets/CSS/chat.css";
+import NavigationBar from "../Components/NavigationBar"
 
 function Chats() {
   const [currentChat, setCurrentChat] = useState(undefined);
@@ -57,43 +58,46 @@ function Chats() {
 
   return (
     <div className="main-container">
-      {(!showChat || isMobile) && (
-        <div className="contact">
-          <Contact
-            handleCurrentChat={handleCurrentChat}
-            contact={contact}
-            currentUser={user}
-            chatMsgData={chatMsgData}
-            setOnlineUser={setOnlineUser}
-            onlineUser={onlineUser}
-            handleShow={handleShow}
-          />
-        </div>
-      )}
-
-      {showChat || isMobile ? (
-        <div className="chat">
-          {currentChat === undefined ? (
-            <Welcome />
-          ) : currentChat === "AI" ? (
-            <AiImageContainer currentUser={user} />
-          ) : user.contactNumber !== null ? (
-            <ChatContainer
-              currentChat={currentChat}
+      <NavigationBar />
+      <div className="d-flex chat-wrapper">
+        {(!showChat || isMobile) && (
+          <div className="contact">
+            <Contact
+              handleCurrentChat={handleCurrentChat}
+              contact={contact}
               currentUser={user}
+              chatMsgData={chatMsgData}
+              setOnlineUser={setOnlineUser}
               onlineUser={onlineUser}
-              setChatMsgData={setChatMsgData}
-              handlehide={handleHide}
+              handleShow={handleShow}
             />
-          ) : (
-            <ClientChatConatainer
-              currentChat={currentChat}
-              currentUser={user}
-              onlineIs={onlineIs}
-            />
-          )}
-        </div>
-      ) : null}
+          </div>
+        )}
+
+        {showChat || isMobile ? (
+          <div className="chat">
+            {currentChat === undefined ? (
+              <Welcome />
+            ) : currentChat === "AI" ? (
+              <AiImageContainer currentUser={user} />
+            ) : user.contactNumber !== null ? (
+              <ChatContainer
+                currentChat={currentChat}
+                currentUser={user}
+                onlineUser={onlineUser}
+                setChatMsgData={setChatMsgData}
+                handlehide={handleHide}
+              />
+            ) : (
+              <ClientChatConatainer
+                currentChat={currentChat}
+                currentUser={user}
+                onlineIs={onlineIs}
+              />
+            )}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

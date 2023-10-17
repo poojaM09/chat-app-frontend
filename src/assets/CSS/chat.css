@@ -1,9 +1,11 @@
-.main-container {
-  /* height: calc(100vh - 71.78px); */
-  height: 100%;
+.main-container { 
+  height: 100vh;
   width: 100vw;
-  display: flex;
-  flex-direction: row;
+  display: flex; 
+  flex-direction: column;
+}
+.chat-wrapper{
+  height: calc(100vh - 96px);
 }
 .main-container .contact {
   /* flex: 1; */
