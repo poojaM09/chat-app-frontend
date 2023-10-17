@@ -17,6 +17,7 @@ function NavigationBar() {
   const { isLoggin, user } = useSelector((state) => state.auth);
 
   console.log(user, 'user2222')
+  console.log(isLoggin, 'userisLoggin2222')
   const logout = () => {
     socket.emit("end-connection");
     dispatch(logoutUser());
@@ -52,7 +53,7 @@ function NavigationBar() {
           isLoggin && !user.password ? (
             <Dropdown className="dropdown">
               <Dropdown.Toggle id="dropdown-basic">
-                <img
+                                <img
                   src={noDP}
                   height="30px"
                   style={{ borderRadius: "50%" }}

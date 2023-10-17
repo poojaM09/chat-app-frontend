@@ -33,7 +33,7 @@ function ClientChatConatainer() {
     const [chatGptImg, setChatGptImg] = useState(false);
     const storedDataString = localStorage.getItem('client')
     const parsedData = JSON.parse(storedDataString);
-    const msgBox = document.getElementById("scrollTop");
+        const msgBox = document.getElementById("scrollTop");
     const [onlineUser, setOnlineUser] = useState([]);
     const [oUser, setOUser] = useState([]);
     const [chatUser, setChatUser] = useState([])

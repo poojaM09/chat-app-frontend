@@ -25,11 +25,11 @@ let initialState = {
 
 export const loginUser = createAsyncThunk("user/addclient", async (data) => {
   const res = await postdata("user/addclient", data);
-  const response = await res.json();
-  localStorage.setItem('client',JSON.stringify(response.data))
-  console.log(response.data,'response')
-  return response;
-});
+      const response = await res.json();
+    localStorage.setItem('client',JSON.stringify(response.data))
+      console.log(response.data,'response')
+    return response;
+  });
 
 const clientSlice = createSlice({
   name: "client",

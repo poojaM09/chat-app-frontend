@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { socket } from "../socket";
 import { postdata } from "../Utils/http.class";
 import { errorToast } from "../Components/Toast";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass ,} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 
@@ -21,7 +21,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [currentChat, setCurrentChat] = useState();
   const [notification, setNotification] = useState([]);
   userList = contact?.filter((data) => data._id !== currentUser.id);
-  const [searchLoader, setSearchLoader] = useState(false);
   console.log(userList,'userList')
 
   
@@ -183,7 +182,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
               <div
                 key={index}
                 className={
-                  currentChat?.name === data.name
+                  currentChat?._id === data._id
                     ? "wrapper selected-contact-name "
                     : "wrapper"
                 }
