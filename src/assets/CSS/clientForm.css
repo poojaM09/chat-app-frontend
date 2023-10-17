@@ -146,7 +146,13 @@ input:-moz-placeholder {
   padding: 0px 10px;
   text-align: center;
 }
+ 
 
-/* .input ::placeholder{
-      color: #FE7600 ;
-    } */
+@media (max-width: 500px){
+  .medium-title br{
+    display: none;
+  }
+  .register-form .medium-title .text-orange{
+    word-break: break-word;
+  }
+}

@@ -177,4 +177,35 @@ a, a:hover{
 .carousel-control-prev,.carousel-control-next,.carousel-indicators{
   display: none !important;
 }
- 
+.dropdown-toggle::after{
+  border: none;
+  background-image: url('../../../public/down_arrow.svg');
+  width: 15px;
+  height: 15px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: middle;
+  margin: 0 0 0 5px;
+}
+.avatar_circle{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ff6c37;
+  color: #ffffff !important;
+  margin-right: 8px;
+}
+.dropdown-menu{
+  background-color: #ffffff !important;
+  box-shadow: 0 0 14px 0 rgba(0,0,0,0.1) !important;
+  border-radius: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  right: 10px !important;
+  padding: 7px 0;
+  margin: 0;
+}
+.dropdown-item{
+  padding: 7px 16px 7px !important;
+  min-width: 190px;
+}
