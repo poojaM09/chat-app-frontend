@@ -4,7 +4,7 @@ function Welcome() {
   return (
     <div className="welcome">
       <div>
-        <h2 className="welcome-txt">Welcome, Select User To Chat</h2>
+        <h2 className="welcome-txt">Welcome, select <span className="text-orange">user</span> to chat</h2>
       </div>
     </div>
   );

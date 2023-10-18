@@ -13,15 +13,13 @@ import ppt from "../../public/ppt.png";
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
+import ViewMore from "../../public/view-more.svg"; 
 import ChatInput from "./ChatInput";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
   console.log(handlehide, 'handlehide')
@@ -291,20 +289,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
             </div>
           ) : null}
           <div className="user-container">
-
             <div className="user-status">
               {isCurrentUserOnline ?
-                <div className="user-profile">
+                <div className="user-profile align-items-center">
                   <div className="online-user">
-                    <img className="profile-img" src={noDP} alt=" "></img>
+                    {/* <img className="profile-img" src={noDP} alt=" "></img> */}
+                    <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>
                     <div className="online"></div>
                   </div>
-                  <div>
-                    <div> {currentChat?.name}</div>
-                    <div className="user-status">Active now</div></div>
+                  <div className="ml-3">
+                    <div className="medium-title"> {currentChat?.name}</div>
+                    <div className="user-status text-uppercase text-success">Active</div></div>
                 </div>
                 :
-                <div className="user-profile">
+                <div className="user-profile align-items-center">
                   <div className="online-user">
                     {userList.map((data) => {
                       console.log("data.id:", data._id);
@@ -313,35 +311,36 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                       if (data._id === currentChat._id) {
                         if (data?.contactNumber) {
-                          return <img className="profile-img" src={noDP} alt=" " key={data.id} />;
+                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>;
                         } else {
                           return <img className="imgs" src={BDProfile} alt=" " key={data.id} />;
                         }
                       }
                     })}
                   </div>
-                  <div>
-                    <div> {currentChat?.name}</div>
-                    <div className="user-status">Offline</div></div>
+                  <div className="ml-3">
+                    <div className="medium-title"> {currentChat?.name}</div>
+                    <div className="user-status text-uppercase text-danger">Offline</div></div>
                 </div>
               }
             </div>
-            <div className="search-user-msg">
+            {/* <div className="search-user-msg">
               <div className="icon-color">
                 <FontAwesomeIcon icon={faSearch} />
               </div>
               <div className="icon-color">
                 <FontAwesomeIcon icon={faEllipsisV} />
               </div>
-            </div>
+            </div> */}
 
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {!noMoreMessages && (
+          
+        {!noMoreMessages && (
             <div className="view-btn">
-              <button className="view-more-button" onClick={() => viewMore()}>
-                View more
+              <button className="view-more-button text-uppercase" onClick={() => viewMore()}>
+                view more
               </button>
             </div>
           )}
@@ -369,7 +368,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             console.log(Users._id === data?.from,'Users._id === data?.from')
                             if (Users?.contactNumber ){
                               console.log(Users?.contactNumber,'gfdfdsf')
-                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                              // <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />
+                              return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
                             }
@@ -378,7 +378,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             console.log(Users._id === data?.to,'Users._id === data?.toUsers._id === data?.to')
                             if (Users?.contactNumber ){
                               console.log(Users?.contactNumber,'gfdfdsf')
-                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                              return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
                             }
@@ -388,7 +388,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                         <div>
                           <div className="time-user-chat">
-                            <div>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <div className="you-text"> {currentChat?.name}</div>}</div>
+                            <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
                             <span className="time">
                               {moment(
                                 data.createdAt ? data.createdAt : new Date()
@@ -410,30 +410,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                   {data.attechment &&
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
-                      <div style={{ position: "relative" }}>
+                      <div className="file-displys position-relative">
                         {imgdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <img
                                 src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                style={{
-                                  height: '190px',
-                                  width: '213px',
-                                  border: '2px solid #d9d9d9',
-                                  borderRadius: '10px',
-                                }}
+                                className="attched-file" 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {imgdownloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                 className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -444,13 +434,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                              style={{
-                                height: '190px',
-                                width: '213px',
-                                border: '2px solid #d9d9d9',
-                                borderRadius: '10px',
-                              }}
+                              className="attched-file"
+                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -460,31 +445,21 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       </div>
                     ) : data.attechment && ext == "mp4" ? (
 
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {mp4downloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <video
+                                className="attched-file"
                                 src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                autoPlay
-                                style={{
-                                  height: "120px",
-                                  width: "200px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                autoPlay 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {mp4downloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                  className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -495,14 +470,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <video
+                              className="attched-file"
                               src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                              autoPlay
-                              style={{
-                                height: "120px",
-                                width: "200px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              autoPlay 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -514,30 +484,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                     ) : data.attechment && ext == "ppt" ? (
 
 
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {pptdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <img
-                                src={ppt}
-                                style={{
-                                  height: "120px",
-                                  width: "120px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                className="attched-file"
+                                src={ppt} 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {pptdownloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                  className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -548,13 +508,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={ppt}
-                              style={{
-                                height: "120px",
-                                width: "120px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              className="attched-file"
+                              src={ppt} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -565,30 +520,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
 
                     ) : data.attechment && ext == "zip" ? (
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {zipdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <img
-                                src={zip}
-                                style={{
-                                  height: "120px",
-                                  width: "120px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                className="attched-file"
+                                src={zip} 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {zipdownloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -599,13 +544,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={zip}
-                              style={{
-                                height: "120px",
-                                width: "120px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              className="attched-file"
+                              src={zip} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -614,30 +554,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         )}
                       </div>
                     ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {xlsdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <img
-                                src={xls}
-                                style={{
-                                  height: "120px",
-                                  width: "120px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                className="attched-file"
+                                src={xls} 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {xlsdownloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                  className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -648,13 +578,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={xls}
-                              style={{
-                                height: "120px",
-                                width: "120px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              className="attched-file"
+                              src={xls} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -665,30 +590,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       </div>
                     ) : data.attechment && (ext == "docx" || ext == "doc") ? (
 
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {docdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
+                            <div className="position-relative">
                               <img
-                                src={doc}
-                                style={{
-                                  height: "120px",
-                                  width: "120px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                className="attched-file"
+                                src={doc} 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {docdownloading && (
                                 <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -699,13 +614,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={doc}
-                              style={{
-                                height: "120px",
-                                width: "120px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              className="attched-file"
+                              src={doc} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -714,31 +624,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         )}
                       </div>
                     ) : (
-                      <div style={{ position: 'relative' }}>
+                      <div className="file-displys position-relative">
                         {pdfdownloading ? (
                           <>
-                            <div style={{ position: 'relative' }}>
-
+                            <div className="position-relative"> 
                               <img
-                                src={pdf}
-                                style={{
-                                  height: "120px",
-                                  width: "120px",
-                                  border: "2px solid #d9d9d9",
-                                  borderRadius: "10px"
-                                }}
+                                className="attched-file"
+                                src={pdf} 
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {pdfdownloading && (
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                  }}
+                                <div 
+                                  className="img-loader" 
                                 >
                                   <Loader />
                                 </div>
@@ -749,13 +648,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <img src={ImageSend} className="seenIcon" />
                             <img
-                              src={pdf}
-                              style={{
-                                height: "120px",
-                                width: "120px",
-                                border: "2px solid #d9d9d9",
-                                borderRadius: "10px"
-                              }}
+                              className="attched-file"
+                              src={pdf} 
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -767,7 +661,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 </div>
               );
             })
-          )}
+          )} 
           {showImg ? (
             <ImageModel
               Img={Img}
@@ -779,13 +673,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
         </div>
       </div >
       <div className="chat-send-msg-input">
-        {/* <div className="type"></div> */}
-        <div className="chat-input">
+        {/* <div className="type"></div> */} 
           <ChatInput
             handleSendChat={handleSendChat}
             handleSendImage={handleSendImage}
-          />
-        </div>
+          /> 
       </div>
     </>
   );

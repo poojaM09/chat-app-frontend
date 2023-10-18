@@ -74,8 +74,7 @@ function NavigationBar() {
           ) : (
             <nav>
               <Dropdown className="dropdown">
-                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
-                  
+                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">                  
                   <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name.charAt(0) && user?.name.charAt(0)}</span>
                   {user?.name && user?.name}
                 </Dropdown.Toggle>

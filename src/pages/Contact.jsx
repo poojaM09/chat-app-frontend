@@ -7,14 +7,14 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../socket";
 import { postdata } from "../Utils/http.class";
-import { errorToast } from "../Components/Toast";
-import { faMagnifyingGlass ,} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { errorToast } from "../Components/Toast"; 
+import Search  from "../../public/search.svg";
 import moment from "moment";
 
 let userList = [];
 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData,handleShow }) {
+  const [searchLoader , setSearchLoader] =useState();
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
@@ -150,11 +150,11 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   return (
     <>
       <div className="contact-conainer">
-        <div className="searchContainer">
-          <FontAwesomeIcon className="icon-search" icon={faMagnifyingGlass} />
+        <div className="searchContainer"> 
+        <img src={Search} width={20} height={20} alt="Icon" />
           <input
             className="search-input"
-            placeholder="search here.."
+            placeholder="Search here.."
             type="text"
             onChange={(e) => {
               setSearchLoader(true);
@@ -164,7 +164,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
           {searchLoader ? (
             <div className="loader-line"></div>
           ) : (
-            <div style={{ height: "4px" }}></div>
+            <div style={{ height: "1px" }}></div>
           )}
         </div>
         {search == ""
@@ -192,12 +192,13 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                   handleShow()
                 }}
               >
-                <div className="contact-img">
+                <div className="position-relative">
                   {console.log(data,'dasasasata')}
                   {data.contactNumber ? (
-                     <img className="img" src={noDP} alt=" " />
+                    //  <img className="img" src={noDP} alt=" " />
+                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>
                   ):
-                  <img className="imgs" src={BDProfile} alt=" " />
+                  <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
                   }
                   {isOnline ? <div className="online"></div> : null}
                 </div>

@@ -33,7 +33,7 @@ function Register() {
   };
   return (
     <div className="login-wrapper d-flex align-items-center position-relative">
-      <div class="login-bg"></div>
+      <div className="login-bg"></div>
       <Container className="Welcome">
         <Row className="p-0 m-0 w-100 h-100">
           {/* <Col md={6}>

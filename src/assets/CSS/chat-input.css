@@ -3,35 +3,31 @@
   gap: 15px;
   padding: 10px 10px;
 }
-
-.input-container .emoji {
-  position: relative;
-  color: #7A8794 !important;
-  font-size: 24px;
-  top: 10%;
-  margin-right: 30px
+.input-container .emoji,.input-container .attechment,.input-container .send-box .send-button{ 
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
 }
-
+.input-container .emoji{
+  left: 26px;
+}
+.input-container .attechment{
+  left: 60px;
+}
+.input-container .send-box .send-button{
+  right: 26px;
+}
 @media (max-width: 375px) {
   .input-container{
-       padding: 10px 10px !important;
-  }
-
-}
-
-.emoji-picker {
-  position: absolute;
-  bottom: 60px;
-  left: -270px;
-  color: #7A8794 !important;
-
-}
+    padding: 10px 10px !important;
+  } 
+} 
 
 @media (max-width: 768px) {
-  .input-container .send-box{
-    /* border: 2px;
-    width: 100%;
-    padding: 0px 30px; */
+  .input-container .send-box{ 
     padding: 0 !important;
   }
 }
@@ -39,26 +35,14 @@
 .input-container .send-box {
   border: 2px;
   width: 100%;
-  padding: 0px 30px;
-  /* width: calc(100% - 50px); */
+  padding: 0px; 
 }
 
-.input-container .send-box .input {
-  width: 100%;
-  border: transparent;
-  outline: none;
-  font-size: medium;
-  color: rgb(89, 87, 87);
-  background: #E7E6E6;
-}
-
-.input-container .send-box .send-button {
-  font-size: 28px;
-  border: none;
-  outline: none;
-  background: transparent;
-  color:#7A8794!important;
-}
+.input-container .send-box .input {  
+  border: 1px solid #D9D9D9;
+  background-color: transparent;
+  padding: 10px 45px 10px 85px;
+} 
 .send-icons-all{
   display: flex;
   align-items: center;
@@ -74,17 +58,10 @@
   width: 100%;
   height: 50px;
   position: relative;
-  padding: 0px 10px;
+  padding: 0px;
   border-radius: 28px;
 }
-
-.attechment {
-  font-size: 24px;
-  position: absolute;
-  top: 16%;
-  margin-left: 33px;
-}
-
+ 
 .icons path {
   fill: #7A8794 !important;
 }

@@ -253,10 +253,10 @@ function ClientChatConatainer() {
                                             <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                                                 <div>
                                                     {data.fromSelf ?
-                                                        <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
+                                                        // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
+                                                        <span className="avatar_circle d-flex align-items-center justify-content-center">{data.fromSelf?.name.charAt(0) && data.fromSelf?.name.charAt(0)}</span>
                                                         :
-
-                                                        <img className="profile-img" src={logo} alt=" " style={{ width: "70px", height: "70px", border: '1px solid #ff6c37', borderRadius: '100px', padding: '4px 7px 4px 4px' }} />
+                                                        <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
                                                     }
                                                 </div>
                                                 <div>
@@ -271,8 +271,7 @@ function ClientChatConatainer() {
                                                     <p
                                                         className={data.fromSelf ? "sender-msg" : "receiver-msg"}
                                                     >
-                                                        {data.message}
-                                                        <br></br>
+                                                        {data.message} 
                                                     </p>
                                                 </div>
                                             </div>
