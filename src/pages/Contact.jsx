@@ -198,7 +198,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                   {console.log(data,'dasasasata')}
                   {data.contactNumber ? (
                     //  <img className="img" src={noDP} alt=" " />
-                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>
+                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
                   ):
                   <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />  
                   }
