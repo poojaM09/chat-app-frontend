@@ -212,8 +212,7 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
                                             <p
                                                 className={data.fromSelf ? "sender-msg" : "receiver-msg"}
                                             >
-                                                {data.message}
-                                                <br></br>
+                                                {data.message} 
                                             </p>
                                         )}
                                         {data.attechment &&
