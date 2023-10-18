@@ -77,7 +77,7 @@ function ClientForm() {
         if (isLoggin) {
             window.location.href="/client-chat"
             // navigate("/client-chat");
-            window.location.reload(); // Refresh the page
+            // window.location.reload(); // Refresh the page
         }
     }, [isLoggin]);
     return (
