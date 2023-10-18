@@ -44,7 +44,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [pdfdownloading, setpdfDownloading] = useState(false);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   console.log(data, 'data')
-
+console.log(message,'ggdgggdsds')
   console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
@@ -122,6 +122,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     }
     setData(newData);
   };
+
+  useEffect(() => {
+    if (message.length > data) {
+      setNoMoreMessages(false);
+    }
+  }, [message, data]);
   const handleScroll = () => {
     const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
     if (scrolldown >= msgBox.scrollHeight) {
@@ -207,7 +213,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           onSuccess();
         })
         .catch((error) => {
-          // Handle download error, e.g., 404
+
           setImgDownloading(false);
           setmp4Downloading(false);
           setzipDownloading(false);
@@ -218,14 +224,13 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
           toast.error('File not found. Please try again later.', {
             position: "top-center",
-            autoClose: 3000, // Duration in milliseconds
+            autoClose: 3000,
           });
         });
     };
-
     if (
       !imgdownloading &&
-      (part2 === 'png' || part2 === 'jpeg' || part2 === 'jpg')
+      (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
     ) {
       setImgDownloading(true);
     } else if (!mp4downloading && part2 === 'mp4') {
@@ -276,7 +281,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
   console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
-
+  
 
   return (
     <>
@@ -335,12 +340,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
           </div>
         </div >
-        <div id="scrollTop" className="messages-container" ref={scroll}>
-          
-        {!noMoreMessages && (
+        <div id="scrollTop" className="messages-container" ref={scroll}> 
+          {!noMoreMessages && message.length >= 5 && (
             <div className="view-btn">
-              <button className="view-more-button text-uppercase" onClick={() => viewMore()}>
-                view more
+              <button className="view-more-button text-uppercase" onClick={viewMore}>
+                View more 
               </button>
             </div>
           )}
@@ -351,7 +355,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           ) : (
             message &&
             message.slice(-data).map((data, index) => {
-              const ext = data.attechment?.split(".").pop();
+                            const ext = data.attechment?.split(".").pop();
               return (
                 <div
                   key={index}
@@ -409,7 +413,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                   {console.log(data.attechment, 'video')}
                   {data.attechment &&
                     (data.attechment &&
-                      (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
+                      (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
                       <div className="file-displys position-relative">
                         {imgdownloading ? (
                           <>
@@ -517,8 +521,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           </>
                         )}
                       </div>
-
-
                     ) : data.attechment && ext == "zip" ? (
                       <div className="file-displys position-relative">
                         {zipdownloading ? (

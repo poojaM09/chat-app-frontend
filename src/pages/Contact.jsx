@@ -6,36 +6,38 @@ import "../assets/CSS/contact.css";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../socket";
-import { postdata } from "../Utils/http.class";
+import { postdata } from "../Utils/http.class"; 
 import { errorToast } from "../Components/Toast"; 
-import Search  from "../../public/search.svg";
+import Search  from "../../public/search.svg";  
+import { faMagnifyingGlass, } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import moment from "moment";
 
 let userList = [];
-
+ 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData,handleShow }) {
-  const [searchLoader , setSearchLoader] =useState();
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const [currentChat, setCurrentChat] = useState();
   const [notification, setNotification] = useState([]);
+  const [searchLoader, setSearchLoader] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
-  console.log(userList,'userList')
+  console.log(userList, 'userList')
 
-  
+
   // Function to get the last message for a user
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
-    console.log(userMessages,'userMessages')
+    console.log(userMessages, 'userMessages')
     const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
-    console.log(lastMessage,'lastMessagelastMessage')
+    console.log(lastMessage, 'lastMessagelastMessage')
     return lastMessage;
   };
 
   const getSenderUsername = (message) => {
-    const AllMessage = userList?.map((users)=>{
-      console.log(users,'usersusers')
+    const AllMessage = userList?.map((users) => {
+      console.log(users, 'usersusers')
       if (message?.from === users?._id) {
         return 'You';
       } else {
@@ -43,7 +45,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
         return sender ? sender.name : 'Unknown User';
       }
     })
-    
+
   };
 
   //online user
@@ -86,7 +88,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       userList = userList.filter((user) => user._id !== userWithNewMessage._id);
       userList.unshift(userWithNewMessage);
     }
-  }  
+  }
 
   //get unseen message
   const viewMessage = async () => {
@@ -145,7 +147,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       viewMessage();
     });
   }, []);
-  localStorage.setItem("userList",JSON.stringify(userList))
+  localStorage.setItem("userList", JSON.stringify(userList))
 
   return (
     <>
@@ -169,11 +171,11 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
         </div>
         {search == ""
           ? userList?.map((data, index) => {
-           
+
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
-            console.log(data._id,'sssssss')
+            console.log(data._id, 'sssssss')
             const userNote = userNotification(data);
             const lastMessage = getLastMessage(data._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';
@@ -191,14 +193,14 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                   setCurrentChat(data);
                   handleShow()
                 }}
-              >
+              > 
                 <div className="position-relative">
                   {console.log(data,'dasasasata')}
                   {data.contactNumber ? (
                     //  <img className="img" src={noDP} alt=" " />
                      <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>
                   ):
-                  <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
+                  <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />  
                   }
                   {isOnline ? <div className="online"></div> : null}
                 </div>

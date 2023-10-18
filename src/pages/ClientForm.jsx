@@ -49,13 +49,13 @@ function ClientForm() {
 
 
     userList = contact?.map((data) => { data });
-    useEffect(() => {
+        useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
-                setOUser(data)
+                                setOUser(data)
                 data.forEach((element) => {
                     let index = userList?.findIndex((item) => item?._id == element?.userID);
-                    if (index >= 0) {
+                                        if (index >= 0) {
                         userList[index].socketid = data.socketId;
                     }
                 });
@@ -72,102 +72,47 @@ function ClientForm() {
         }
     }, [errorMsg]);
 
-    if (isLoggin) {
-        navigate("/client-chat");
-    }
-    return (
+    useEffect(() => {
+        if (isLoggin) {
+            setTimeout(() => {
+                window.location.href = "/client-chat"
+            }, 1000)
+        }
+    }, [isLoggin]);
+        return (
         <div className="login-wrapper d-flex align-items-center position-relative">
             <div className="login-bg"></div>
             {oUser.length > 0 ?
-                <Container className="Welcome">
-                    <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-right-image">
-                        </Col>
-                        <Col lg={6} className="px-3 px-lg-0">
-                            <div className="register-form ">
-                                <img src={logo} className="mb-3" width="211" height="79" />
-                                <form onSubmit={handleSubmit} className="my-auto">
-                                    <p className="medium-title text-center"> Please fill out the form.</p>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                placeholder="Enter name"
-                                                type="text"
-                                                name="name"
-                                                onChange={handleChange}
-                                                value={values.name}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                placeholder="Enter email"
-                                                type="text"
-                                                name="email"
-                                                onChange={handleChange}
-                                                value={values.email}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                type="number"
-                                                name="contactNumber"
-                                                placeholder="Enter contact number"
-                                                onChange={handleChange}
-                                                value={values.contactNumber}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                    </div>
-                                    <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
-                                </form>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-                :
-                <Container className="Welcome">
-                    <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-right-image">
-                            {/* <div className="main-text">
-                                <h3 className="text-title">Plutus Technologies</h3>
-                                <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
-                                    We remain committed to being at the forefront as a custom software development company.
-                                    Innovative and technologically driven, we are constantly pushing the boundaries of our industry
-                                    and setting new standards of excellence.</span>
-                            </div> */}
-                        </Col>
-                        <Col lg={6} className="px-3 px-lg-0">
-                            <div className="register-form">
-                                <img src={logo} className="mb-3" width="211" height="79" />
-                                <div className="my-auto">
-                                    <p className="medium-title text-center">Currently team is not available, <br />please send the message on this link <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">www.plutustec.com/contact-us</a> <br />to share your details</p>
-                                    <form className="d-none">
-                                        <div>
+                        <Container className="Welcome">
+                            <Row className="p-0 m-0 w-100 h-100">
+                                <Col lg={6} className="register-right-image">
+                                </Col>
+                                <Col lg={6} className="px-3 px-lg-0">
+                                    <div className="register-form ">
+                                        <img src={logo} className="mb-3" width="211" height="79" />
+                                        <form onSubmit={handleSubmit} className="my-auto">
+                                            <p className="medium-title text-center"> Please fill out the form.</p>
                                             <div className="form-group mb-4">
                                                 <div className="input">
                                                     <input
-                                                        placeholder="Enter Name"
+                                                        placeholder="Enter name"
                                                         type="text"
                                                         name="name"
-                                                    // onChange={handleChange}
-                                                    // value={values.name}
+                                                        onChange={handleChange}
+                                                        value={values.name}
+                                                        className="Input-Field"
                                                     />
                                                 </div>
                                             </div>
                                             <div className="form-group mb-4">
                                                 <div className="input">
                                                     <input
-                                                        placeholder="Enter Email"
+                                                        placeholder="Enter email"
                                                         type="text"
                                                         name="email"
-                                                    // onChange={handleChange}
-                                                    // value={values.email}
+                                                        onChange={handleChange}
+                                                        value={values.email}
+                                                        className="Input-Field"
                                                     />
                                                 </div>
                                             </div>
@@ -176,33 +121,92 @@ function ClientForm() {
                                                     <input
                                                         type="number"
                                                         name="contactNumber"
-                                                        placeholder="Enter Contact Number"
-                                                    // onChange={handleChange}
-                                                    // value={values.contactNumber}
+                                                        placeholder="Enter contact number"
+                                                        onChange={handleChange}
+                                                        value={values.contactNumber}
+                                                        className="Input-Field"
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="form-group mb-4">
-                                                <div className="input">
-                                                    <input
-                                                        type="text"
-                                                        name="message"
-                                                        placeholder="Enter Message"
-                                                    // onChange={handleChange}
+                                            <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
+                                        </form>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Container>
+                    :
+                        <Container className="Welcome">
+                            <Row className="p-0 m-0 w-100 h-100">
+                                <Col lg={6} className="register-right-image">
+                                    {/* <div className="main-text">
+                                <h3 className="text-title">Plutus Technologies</h3>
+                                <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
+                                    We remain committed to being at the forefront as a custom software development company.
+                                    Innovative and technologically driven, we are constantly pushing the boundaries of our industry
+                                    and setting new standards of excellence.</span>
+                            </div> */}
+                                </Col>
+                                <Col lg={6} className="px-3 px-lg-0">
+                                    <div className="register-form">
+                                        <img src={logo} className="mb-3" width="211" height="79" />
+                                        <div className="my-auto">
+                                            <p className="medium-title text-center">Currently team is not available, <br />please send the message on this link <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">www.plutustec.com/contact-us</a> <br />to share your details</p>
+                                            <form className="d-none">
+                                                <div>
+                                                    <div className="form-group mb-4">
+                                                        <div className="input">
+                                                            <input
+                                                                placeholder="Enter Name"
+                                                                type="text"
+                                                                name="name"
+// onChange={handleChange}
+                                                    // value={values.name}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group mb-4">
+                                                        <div className="input">
+                                                            <input
+                                                                placeholder="Enter Email"
+                                                                type="text"
+                                                                name="email"
+// onChange={handleChange}
+                                                    // value={values.email}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group mb-4">
+                                                        <div className="input">
+                                                            <input
+                                                                type="number"
+                                                                name="contactNumber"
+                                                                placeholder="Enter Contact Number"
+// onChange={handleChange}
                                                     // value={values.contactNumber}
-                                                    />
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group mb-4">
+                                                        <div className="input">
+                                                            <input
+                                                                type="text"
+                                                                name="message"
+                                                                placeholder="Enter Message"
+// onChange={handleChange}
+                                                    // value={values.contactNumber}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <Button className="login-btn mb-0" type="Submit">Send To Mail</Button>
                                                 </div>
-                                            </div>
-                                            <Button className="login-btn mb-0" type="Submit">Send To Mail</Button>
+                                            </form>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            }
-        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Container>
+                                    }
+                    </div>
     );
 }
 

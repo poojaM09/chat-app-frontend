@@ -18,13 +18,13 @@ function NavigationBar() {
 
   console.log(user, 'user2222')
   console.log(isLoggin, 'userisLoggin2222')
-  const logout = () => {
+    const logout = () => {
     socket.emit("end-connection");
     dispatch(logoutUser());
     navigate("/login");
   };
   const logoutClients = () => {
-    socket.emit("end-connection");
+        socket.emit("end-connection");
     dispatch(logoutClient());
     navigate("/");
   };
@@ -53,7 +53,7 @@ function NavigationBar() {
           isLoggin && !user.password ? (
             <Dropdown className="dropdown">
               <Dropdown.Toggle id="dropdown-basic">
-                                <img
+                <img
                   src={noDP}
                   height="30px"
                   style={{ borderRadius: "50%" }}
@@ -73,9 +73,10 @@ function NavigationBar() {
             </Dropdown>
           ) : (
             <nav>
-              <Dropdown className="dropdown">
-                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">                  
-                  <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name.charAt(0) && user?.name.charAt(0)}</span>
+              <Dropdown className="dropdown"> 
+                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
+                 {console.log(user,'user?.name?.charAt(0)')}
+                  <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span> 
                   {user?.name && user?.name}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
