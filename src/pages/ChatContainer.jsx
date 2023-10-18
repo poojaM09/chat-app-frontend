@@ -117,9 +117,9 @@ console.log(message,'ggdgggdsds')
   };
 
   const viewMore = async () => {
-// Load more messages and check if there are more messages
+    // Load more messages and check if there are more messages
     const newData = data + 5;
-        if (newData >= message.length) {
+    if (newData >= message.length) {
       setNoMoreMessages(true);
     }
     setData(newData);
@@ -215,7 +215,7 @@ console.log(message,'ggdgggdsds')
           onSuccess();
         })
         .catch((error) => {
-          // Handle download error, e.g., 404
+
           setImgDownloading(false);
           setmp4Downloading(false);
           setzipDownloading(false);
@@ -226,14 +226,13 @@ console.log(message,'ggdgggdsds')
 
           toast.error('File not found. Please try again later.', {
             position: "top-center",
-            autoClose: 3000, // Duration in milliseconds
+            autoClose: 3000,
           });
         });
     };
-
     if (
       !imgdownloading &&
-      (part2 === 'png' || part2 === 'jpeg' || part2 === 'jpg')
+      (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
     ) {
       setImgDownloading(true);
     } else if (!mp4downloading && part2 === 'mp4') {
@@ -284,7 +283,7 @@ console.log(message,'ggdgggdsds')
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
   console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
-
+  
 
   return (
     <>
@@ -344,7 +343,7 @@ console.log(message,'ggdgggdsds')
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {!noMoreMessages && message.length >= 3 && (
+          {!noMoreMessages && message.length >= 5 && (
             <div className="view-btn">
               <button className="view-more-button" onClick={viewMore}>
                 View more
@@ -358,7 +357,7 @@ console.log(message,'ggdgggdsds')
           ) : (
             message &&
             message.slice(-data).map((data, index) => {
-              const ext = data.attechment?.split(".").pop();
+                            const ext = data.attechment?.split(".").pop();
               return (
                 <div
                   key={index}
@@ -371,23 +370,23 @@ console.log(message,'ggdgggdsds')
                       {console.log(data, 'data212121212')}
                       <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                         {userList.map((Users) => {
-                          if (Users._id === data?.from) {
-                            console.log(Users._id === data?.from, 'Users._id === data?.from')
-                            if (Users?.contactNumber) {
-                              console.log(Users?.contactNumber, 'gfdfdsf')
-                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
-                            } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
-                            }
+                                                    if (Users._id === data?.from) {
+                          console.log(Users._id === data?.from, 'Users._id === data?.from')
+                          if (Users?.contactNumber) {
+                          console.log(Users?.contactNumber, 'gfdfdsf')
+                          return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                          } else {
+                          return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                          }
                           }
                           if (Users._id === data?.to) {
-                            console.log(Users._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
-                            if (Users?.contactNumber) {
-                              console.log(Users?.contactNumber, 'gfdfdsf')
-                              return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
-                            } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
-                            }
+                          console.log(Users._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
+                          if (Users?.contactNumber) {
+                          console.log(Users?.contactNumber, 'gfdfdsf')
+                          return <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />;
+                          } else {
+                          return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                          }
                           }
                         })}
                         {/* <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div> */}
@@ -415,7 +414,7 @@ console.log(message,'ggdgggdsds')
                   {console.log(data.attechment, 'video')}
                   {data.attechment &&
                     (data.attechment &&
-                      (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
+                      (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
                       <div style={{ position: "relative" }}>
                         {console.log(imgdownloading, 'imgdownloading')}
                         {imgdownloading ? (

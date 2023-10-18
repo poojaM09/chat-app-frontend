@@ -55,8 +55,9 @@ function ClientChatConatainer() {
         console.log("hgdsadsd")
         socket.emit("end-connection");
         dispatch(logoutClient());
-        navigate("/");
-        window.location.reload();
+        window.location.href="/"
+        // navigate("/");
+        // window.location.reload();
     };
 
 
@@ -247,13 +248,18 @@ function ClientChatConatainer() {
                     <div>
                         {user ? (
                             <Dropdown className="dropdown">
-                                <Dropdown.Toggle id="dropdown-basic">
+                                {/* <Dropdown.Toggle id="dropdown-basic">
                                     <img
                                         src={user.profileImage || noDP} // Make sure to use the correct property for the user's name and profile image
                                         height="30px"
                                         style={{ borderRadius: "50%" }}
                                     ></img>{" "}
                                     {user.name && user.name}
+                                </Dropdown.Toggle> */}
+                                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
+                                    {console.log(user, 'user?.name?.charAt(0)')}
+                                    <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
+                                    {user?.name && user?.name}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item
