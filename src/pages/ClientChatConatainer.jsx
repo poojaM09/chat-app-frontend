@@ -311,7 +311,7 @@ function ClientChatConatainer() {
                                                 <div>
                                                     {data.fromSelf ?
                                                         // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
-                                                        <span className="avatar_circle d-flex align-items-center justify-content-center">{data.fromSelf?.name.charAt(0) && data.fromSelf?.name.charAt(0)}</span>
+                                                        <span className="avatar_circle d-flex align-items-center justify-content-center">{data.fromSelf?.name?.charAt(0) && data.fromSelf?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
                                                     }
