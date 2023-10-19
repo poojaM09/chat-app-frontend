@@ -23,6 +23,7 @@ import xls from "../../public/xls.png";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutClient } from "../redux/feature/clientSlice";
 import { useNavigate } from "react-router-dom";
+import NavigationBar from "../Components/NavigationBar"
 let userList = [];
 
 function ClientChatConatainer() {
@@ -239,47 +240,12 @@ function ClientChatConatainer() {
     };
     return (
         <>
+            <NavigationBar />
             <div className="chat-container">
-                <div className="client-container" style={{ display: "flex", justifyContent: "space-between" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <img className="profile-img" src={logo} alt=" " style={{ width: "50px", height: "50px", border: '1px solid #ff6c37', borderRadius: '100px', padding: '4px 7px 4px 4px' }}></img>
-                        <p className="Client-Name">{"Plutustec"}</p>
-                    </div>
-                    <div>
-                        {user ? (
-                            <Dropdown className="dropdown">
-                                {/* <Dropdown.Toggle id="dropdown-basic">
-                                    <img
-                                        src={user.profileImage || noDP} // Make sure to use the correct property for the user's name and profile image
-                                        height="30px"
-                                        style={{ borderRadius: "50%" }}
-                                    ></img>{" "}
-                                    {user.name && user.name}
-                                </Dropdown.Toggle> */}
-                                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
-                                    {console.log(user, 'user?.name?.charAt(0)')}
-                                    <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
-                                    {user?.name && user?.name}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item
-                                        onClick={() => {
-                                            logoutClients();
-                                        }}
-                                    >
-                                        Logout
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        ) : (
-                            <Nav>
-                                <Stack direction="horizontal">
-                                    <h4>
-                                        <Link to="/">login</Link>
-                                    </h4>
-                                </Stack>
-                            </Nav>
-                        )}
+                <div className="back-chat-icon user-container">
+                    <div className="d-flex align-items-center">
+                        <img className="imgs" src={logo} alt=""></img>
+                        <p className="medium-title ml-3 mb-0">{"Plutustec"}</p>
                     </div>
                 </div>
                 <div id="scrollTop" className="messages-container" ref={scroll}>
@@ -311,7 +277,7 @@ function ClientChatConatainer() {
                                                 <div>
                                                     {data.fromSelf ?
                                                         // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
-                                                        <span className="avatar_circle d-flex align-items-center justify-content-center">{data.fromSelf?.name.charAt(0) && data.fromSelf?.name.charAt(0)}</span>
+                                                        <span className="avatar_circle d-flex align-items-center justify-content-center mr-0">{data?.fromSelf?.name?.charAt(0) && data?.fromSelf?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
                                                     }
@@ -337,127 +303,98 @@ function ClientChatConatainer() {
                                     )}
                                     {data.attechment &&
                                         (data.attechment &&
-                                            (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                                        style={{
-                                                            height: "190px",
-                                                            width: "213px",
-                                                            border: "2px solid #d9d9d9",
-                                                            position: ""
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : data.attechment && ext == "mp4" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <video
                                                         src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
                                                         autoPlay
-                                                        style={{
-                                                            height: "105px",
-                                                            width: "200px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : data.attechment && ext == "ppt" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={ppt}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : data.attechment && ext == "zip" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={zip}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={xls}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : data.attechment && (ext == "docx" || ext == "doc") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={doc}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ) : (
-                                            <>
-                                                <div style={{ position: "relative" }}>
+                                            <div className="file-displys position-relative">
+                                                <div className="position-relative">
                                                     <img src={ImageSend} className="seenIcon" />
                                                     <img
                                                         src={pdf}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
+                                                        className="attched-file"
                                                         onClick={() => {
                                                             handleDownload(data.attechment);
                                                         }}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         ))}
                                 </div>
                             );

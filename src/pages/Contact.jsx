@@ -230,13 +230,18 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                   setCurrentChat(data);
                 }}
               >
-                <div className="contact-img">
-                  <img className="img" src={noDP} alt=" " />
-
+                <div className="position-relative">
+                  {/* <img className="img" src={noDP} alt=" " /> */}
+                  {data.contactNumber ? (
+                    //  <img className="img" src={noDP} alt=" " />
+                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>
+                  ):
+                  <img className="imgs mr-2" src={BDProfile} alt=" " />  
+                  }
                   {isOnline ? <div className="online"></div> : null}
                 </div>
                 <div className="contact-name">
-                  <p style={{ color: "black" }}>{data?.name}</p>
+                  {data?.name}
                 </div>
 
                 {currentChat?._id === data?._id

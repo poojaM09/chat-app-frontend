@@ -209,8 +209,60 @@ a, a:hover{
   right: 10px !important;
   padding: 7px 0;
   margin: 0;
+  z-index: 99999;
 }
 .dropdown-item{
   padding: 7px 16px 7px !important;
   min-width: 190px;
+}
+
+
+@media (max-width: 991px) {
+  .navbar .logo img{
+    width: 150px;
+    height: auto;
+  }
+  .navbar .dropdown .btn-primary,.navbar .dropdown .btn-primary:focus,.navbar .dropdown .btn-primary:active,.navbar .dropdown .btn-primary:visited{
+    width: 30px;
+    height: 30px; 
+    padding: 0; 
+    margin-right: 16px; 
+  }
+  .navbar .avatar_circle{
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+  .chat-container .user-container img{
+    height: 50px;
+    width: 50px; 
+    flex: 0 0 50px;
+  }
+  .chat-container .messages-container{
+    height: calc(100vh - 225px);
+  }
+  .chat-wrapper {
+    height: calc(100vh - 73px);
+  }
+  .main-container .contact{
+    max-width: 100%;
+  }
+  .main-container .chat{
+    position: fixed;
+    right: -110%;
+    top: 73px;
+    z-index: 9999;
+    height: calc(100vh - 73px);
+    max-width: 100%;
+    background-color: #ffffff;
+    transition: all ease-in-out 0.3s;
+  }
+  .online-user,.online-user .avatar_circle { 
+    height: 50px;
+    width: 50px;
+    flex: 0 0 50px;
+  }
+  .main-container .chat.open{
+    right: 0;
+  }
 }

@@ -59,17 +59,18 @@
 }
 
 .contact-conainer .wrapper .notification {
-  position: absolute;
-  padding: 2px 2px;
-  right: 10px;
+  position: relative;
+  padding: 2px;
   height: 22px;
   width: 22px;
-  margin: 10px;
+  margin: 0;
   text-align: center;
   font-size: small;
-  color: white !important;
+  color: #fff!important;
   border-radius: 50%;
-  background-color: #BBE3FF;
+  background-color: #ff6c37;
+  margin-left: auto;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,0.4);
 }
 
 .contact-conainer .searchContainer {
