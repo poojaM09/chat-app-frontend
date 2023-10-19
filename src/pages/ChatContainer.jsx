@@ -7,13 +7,15 @@ import BDProfile from "../../public/fevicon-logo.svg";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
+import DownloadIcon from "../../public/downloadIcon.svg"
 import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
-import ViewMore from "../../public/view-more.svg"; 
+import txt from "../../public/txt-file.png";
+import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -43,8 +45,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [docdownloading, setdocDownloading] = useState(false);
   const [pdfdownloading, setpdfDownloading] = useState(false);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
+  const [txtdownloading, settxtDownloading] = useState(false);
   console.log(data, 'data')
-console.log(message,'ggdgggdsds')
+  console.log(message, 'ggdgggdsds')
   console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
@@ -54,9 +57,10 @@ console.log(message,'ggdgggdsds')
       message: msg,
       msg_type: type,
     };
+    console.log(data, 'datadata')
     const response = await postdata("message/sendMessage", data);
     const res = await response.json();
-
+    console.log(res, 'fadffsaf')
     socket.emit("send-msg", {
       from: currentUser?.id,
       to: currentChat?._id,
@@ -69,7 +73,33 @@ console.log(message,'ggdgggdsds')
     setMessage(info);
   };
   //handle ImagehandleSendImage
+
+  // const handleSendImage = async (file, type) => {
+  //   const data = new FormData();
+  //   data.append("image", file);
+  //   data.append("from", currentUser.id);
+  //   data.append("to", currentChat._id);
+  //   data.append("msg_type", type);
+  //   const response = await postimage("message/sendImage", data);
+  //   const res = await response.json();
+  //   if (res.status == 400) {
+  //     errorToast(res.error);
+  //   }
+
+  //   const info = [...message];
+  //   info.push({ fromSelf: true, attechment: res.data, msg_type: type });
+  //   setMessage(info);
+
+  //   socket.emit("send-msg", {
+  //     from: currentUser.id,
+  //     to: currentChat._id,
+  //     attechment: res.data,
+  //     msg_type: type,
+  //   });
+  // };
   const handleSendImage = async (file, type) => {
+    const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
+    setMessage((prevMessages) => [...prevMessages, sendingMessage]);
     const data = new FormData();
     data.append("image", file);
     data.append("from", currentUser.id);
@@ -77,21 +107,29 @@ console.log(message,'ggdgggdsds')
     data.append("msg_type", type);
     const response = await postimage("message/sendImage", data);
     const res = await response.json();
-    if (res.status == 400) {
+    if (res.status === 400) {
       errorToast(res.error);
+    } else {
+      setMessage((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
+        if (sendingMessageIndex !== -1) {
+          updatedMessages.splice(sendingMessageIndex, 1);
+          updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
+        }
+        return updatedMessages;
+      });
+
+      // Emit a socket event to notify that the image was sent
+      socket.emit("send-msg", {
+        from: currentUser.id,
+        to: currentChat._id,
+        attechment: res.data,
+        msg_type: type,
+      });
     }
-
-    const info = [...message];
-    info.push({ fromSelf: true, attechment: res.data, msg_type: type });
-    setMessage(info);
-
-    socket.emit("send-msg", {
-      from: currentUser.id,
-      to: currentChat._id,
-      attechment: res.data,
-      msg_type: type,
-    });
   };
+
   //get message from the database
   const getmessage = async () => {
     const data = {
@@ -100,7 +138,7 @@ console.log(message,'ggdgggdsds')
     };
     const response = await postdata("message/getAllMessage", data);
     const res = await response.json();
-    console.log(res, 'res')
+    console.log(res, 'resDSSDSDSDSDSD')
     setMessage(res.message);
     setLoadding(false);
   };
@@ -221,6 +259,7 @@ console.log(message,'ggdgggdsds')
           setxlsDownloading(false);
           setdocDownloading(false);
           setpdfDownloading(false);
+          settxtDownloading(false)
 
           toast.error('File not found. Please try again later.', {
             position: "top-center",
@@ -239,7 +278,10 @@ console.log(message,'ggdgggdsds')
       setzipDownloading(true);
     } else if (!pptdownloading && part2 === 'ppt') {
       setpptDownloading(true);
-    } else if (
+    } else if (!txtdownloading) {
+      settxtDownloading(false)
+    }
+    else if (
       (!xlsdownloading && part2 === 'xls') ||
       (!xlsdownloading && part2 === 'xlsx')
     ) {
@@ -270,6 +312,7 @@ console.log(message,'ggdgggdsds')
         setxlsDownloading(false);
         setdocDownloading(false);
         setpdfDownloading(false);
+        settxtDownloading(false)
       }, 2000);
     });
   };
@@ -281,7 +324,7 @@ console.log(message,'ggdgggdsds')
   const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
   console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
-  
+
 
   return (
     <>
@@ -340,11 +383,11 @@ console.log(message,'ggdgggdsds')
 
           </div>
         </div >
-        <div id="scrollTop" className="messages-container" ref={scroll}> 
+        <div id="scrollTop" className="messages-container" ref={scroll}>
           {!noMoreMessages && message.length >= 5 && (
             <div className="view-btn">
               <button className="view-more-button text-uppercase" onClick={viewMore}>
-                View more 
+                View more
               </button>
             </div>
           )}
@@ -355,7 +398,7 @@ console.log(message,'ggdgggdsds')
           ) : (
             message &&
             message.slice(-data).map((data, index) => {
-                            const ext = data.attechment?.split(".").pop();
+              const ext = data.attechment?.split(".").pop();
               return (
                 <div
                   key={index}
@@ -369,20 +412,20 @@ console.log(message,'ggdgggdsds')
                       <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                         {userList.map((Users) => {
                           if (Users._id === data?.from) {
-                            console.log(Users._id === data?.from,'Users._id === data?.from')
-                            if (Users?.contactNumber ){
-                              console.log(Users?.contactNumber,'gfdfdsf')
+                            console.log(Users._id === data?.from, 'Users._id === data?.from')
+                            if (Users?.contactNumber) {
+                              console.log(Users?.contactNumber, 'gfdfdsf')
                               // <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />
-                              return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>;
+                              return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
                             }
                           }
                           if (Users._id === data?.to) {
-                            console.log(Users._id === data?.to,'Users._id === data?.toUsers._id === data?.to')
-                            if (Users?.contactNumber ){
-                              console.log(Users?.contactNumber,'gfdfdsf')
-                              return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>;
+                            console.log(Users._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
+                            if (Users?.contactNumber) {
+                              console.log(Users?.contactNumber, 'gfdfdsf')
+                              return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
                             }
@@ -420,14 +463,14 @@ console.log(message,'ggdgggdsds')
                             <div className="position-relative">
                               <img
                                 src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                className="attched-file" 
+                                className="attched-file"
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {imgdownloading && (
                                 <div
-                                 className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -439,7 +482,7 @@ console.log(message,'ggdgggdsds')
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`} 
+                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -456,14 +499,14 @@ console.log(message,'ggdgggdsds')
                               <video
                                 className="attched-file"
                                 src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                autoPlay 
+                                autoPlay
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {mp4downloading && (
                                 <div
-                                  className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -476,7 +519,7 @@ console.log(message,'ggdgggdsds')
                             <video
                               className="attched-file"
                               src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                              autoPlay 
+                              autoPlay
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -494,14 +537,14 @@ console.log(message,'ggdgggdsds')
                             <div className="position-relative">
                               <img
                                 className="attched-file"
-                                src={ppt} 
+                                src={ppt}
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {pptdownloading && (
                                 <div
-                                  className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -513,7 +556,7 @@ console.log(message,'ggdgggdsds')
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={ppt} 
+                              src={ppt}
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -528,14 +571,14 @@ console.log(message,'ggdgggdsds')
                             <div className="position-relative">
                               <img
                                 className="attched-file"
-                                src={zip} 
+                                src={zip}
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {zipdownloading && (
                                 <div
-                                className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -547,7 +590,7 @@ console.log(message,'ggdgggdsds')
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={zip} 
+                              src={zip}
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -562,14 +605,14 @@ console.log(message,'ggdgggdsds')
                             <div className="position-relative">
                               <img
                                 className="attched-file"
-                                src={xls} 
+                                src={xls}
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
                               {xlsdownloading && (
                                 <div
-                                  className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -581,7 +624,7 @@ console.log(message,'ggdgggdsds')
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={xls} 
+                              src={xls}
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -590,22 +633,21 @@ console.log(message,'ggdgggdsds')
                           </>
                         )}
                       </div>
-                    ) : data.attechment && (ext == "docx" || ext == "doc") ? (
-
+                    ) : data.attechment && (ext == "txt") ? (
                       <div className="file-displys position-relative">
-                        {docdownloading ? (
+                        {txtdownloading ? (
                           <>
                             <div className="position-relative">
                               <img
                                 className="attched-file"
-                                src={doc} 
+                                src={txt}
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {docdownloading && (
+                              {txtdownloading && (
                                 <div
-                                className="img-loader" 
+                                  className="img-loader"
                                 >
                                   <Loader />
                                 </div>
@@ -617,53 +659,91 @@ console.log(message,'ggdgggdsds')
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={doc} 
+                              src={txt}
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
+
                             />
                           </>
                         )}
                       </div>
-                    ) : (
-                      <div className="file-displys position-relative">
-                        {pdfdownloading ? (
-                          <>
-                            <div className="position-relative"> 
+                    )
+
+                      : data.attechment && (ext == "docx" || ext == "doc") ? (
+
+                        <div className="file-displys position-relative">
+                          {docdownloading ? (
+                            <>
+                              <div className="position-relative">
+                                <img
+                                  className="attched-file"
+                                  src={doc}
+                                  onClick={() => {
+                                    handleDownload(data.attechment);
+                                  }}
+                                />
+                                {docdownloading && (
+                                  <div
+                                    className="img-loader"
+                                  >
+                                    <Loader />
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <img src={ImageSend} className="seenIcon" />
                               <img
                                 className="attched-file"
-                                src={pdf} 
+                                src={doc}
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {pdfdownloading && (
-                                <div 
-                                  className="img-loader" 
-                                >
-                                  <Loader />
-                                </div>
-                              )}
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <img src={ImageSend} className="seenIcon" />
-                            <img
-                              className="attched-file"
-                              src={pdf} 
-                              onClick={() => {
-                                handleDownload(data.attechment);
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    ))}
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="file-displys position-relative">
+                          {pdfdownloading ? (
+                            <>
+                              <div className="position-relative">
+                                <img
+                                  className="attched-file"
+                                  src={pdf}
+                                  onClick={() => {
+                                    handleDownload(data.attechment);
+                                  }}
+                                />
+                                {pdfdownloading && (
+                                  <div
+                                    className="img-loader"
+                                  >
+                                    <Loader />
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <img src={ImageSend} className="seenIcon" />
+                              <img
+                                className="attched-file"
+                                src={pdf}
+                                onClick={() => {
+                                  handleDownload(data.attechment);
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      ))}
                 </div>
               );
             })
-          )} 
+          )}
           {showImg ? (
             <ImageModel
               Img={Img}
@@ -675,11 +755,11 @@ console.log(message,'ggdgggdsds')
         </div>
       </div >
       <div className="chat-send-msg-input">
-        {/* <div className="type"></div> */} 
-          <ChatInput
-            handleSendChat={handleSendChat}
-            handleSendImage={handleSendImage}
-          /> 
+        {/* <div className="type"></div> */}
+        <ChatInput
+          handleSendChat={handleSendChat}
+          handleSendImage={handleSendImage}
+        />
       </div>
     </>
   );

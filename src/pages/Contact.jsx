@@ -6,22 +6,23 @@ import "../assets/CSS/contact.css";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../socket";
-import { postdata } from "../Utils/http.class"; 
-import { errorToast } from "../Components/Toast"; 
-import Search  from "../../public/search.svg";  
+import { postdata } from "../Utils/http.class";
+import { errorToast } from "../Components/Toast";
+import Search from "../../public/search.svg";
 import { faMagnifyingGlass, } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 
 let userList = [];
- 
-function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData,handleShow }) {
+
+function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData, handleShow }) {
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const [currentChat, setCurrentChat] = useState();
   const [notification, setNotification] = useState([]);
   const [searchLoader, setSearchLoader] = useState(false);
+  const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
   console.log(userList, 'userList')
 
@@ -123,9 +124,13 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
     };
     const res = await postdata("user/searchUser", data);
     const response = await res.json();
-    if (response) {
+    console.log(response, 'responseresponse')
+    if (response.message == "No result Found ") {
+      setsearchDataFound(true)
+    } else {
       setSearchData(response.user);
       setSearchLoader(false);
+      setsearchDataFound(false)
     }
   };
 
@@ -152,8 +157,8 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   return (
     <>
       <div className="contact-conainer">
-        <div className="searchContainer"> 
-        <img src={Search} width={20} height={20} alt="Icon" />
+        <div className="searchContainer">
+          <img src={Search} width={20} height={20} alt="Icon" />
           <input
             className="search-input"
             placeholder="Search here.."
@@ -168,7 +173,13 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
           ) : (
             <div style={{ height: "1px" }}></div>
           )}
+            
         </div>
+        {searchDataFound && search.length !== 0 &&
+            <div>
+              Data Not Found
+            </div>
+          }
         {search == ""
           ? userList?.map((data, index) => {
 
@@ -193,14 +204,14 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                   setCurrentChat(data);
                   handleShow()
                 }}
-              > 
+              >
                 <div className="position-relative">
-                  {console.log(data,'dasasasata')}
+                  {console.log(data, 'dasasasata')}
                   {data.contactNumber ? (
                     //  <img className="img" src={noDP} alt=" " />
-                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>
-                  ):
-                  <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />  
+                    <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
+                  ) :
+                    <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
                   }
                   {isOnline ? <div className="online"></div> : null}
                 </div>
@@ -222,31 +233,39 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';
 
             return (
-              <div
-                key={index}
-                className="wrapper"
-                onClick={() => {
-                  handleCurrentChat(data);
-                  setCurrentChat(data);
-                }}
-              >
-                <div className="contact-img">
-                  <img className="img" src={noDP} alt=" " />
+              <>
+                <div
+                  key={index}
+                  className="wrapper"
+                  onClick={() => {
+                    handleCurrentChat(data);
+                    setCurrentChat(data);
+                  }}
+                >
+                  <div className="contact-img">
+                    {data.contactNumber ? (
+                      //  <img className="img" src={noDP} alt=" " />
+                      <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
+                    ) :
+                      <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
+                    }
 
-                  {isOnline ? <div className="online"></div> : null}
-                </div>
-                <div className="contact-name">
-                  <p style={{ color: "black" }}>{data?.name}</p>
+                    {isOnline ? <div className="online"></div> : null}
+                  </div>
+                  <div className="contact-name">
+                    <p style={{ color: "black" }}>{data?.name}</p>
+                  </div>
+
+                  {currentChat?._id === data?._id
+                    ? " "
+                    : userNote.length > 0 && (
+                      <>
+                        <div className="notification">{userNote.length}</div>
+                      </>
+                    )}
                 </div>
 
-                {currentChat?._id === data?._id
-                  ? " "
-                  : userNote.length > 0 && (
-                    <>
-                      <div className="notification">{userNote.length}</div>
-                    </>
-                  )}
-              </div>
+              </>
             );
           })}
       </div>
