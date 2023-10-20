@@ -11,7 +11,7 @@ import Send from "../../public/send.svg";
 
 function ChatInput({ handleSendChat, handleSendImage }) {
   const [showEmoji, setShowEmoji] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState([]);
   const [attechment, setAttechment] = useState(null);
   const [selected, setSelected] = useState(false);
 
@@ -82,9 +82,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
   };
 
   const setEmoji = (emoji, event) => {
-    let message = msg;
-    message = msg + emoji.emoji;
-    setMsg(message);
+    setMsg((prevMsg) => prevMsg + emoji.emoji);
   };
  
   const sendChat = () => {
@@ -117,7 +115,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
               onClick={() => setShowEmoji(!showEmoji)}
             />
             <div className="emoji-picker">
-              {showEmoji && <Picker onEmojiClick={setEmoji} />}
+              {showExmoji && <Picker onEmojiClick={setEmoji} />}
             </div>
           </div>
           <div className="attechment" {...getRootProps()}>

@@ -46,6 +46,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [pdfdownloading, setpdfDownloading] = useState(false);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const [txtdownloading, settxtDownloading] = useState(false);
+  const [downloadingImage, setDownloadingImage] = useState(null);
+
+  const [showDownloadIcon, setShowDownloadIcon] = useState(false); // Initially hidden
+  const [showImage, setShowImage] = useState(false);
+  const [imageSrc, setImageSrc] = useState(null);
+
   console.log(data, 'data')
   console.log(message, 'ggdgggdsds')
   console.log(isMobile, 'isMobile')
@@ -97,38 +103,85 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   //     msg_type: type,
   //   });
   // };
-  const handleSendImage = async (file, type) => {
-    const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
-    setMessage((prevMessages) => [...prevMessages, sendingMessage]);
-    const data = new FormData();
-    data.append("image", file);
-    data.append("from", currentUser.id);
-    data.append("to", currentChat._id);
-    data.append("msg_type", type);
-    const response = await postimage("message/sendImage", data);
-    const res = await response.json();
-    if (res.status === 400) {
-      errorToast(res.error);
-    } else {
-      setMessage((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
-        if (sendingMessageIndex !== -1) {
-          updatedMessages.splice(sendingMessageIndex, 1);
-          updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
-        }
-        return updatedMessages;
-      });
+  // const handleSendImage = async (file, type) => {
+  //   const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
+  //   setMessage((prevMessages) => [...prevMessages, sendingMessage]);
+  //   const data = new FormData();
+  //   data.append("image", file);
+  //   data.append("from", currentUser.id);
+  //   data.append("to", currentChat._id);
+  //   data.append("msg_type", type);
+  //   const response = await postimage("message/sendImage", data);
+  //   const res = await response.json();
+  //   if (res.status === 400) {
+  //     errorToast(res.error);
+  //   } else {
+  //     setMessage((prevMessages) => {
+  //       const updatedMessages = [...prevMessages];
+  //       const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
+  //       if (sendingMessageIndex !== -1) {
+  //         updatedMessages.splice(sendingMessageIndex, 1);
+  //         updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
+  //       }
+  //       return updatedMessages;
+  //     });
 
-      // Emit a socket event to notify that the image was sent
-      socket.emit("send-msg", {
-        from: currentUser.id,
-        to: currentChat._id,
-        attechment: res.data,
-        msg_type: type,
-      });
-    }
+  //     // Emit a socket event to notify that the image was sent
+  //     socket.emit("send-msg", {
+  //       from: currentUser.id,
+  //       to: currentChat._id,
+  //       attechment: res.data,
+  //       msg_type: type,
+  //     });
+  //   }
+  // };
+
+
+  const handleSendImage = async (file, type) => {
+    // Display the DownloadIcon immediately
+    setShowDownloadIcon(true);
+
+    // Remove the DownloadIcon and show the image after 2 seconds
+    setTimeout(async () => {
+      setShowDownloadIcon(false);
+      setShowImage(true);
+
+      const data = new FormData();
+      data.append("image", file);
+      data.append("from", currentUser.id);
+      data.append("to", currentChat._id);
+      data.append("msg_type", type);
+
+      const response = await postimage("message/sendImage", data);
+      const res = await response.json();
+      if (res.status === 400) {
+        errorToast(res.error);
+      } else {
+        setMessage((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const sendingMessageIndex = updatedMessages.findIndex(
+            (message) => message.fromSelf && message.msg_type === "text"
+          );
+          if (sendingMessageIndex !== -1) {
+            updatedMessages.splice(sendingMessageIndex, 1);
+          }
+          return updatedMessages;
+        });
+
+        // Emit a socket event to notify that the image was sent
+        socket.emit("send-msg", {
+          from: currentUser.id,
+          to: currentChat._id,
+          attechment: res.data,
+          msg_type: type,
+        });
+
+        // Set the image source to be displayed
+        setImageSrc(`https://chat-app-backend-l2a8.onrender.com/public/${res.data}`);
+      }
+    }, 2000);
   };
+
 
   //get message from the database
   const getmessage = async () => {
@@ -229,69 +282,37 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   }, [message]);
 
   const handleDownload = (img) => {
+    setDownloadingImage(img)
     const lastIndex = img.lastIndexOf(".");
     const part2 = img.substring(lastIndex + 1);
 
-    const downloadFile = (URL, filename, onSuccess) => {
-      fetch(URL)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('File not found');
-          }
-          return response.blob();
-        })
-        .then((blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          onSuccess();
-        })
-        .catch((error) => {
-
-          setImgDownloading(false);
-          setmp4Downloading(false);
-          setzipDownloading(false);
-          setpptDownloading(false);
-          setxlsDownloading(false);
-          setdocDownloading(false);
-          setpdfDownloading(false);
-          settxtDownloading(false)
-
-          toast.error('File not found. Please try again later.', {
-            position: "top-center",
-            autoClose: 3000,
-          });
-        });
+    const resetDownloadingFlags = () => {
+      setImgDownloading(false);
+      setmp4Downloading(false);
+      setzipDownloading(false);
+      setpptDownloading(false);
+      setxlsDownloading(false);
+      setdocDownloading(false);
+      setpdfDownloading(false);
+      settxtDownloading(false);
+      setDownloadingImage(false)
     };
-    if (
-      !imgdownloading &&
-      (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
-    ) {
+
+    if (part2 === "png" || part2 === "jpeg" || part2 === "jpg" || part2 === "svg" || part2 === "webp") {
       setImgDownloading(true);
-    } else if (!mp4downloading && part2 === 'mp4') {
+    } else if (part2 === 'mp4') {
       setmp4Downloading(true);
-    } else if (!zipdownloading && part2 === 'zip') {
+    } else if (part2 === 'zip') {
       setzipDownloading(true);
-    } else if (!pptdownloading && part2 === 'ppt') {
+    } else if (part2 === 'ppt') {
       setpptDownloading(true);
-    } else if (!txtdownloading) {
-      settxtDownloading(false)
-    }
-    else if (
-      (!xlsdownloading && part2 === 'xls') ||
-      (!xlsdownloading && part2 === 'xlsx')
-    ) {
+    } else if (part2 === 'txt') {
+      settxtDownloading(true);
+    } else if (part2 === 'xls' || part2 === 'xlsx') {
       setxlsDownloading(true);
-    } else if (
-      (!docdownloading && part2 === 'doc') ||
-      (!docdownloading && part2 === 'docx')
-    ) {
+    } else if (part2 === 'doc' || part2 === 'docx') {
       setdocDownloading(true);
-    } else if (!pdfdownloading) {
+    } else {
       setpdfDownloading(true);
     }
 
@@ -302,25 +323,43 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
     }
 
-    downloadFile(URL, img, () => {
-      // Simulate download completion with a delay
-      setTimeout(() => {
-        setImgDownloading(false);
-        setmp4Downloading(false);
-        setzipDownloading(false);
-        setpptDownloading(false);
-        setxlsDownloading(false);
-        setdocDownloading(false);
-        setpdfDownloading(false);
-        settxtDownloading(false)
-      }, 2000);
-    });
+    const onSuccess = () => {
+      resetDownloadingFlags();
+    };
+
+    const onError = () => {
+      resetDownloadingFlags();
+
+      toast.error('File not found. Please try again later.', {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    };
+
+    fetch(URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('File not found');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = img;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        onSuccess();
+      })
+      .catch((error) => {
+        onError();
+      });
   };
-
-
   const storedDataString = localStorage.getItem('userList')
   const userList = JSON.parse(storedDataString);
-
+  
   const isCurrentUserOnline = onlineUser?.some((user) => user?.userID === currentChat?._id);
   console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
@@ -378,15 +417,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 </div>
               }
             </div>
-            {/* <div className="search-user-msg">
-                <div className="icon-color">
-                  <FontAwesomeIcon icon={faSearch} />
-                </div>
-                <div className="icon-color">
-                  <FontAwesomeIcon icon={faEllipsisV} />
-                </div>
-              </div> */}
-
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
@@ -446,21 +476,21 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                               ).format("h:mm: a")}
                             </span>
                           </div>
-
-
                           <p className={data.fromSelf ? "sender-msg" : "receiver-msg"}>
                             {data.message}
                             <br />
                           </p>
-
-
-
                         </div>
                       </div>
 
                     </>
                   )}
-                  {console.log(data.attechment, 'video')}
+                  {console.log(data.attechment, 'video111111')}
+                  {showDownloadIcon && data.fromSelf && (
+                    <div className="download-icon">
+                      <img src={DownloadIcon} alt="Download Icon" />
+                    </div>
+                  )}
                   {data.attechment &&
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
@@ -475,10 +505,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {imgdownloading && (
-                                <div
-                                  className="img-loader"
-                                >
+
+                              {downloadingImage === data.attechment && (
+                                <div className="img-loader">
                                   <Loader />
                                 </div>
                               )}
@@ -652,10 +681,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {txtdownloading && (
-                                <div
-                                  className="img-loader"
-                                >
+                              {downloadingImage === data.attechment && (
+                                <div className="img-loader">
                                   <Loader />
                                 </div>
                               )}
@@ -690,10 +717,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                     handleDownload(data.attechment);
                                   }}
                                 />
-                                {docdownloading && (
-                                  <div
-                                    className="img-loader"
-                                  >
+                                {downloadingImage === data.attechment && (
+                                  <div className="img-loader">
                                     <Loader />
                                   </div>
                                 )}
@@ -724,10 +749,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                     handleDownload(data.attechment);
                                   }}
                                 />
-                                {pdfdownloading && (
-                                  <div
-                                    className="img-loader"
-                                  >
+                                {downloadingImage === data.attechment && (
+                                  <div className="img-loader">
                                     <Loader />
                                   </div>
                                 )}
