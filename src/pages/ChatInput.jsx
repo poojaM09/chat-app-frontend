@@ -134,7 +134,10 @@ function ChatInput({ handleSendChat, handleSendImage }) {
           />
           <div className="send-icons-all">
             <div className="emoji">
-              <img src={Emoji} alt="Emoji" />                
+              <img src={Emoji} alt="Emoji" 
+                  onClick={() => setShowEmoji(!showEmoji)}
+              /> 
+
               <div className="emoji-picker">
                 {showEmoji && <Picker onEmojiClick={setEmoji} />}
               </div>

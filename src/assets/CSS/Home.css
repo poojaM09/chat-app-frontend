@@ -216,7 +216,19 @@ a, a:hover{
   min-width: 190px;
 }
 
-
+.emoji-picker{
+  position: absolute !important;
+  bottom: 30px !important;
+  max-width: 280px;
+  box-shadow: 0 0 22px 0 rgba(0,0,0,0.3);
+  border-radius: 8px;
+}
+aside.EmojiPickerReact.epr-main{
+  width: 100% !important;
+}
+.EmojiPickerReact .epr-preview{
+  display: none !important;
+}
 @media (max-width: 991px) {
   .navbar .logo img{
     width: 150px;
