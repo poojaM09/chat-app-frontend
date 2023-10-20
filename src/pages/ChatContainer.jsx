@@ -321,39 +321,39 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const storedDataString = localStorage.getItem('userList')
   const userList = JSON.parse(storedDataString);
 
-  const isCurrentUserOnline = onlineUser.some((user) => user?.userID === currentChat?._id);
+  const isCurrentUserOnline = onlineUser?.some((user) => user?.userID === currentChat?._id);
   console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
   console.log(onlineUser, 'onlineUser')
-
+  console.log(message, "hello")
 
   return (
     <>
       {/* <ToastContainer /> */}
       <div className="chat-container">
-        <div className="back-chat-icon"> 
+        <div className="back-chat-icon">
           <div className="back-icon p-0 mr-2 d-block d-lg-none" onClick={() => handlehide()}>
             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512">
-              <path fill="#ff6c37" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+              <path fill="#ff6c37" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
             </svg>
-          </div> 
+          </div>
           <div className="user-container">
             <div className="user-status">
               {isCurrentUserOnline ?
                 <div className="user-profile align-items-center">
-                  {userList.map((data) => { 
-                      if (data._id === currentChat._id) {
-                        if (data?.contactNumber) {
-                          return  <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name.charAt(0) && currentChat?.name.charAt(0)}</span>
-                            <div className="online"></div>
-                          </div> ;
-                        } else {
-                          return <div className="online-user">
-                            <img className="imgs" src={BDProfile} alt=" " key={data.id} />
-                            <div className="online"></div>
-                          </div>;
-                        }
+                  {userList.map((data) => {
+                    if (data._id === currentChat._id) {
+                      if (data?.contactNumber) {
+                        return <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>
+                          <div className="online"></div>
+                        </div>;
+                      } else {
+                        return <div className="online-user">
+                          <img className="imgs" src={BDProfile} alt=" " key={data.id} />
+                          <div className="online"></div>
+                        </div>;
                       }
-                    })}  
+                    }
+                  })}
                   <div className="ml-3">
                     <div className="medium-title"> {currentChat?.name}</div>
                     <div className="user-status text-uppercase text-success">Active</div></div>
@@ -362,11 +362,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 <div className="user-profile align-items-center">
                   <div className="online-user">
                     {userList.map((data) => {
-                      console.log("data.id:", data._id);
-                      console.log("currentChat._id:", currentChat._id);
-                      console.log("data?.contactNumber:", data?.contactNumber);
 
-                      if (data._id === currentChat._id) {
+                      if (data?._id === currentChat?._id) {
                         if (data?.contactNumber) {
                           return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>;
                         } else {
@@ -382,13 +379,13 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
               }
             </div>
             {/* <div className="search-user-msg">
-              <div className="icon-color">
-                <FontAwesomeIcon icon={faSearch} />
-              </div>
-              <div className="icon-color">
-                <FontAwesomeIcon icon={faEllipsisV} />
-              </div>
-            </div> */}
+                <div className="icon-color">
+                  <FontAwesomeIcon icon={faSearch} />
+                </div>
+                <div className="icon-color">
+                  <FontAwesomeIcon icon={faEllipsisV} />
+                </div>
+              </div> */}
 
           </div>
         </div >
@@ -407,41 +404,39 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           ) : (
             message &&
             message.slice(-data).map((data, index) => {
+              console.log(message, 'sadsadasdsdsdsd')
               const ext = data.attechment?.split(".").pop();
               return (
                 <div
                   key={index}
                   className={
-                    data.fromSelf ? "messages-send" : "messages-rececive"
+                    data?.fromSelf ? "messages-send" : "messages-rececive"
                   }
                 >
-                  {data.message && (
+                  {data?.message && (
                     <>
-                      {console.log(data, 'data212121212')}
-                      <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
+
+                      <div className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
                         {userList.map((Users) => {
-                          if (Users._id === data?.from) {
-                            console.log(Users._id === data?.from, 'Users._id === data?.from')
+                          if (Users?._id === data?.from) {
+                            console.log(Users?._id === data?.from, 'Users._id === data?.from')
                             if (Users?.contactNumber) {
                               console.log(Users?.contactNumber, 'gfdfdsf')
-                              // <img className="profile-img" style={{ width: "70px", height: "70px" }} src={noDP} alt=" " key={Users.id} />
                               return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
                             }
                           }
-                          if (Users._id === data?.to) {
-                            console.log(Users._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
+                          if (Users?._id === data?.to) {
+                            console.log(Users?._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
                             if (Users?.contactNumber) {
                               console.log(Users?.contactNumber, 'gfdfdsf')
                               return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
                             } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users.id} />;
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
                             }
                           }
                         })}
-                        {/* <div> <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }}></img></div> */}
-
                         <div>
                           <div className="time-user-chat">
                             <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
@@ -451,12 +446,15 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                               ).format("h:mm: a")}
                             </span>
                           </div>
-                          <p
-                            className={data.fromSelf ? "sender-msg" : "receiver-msg"}
-                          >
+
+
+                          <p className={data.fromSelf ? "sender-msg" : "receiver-msg"}>
                             {data.message}
-                            <br></br>
+                            <br />
                           </p>
+
+
+
                         </div>
                       </div>
 

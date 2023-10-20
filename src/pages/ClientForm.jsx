@@ -67,7 +67,7 @@ function ClientForm() {
     if (oUser.length > 0) {
         localStorage.setItem('currentChat', JSON.stringify(oUser[0]))
     }
-    useEffect(() => {
+        useEffect(() => {
         if (errorMsg !== null) {
             errorToast(errorMsg);
         }

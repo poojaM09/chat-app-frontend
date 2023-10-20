@@ -7,13 +7,14 @@ import { useDropzone } from "react-dropzone";
 import { errorToast } from "../Components/Toast";
 import Emoji from "../../public/chat-emoji.svg";
 import PaperClip from "../../public/paperclip.svg";
-import Send from "../../public/send.svg"; 
+import Send from "../../public/send.svg";
 
 function ChatInput({ handleSendChat, handleSendImage }) {
   const [showEmoji, setShowEmoji] = useState(false);
   const [msg, setMsg] = useState("");
   const [attechment, setAttechment] = useState(null);
   const [selected, setSelected] = useState(false);
+
   const [type, setType] = useState("");
 
   const { getInputProps, getRootProps, fileRejections } = useDropzone({
@@ -65,7 +66,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
       file.type != "text/html" &&
       file.type != "text/plain" &&
       file.type != "application/x-zip-compressed" &&
-      file.type != "application/zip" &&
+       file.type != "application/zip" &&
       file.type !=
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
       file.type != "video/mp4"
@@ -85,7 +86,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
     message = msg + emoji.emoji;
     setMsg(message);
   };
-
+ 
   const sendChat = () => {
     if (attechment) {
       handleSendImage(attechment[0], type && type);
@@ -108,7 +109,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
             e.preventDefault();
             sendChat();
           }}
-        > 
+        >
           {/* <div className="emoji">
             <FontAwesomeIcon
               className="icons"
@@ -123,6 +124,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
             <input {...getInputProps()} />
             <FontAwesomeIcon icon={faPaperclip} className="icons" />
           </div> */}
+
           <input
             className="input w-100"
             type="text"
@@ -130,27 +132,27 @@ function ChatInput({ handleSendChat, handleSendImage }) {
             placeholder="Type a message"
             onChange={(e) => {
               setMsg(e.target.value);
-            }} 
+            }}
           />
           <div className="send-icons-all">
             <div className="emoji">
-              <img src={Emoji} alt="Emoji" 
-                  onClick={() => setShowEmoji(!showEmoji)}
-              /> 
+              <img src={Emoji} alt="Emoji"
+                onClick={() => setShowEmoji(!showEmoji)}
+              />
 
               <div className="emoji-picker">
                 {showEmoji && <Picker onEmojiClick={setEmoji} />}
               </div>
             </div>
             <div className="attechment" {...getRootProps()}>
-              <input {...getInputProps()} />              
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512"><path fill="#ff6c37" d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z"/></svg>
+              <input {...getInputProps()} />
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512"><path fill="#ff6c37" d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" /></svg>
             </div>
             {(msg !== "" || selected) && (
               <button id="sub" className="send-button p-0 border-0 bg-transparent" type="submit">
-                <img src={Send} alt="Send" /> 
+                <img src={Send} alt="Send" />
               </button>
-            )}              
+            )}
           </div>
         </form>
       </div>
@@ -159,3 +161,4 @@ function ChatInput({ handleSendChat, handleSendImage }) {
 }
 
 export default ChatInput;
+

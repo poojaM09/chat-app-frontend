@@ -62,7 +62,6 @@ function NavigationBar() {
                 <span className="d-none d-lg-block">{user?.name && user?.name}</span>
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>Profile</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
                     logoutClients();
@@ -81,7 +80,6 @@ function NavigationBar() {
                   <span className="d-none d-lg-block">{user?.name && user?.name}</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item>Profile</Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
                       logout();

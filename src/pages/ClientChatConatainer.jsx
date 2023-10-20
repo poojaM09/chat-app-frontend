@@ -10,6 +10,7 @@ import BDProfile from "../../public/fevicon-logo.svg";
 // import noDP from "../../public/noDP.jpg";
 import noDP from "../../public/profile-user.png";
 import logo from "../../public/fevicon-logo.svg";
+import placeholderImage from "../../public/placeholderImage.png";
 import moment from "moment";
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
@@ -72,8 +73,6 @@ function ClientChatConatainer() {
         // navigate("/");
         // window.location.reload();
     };
-
-
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
@@ -340,10 +339,10 @@ function ClientChatConatainer() {
             setzipDownloading(true);
         } else if (!pptdownloading && part2 === 'ppt') {
             setpptDownloading(true);
-        }else if(!txtdownloading){
+        } else if (!txtdownloading) {
             settxtDownloading(true)
         }
-         else if (
+        else if (
             (!xlsdownloading && part2 === 'xls') ||
             (!xlsdownloading && part2 === 'xlsx')
         ) {
@@ -622,7 +621,7 @@ function ClientChatConatainer() {
                                                     </>
                                                 )}
                                             </div>
-                                        ) : data.attechment && (ext == "txt" ) ? (
+                                        ) : data.attechment && (ext == "txt") ? (
                                             <div className="file-displys position-relative">
                                                 {txtdownloading ? (
                                                     <>
