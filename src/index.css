@@ -10,6 +10,7 @@ body{
 }
 .login-wrapper{
   height: 100vh;
+  padding: 10px;
 }
 .login-bg{
   position: absolute;
