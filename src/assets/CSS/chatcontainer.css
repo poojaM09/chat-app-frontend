@@ -29,7 +29,7 @@
 }
 
 .back-icon {
-  padding: 0 4px;
+  cursor: pointer;
 }
 
 .user-profile {
@@ -51,11 +51,12 @@
   width: 64px;
   border-radius: 50%;
   cursor: pointer;
+  flex: 0 0 64px;
 }
 
 .chat-container .messages-container {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 20px;
   height: calc(100vh - 261px);
   font-size: 14px;
   color: black; 
@@ -99,6 +100,7 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.3);
+  text-transform: none;
 }
 
 .messages-container .messages-send .sender-msg {
@@ -167,6 +169,10 @@
 .your-message .profile-img {
   width: 50px !important;
   height: 50px !important;
+  border: 1px solid #ff6c37;
+  border-radius: 50%;
+  object-fit: contain;
+  object-position: center;
 }
 
 

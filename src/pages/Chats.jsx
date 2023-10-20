@@ -93,7 +93,7 @@ function Chats() {
                 currentChat={currentChat}
                 currentUser={user}
                 onlineIs={onlineIs}
-              />
+                              />
             )}
           </div>
         ) : null}

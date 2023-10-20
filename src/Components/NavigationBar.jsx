@@ -33,7 +33,7 @@ function NavigationBar() {
     <Navbar className="p-0 w-100 header  navbar"> 
         {/* <Link to="/chat"> */}
         {" "}
-        <div className="w-100 px-3 py-2">
+        <div className="w-100 px-3 py-2 logo">
           <img src={logo} width="211" height="79" />
         </div>   
         {!isLoggin ? (
@@ -52,16 +52,16 @@ function NavigationBar() {
         ) : (
           isLoggin && !user.password ? (
             <Dropdown className="dropdown">
-              <Dropdown.Toggle id="dropdown-basic">
-                <img
+              <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
+                {/* <img
                   src={noDP}
                   height="30px"
                   style={{ borderRadius: "50%" }}
-                ></img>{" "}
-                {user?.name && user?.name}
+                ></img>{" "} */}
+                <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span> 
+                <span className="d-none d-lg-block">{user?.name && user?.name}</span>
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>Profile</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
                     logoutClients();
@@ -77,10 +77,9 @@ function NavigationBar() {
                 <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
                  {console.log(user,'user?.name?.charAt(0)')}
                   <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span> 
-                  {user?.name && user?.name}
+                  <span className="d-none d-lg-block">{user?.name && user?.name}</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item>Profile</Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
                       logout();

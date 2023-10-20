@@ -6,9 +6,11 @@ import { Container, Navbar, Stack, Nav, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { socket } from "../socket";
 import "react-toastify/dist/ReactToastify.css";
+import BDProfile from "../../public/fevicon-logo.svg";
 // import noDP from "../../public/noDP.jpg";
 import noDP from "../../public/profile-user.png";
 import logo from "../../public/fevicon-logo.svg";
+import placeholderImage from "../../public/placeholderImage.png";
 import moment from "moment";
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
@@ -17,12 +19,15 @@ import ImageSend from "../../public/double-tick-icon.svg"
 import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
+
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
+import txt from "../../public/txt-file.png";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutClient } from "../redux/feature/clientSlice";
 import { useNavigate } from "react-router-dom";
+import NavigationBar from "../Components/NavigationBar"
 let userList = [];
 
 function ClientChatConatainer() {
@@ -42,6 +47,15 @@ function ClientChatConatainer() {
     const [oUser, setOUser] = useState([]);
     const [chatUser, setChatUser] = useState([])
     const [contact, setContact] = useState();
+    const [imgdownloading, setImgDownloading] = useState(false);
+    const [mp4downloading, setmp4Downloading] = useState(false);
+    const [pptdownloading, setpptDownloading] = useState(false);
+    const [zipdownloading, setzipDownloading] = useState(false);
+    const [xlsdownloading, setxlsDownloading] = useState(false);
+    const [docdownloading, setdocDownloading] = useState(false);
+    const [pdfdownloading, setpdfDownloading] = useState(false);
+    const [txtdownloading, settxtDownloading] = useState(false);
+    const [noMoreMessages, setNoMoreMessages] = useState(false);
     let currentUser = parsedData?._id
     const DataGet = localStorage.getItem('currentChat')
     const currentChat = JSON.parse(DataGet);
@@ -55,12 +69,10 @@ function ClientChatConatainer() {
         console.log("hgdsadsd")
         socket.emit("end-connection");
         dispatch(logoutClient());
-        window.location.href="/"
+        window.location.href = "/"
         // navigate("/");
         // window.location.reload();
     };
-
-
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
@@ -120,7 +132,54 @@ function ClientChatConatainer() {
         info.push({ fromSelf: true, message: msg, msg_type: type });
         setMessage(info);
     };
-    //handle ImagehandleSendImage
+    // //handle ImagehandleSendImage
+    // const handleSendImage = async (file, type) => {
+    //     // Display "File Sending...." message immediately
+    //     const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
+    //     setMessage((prevMessages) => [...prevMessages, sendingMessage]);
+
+    //     const data = new FormData();
+    //     data.append("image", file);
+    //     data.append("from", currentUser.id);
+    //     data.append("to", currentChat._id);
+    //     data.append("msg_type", type);
+
+    //     try {
+    //         const response = await postimage("message/sendImage", data);
+    //         const res = await response.json();
+
+    //         if (res.status === 400) {
+    //             errorToast(res.error);
+    //         } else {
+    //             // Delay showing the image for 2 seconds
+    //             setTimeout(() => {
+    //                 setMessage((prevMessages) => {
+    //                     const updatedMessages = [...prevMessages];
+    //                     const sendingMessageIndex = updatedMessages.findIndex(
+    //                         (message) => message === sendingMessage
+    //                     );
+    //                     if (sendingMessageIndex !== -1) {
+    //                         updatedMessages.splice(sendingMessageIndex, 1);
+    //                         updatedMessages.push({ fromSelf: true, attachment: res.data, msg_type: type });
+    //                     }
+    //                     return updatedMessages;
+    //                 });
+    //             }, 2000);
+
+    //             // Emit a socket event to notify that the image was sent
+    //             socket.emit("send-msg", {
+    //                 from: currentUser.id,
+    //                 to: currentChat._id,
+    //                 attechment: res.data,
+    //                 msg_type: type,
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
+
+
     const handleSendImage = async (file, type) => {
         const data = new FormData();
         data.append("image", file);
@@ -144,6 +203,8 @@ function ClientChatConatainer() {
             msg_type: type,
         });
     };
+
+
     //get message from the database
     const getmessage = async () => {
         const data = {
@@ -227,59 +288,104 @@ function ClientChatConatainer() {
         }
     }, [message]);
 
-    const handleDownload = (Img) => {
+    const handleDownload = (img) => {
+        const lastIndex = img.lastIndexOf(".");
+        const part2 = img.substring(lastIndex + 1);
+
+        const downloadFile = (URL, filename, onSuccess) => {
+            fetch(URL)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('File not found');
+                    }
+                    return response.blob();
+                })
+                .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    onSuccess();
+                })
+                .catch((error) => {
+
+                    setImgDownloading(false);
+                    setmp4Downloading(false);
+                    setzipDownloading(false);
+                    setpptDownloading(false);
+                    setxlsDownloading(false);
+                    setdocDownloading(false);
+                    setpdfDownloading(false);
+                    settxtDownloading(false)
+
+                    toast.error('File not found. Please try again later.', {
+                        position: "top-center",
+                        autoClose: 3000,
+                    });
+                });
+        };
+        if (
+            !imgdownloading &&
+            (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
+
+        ) {
+            setImgDownloading(true);
+        } else if (!mp4downloading && part2 === 'mp4') {
+            setmp4Downloading(true);
+        } else if (!zipdownloading && part2 === 'zip') {
+            setzipDownloading(true);
+        } else if (!pptdownloading && part2 === 'ppt') {
+            setpptDownloading(true);
+        } else if (!txtdownloading) {
+            settxtDownloading(true)
+        }
+        else if (
+            (!xlsdownloading && part2 === 'xls') ||
+            (!xlsdownloading && part2 === 'xlsx')
+        ) {
+            setxlsDownloading(true);
+        } else if (
+            (!docdownloading && part2 === 'doc') ||
+            (!docdownloading && part2 === 'docx')
+        ) {
+            setdocDownloading(true);
+        } else if (!pdfdownloading) {
+            setpdfDownloading(true);
+        }
+
         let URL;
         if (chatGptImg) {
-            URL = Img;
-            saveAs(URL, "image.png");
+            URL = img;
         } else {
-            URL = `https://chat-app-backend-l2a8.onrender.com/public/${Img}`;
-            saveAs(URL, Img);
+            URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
         }
+
+        downloadFile(URL, img, () => {
+            // Simulate download completion with a delay
+            setTimeout(() => {
+                setImgDownloading(false);
+                setmp4Downloading(false);
+                setzipDownloading(false);
+                setpptDownloading(false);
+                setxlsDownloading(false);
+                setdocDownloading(false);
+                setpdfDownloading(false);
+                settxtDownloading(false)
+            }, 2000);
+        });
     };
+
     return (
         <>
+            <NavigationBar />
             <div className="chat-container">
-                <div className="client-container" style={{ display: "flex", justifyContent: "space-between" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <img className="profile-img" src={logo} alt=" " style={{ width: "50px", height: "50px", border: '1px solid #ff6c37', borderRadius: '100px', padding: '4px 7px 4px 4px' }}></img>
-                        <p className="Client-Name">{"Plutustec"}</p>
-                    </div>
-                    <div>
-                        {user ? (
-                            <Dropdown className="dropdown">
-                                {/* <Dropdown.Toggle id="dropdown-basic">
-                                    <img
-                                        src={user.profileImage || noDP} // Make sure to use the correct property for the user's name and profile image
-                                        height="30px"
-                                        style={{ borderRadius: "50%" }}
-                                    ></img>{" "}
-                                    {user.name && user.name}
-                                </Dropdown.Toggle> */}
-                                <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
-                                    {console.log(user, 'user?.name?.charAt(0)')}
-                                    <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
-                                    {user?.name && user?.name}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item
-                                        onClick={() => {
-                                            logoutClients();
-                                        }}
-                                    >
-                                        Logout
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        ) : (
-                            <Nav>
-                                <Stack direction="horizontal">
-                                    <h4>
-                                        <Link to="/">login</Link>
-                                    </h4>
-                                </Stack>
-                            </Nav>
-                        )}
+                <div className="back-chat-icon user-container">
+                    <div className="d-flex align-items-center">
+                        <img className="imgs" src={logo} alt=""></img>
+                        <p className="medium-title ml-3 mb-0">{"Plutustec"}</p>
                     </div>
                 </div>
                 <div id="scrollTop" className="messages-container" ref={scroll}>
@@ -311,7 +417,7 @@ function ClientChatConatainer() {
                                                 <div>
                                                     {data.fromSelf ?
                                                         // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
-                                                        <span className="avatar_circle d-flex align-items-center justify-content-center">{data.fromSelf?.name?.charAt(0) && data.fromSelf?.name?.charAt(0)}</span>
+                                                        <span className="avatar_circle d-flex align-items-center justify-content-center mr-0">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
                                                     }
@@ -328,136 +434,298 @@ function ClientChatConatainer() {
                                                     <p
                                                         className={data.fromSelf ? "sender-msg" : "receiver-msg"}
                                                     >
-                                                        {data.message} 
+                                                        {data.message}
                                                     </p>
                                                 </div>
                                             </div>
 
                                         </>
                                     )}
+                                    {console.log(data.attechment, 'video')}
                                     {data.attechment &&
                                         (data.attechment &&
-                                            (ext == "png" || ext == "jpeg" || ext == "jpg") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                                        style={{
-                                                            height: "190px",
-                                                            width: "213px",
-                                                            border: "2px solid #d9d9d9",
-                                                            position: ""
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+                                            (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
+                                            <div className="file-displys position-relative">
+                                                {imgdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                                className="attched-file"
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {imgdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
                                         ) : data.attechment && ext == "mp4" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <video
-                                                        src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
-                                                        autoPlay
-                                                        style={{
-                                                            height: "105px",
-                                                            width: "200px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+
+                                            <div className="file-displys position-relative">
+                                                {mp4downloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <video
+                                                                className="attched-file"
+                                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                                autoPlay
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {mp4downloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <video
+                                                            className="attched-file"
+                                                            src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                            autoPlay
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+
                                         ) : data.attechment && ext == "ppt" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={ppt}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+
+
+                                            <div className="file-displys position-relative">
+                                                {pptdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={ppt}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {pptdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={ppt}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
                                         ) : data.attechment && ext == "zip" ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={zip}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+                                            <div className="file-displys position-relative">
+                                                {zipdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={zip}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {zipdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={zip}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
                                         ) : data.attechment && (ext == "xls" || ext == "xlsx") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={xls}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+                                            <div className="file-displys position-relative">
+                                                {xlsdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={xls}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {xlsdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={xls}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+                                        ) : data.attechment && (ext == "txt") ? (
+                                            <div className="file-displys position-relative">
+                                                {txtdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={txt}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {txtdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={txt}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+
                                         ) : data.attechment && (ext == "docx" || ext == "doc") ? (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={doc}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+
+                                            <div className="file-displys position-relative">
+                                                {docdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={doc}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {docdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={doc}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
                                         ) : (
-                                            <>
-                                                <div style={{ position: "relative" }}>
-                                                    <img src={ImageSend} className="seenIcon" />
-                                                    <img
-                                                        src={pdf}
-                                                        style={{
-                                                            height: "120px",
-                                                            width: "120px",
-                                                            border: "2px solid #d9d9d9",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleDownload(data.attechment);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </>
+                                            <div className="file-displys position-relative">
+                                                {pdfdownloading ? (
+                                                    <>
+                                                        <div className="position-relative">
+                                                            <img
+                                                                className="attched-file"
+                                                                src={pdf}
+                                                                onClick={() => {
+                                                                    handleDownload(data.attechment);
+                                                                }}
+                                                            />
+                                                            {pdfdownloading && (
+                                                                <div
+                                                                    className="img-loader"
+                                                                >
+                                                                    <Loader />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <img src={ImageSend} className="seenIcon" />
+                                                        <img
+                                                            className="attched-file"
+                                                            src={pdf}
+                                                            onClick={() => {
+                                                                handleDownload(data.attechment);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
                                         ))}
                                 </div>
                             );
