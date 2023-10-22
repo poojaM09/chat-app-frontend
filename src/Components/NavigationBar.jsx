@@ -21,12 +21,16 @@ function NavigationBar() {
   const logout = () => {
     socket.emit("end-connection");
     dispatch(logoutUser());
-    navigate("/login");
+    // navigate("/login");
+    window.location.href='/login';
   };
   const logoutClients = () => {
     socket.emit("end-connection");
     dispatch(logoutClient());
-    navigate("/");
+    // navigate("/");
+    window.location.href='/';
+      // navigate("/client-chat");
+    // window.location.reload();
   };
 
   return (

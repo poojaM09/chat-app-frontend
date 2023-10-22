@@ -32,7 +32,8 @@ function Login() {
   }, [errorMsg]);
 
   if (isLoggin) {
-    navigate("/chat");
+    // navigate("/chat");
+    window.location.href = '/chat';
   }
   return (
     <div className="login-wrapper d-flex align-items-center position-relative">

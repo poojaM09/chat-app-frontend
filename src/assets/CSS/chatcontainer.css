@@ -289,3 +289,7 @@
 .imgsFix{
   padding: 2px
 }
+.sending-message {
+  filter: blur(5px);
+  /* Add any other styles you want */
+}

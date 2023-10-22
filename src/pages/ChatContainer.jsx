@@ -8,18 +8,18 @@ import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
 import DownloadIcon from "../../public/downloadIcon.svg"
-import video from "../../public/video.jpg";
+
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
 import txt from "../../public/txt-file.png";
+import png from "../../public/png.png";
+import jpg from "../../public/jpg.png";
+import mp4 from "../../public/mp4.png";
 import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -47,10 +47,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const [txtdownloading, settxtDownloading] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(null);
+  console.log(message, 'messagemessage')
+  const [showDownloadIcon, setShowDownloadIcon] = useState(false);
 
-  const [showDownloadIcon, setShowDownloadIcon] = useState(false); // Initially hidden
-  const [showImage, setShowImage] = useState(false);
-  const [imageSrc, setImageSrc] = useState(null);
 
   console.log(data, 'data')
   console.log(message, 'ggdgggdsds')
@@ -80,31 +79,35 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
   //handle ImagehandleSendImage
 
-  // const handleSendImage = async (file, type) => {
-  //   const data = new FormData();
-  //   data.append("image", file);
-  //   data.append("from", currentUser.id);
-  //   data.append("to", currentChat._id);
-  //   data.append("msg_type", type);
-  //   const response = await postimage("message/sendImage", data);
-  //   const res = await response.json();
-  //   if (res.status == 400) {
-  //     errorToast(res.error);
-  //   }
+  const handleSendImage = async (file, type) => {
+    const data = new FormData();
+    data.append("image", file);
+    data.append("from", currentUser.id);
+    data.append("to", currentChat._id);
+    data.append("msg_type", type);
+    const response = await postimage("message/sendImage", data);
+    const res = await response.json();
+    if (res.status == 400) {
+      errorToast(res.error);
+    }
 
-  //   const info = [...message];
-  //   info.push({ fromSelf: true, attechment: res.data, msg_type: type });
-  //   setMessage(info);
+    const info = [...message];
+    info.push({ fromSelf: true, attechment: res.data, msg_type: type });
+    setMessage(info);
 
-  //   socket.emit("send-msg", {
-  //     from: currentUser.id,
-  //     to: currentChat._id,
-  //     attechment: res.data,
-  //     msg_type: type,
-  //   });
-  // };
+    socket.emit("send-msg", {
+      from: currentUser.id,
+      to: currentChat._id,
+      attechment: res.data,
+      msg_type: type,
+    });
+  };
+
+
   // const handleSendImage = async (file, type) => {
-  //   const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
+  //   console.log(file.path,'ASaa')
+  //   console.log(type,'ASDSADSD')
+  //   const sendingMessage = { fromSelf: true, SendFile:file.path, msg_type:type,className:'ddddd'};
   //   setMessage((prevMessages) => [...prevMessages, sendingMessage]);
   //   const data = new FormData();
   //   data.append("image", file);
@@ -121,6 +124,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   //       const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
   //       if (sendingMessageIndex !== -1) {
   //         updatedMessages.splice(sendingMessageIndex, 1);
+  //         console.log(res.data,'res.datares.datares.datares.data')
   //         updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
   //       }
   //       return updatedMessages;
@@ -135,53 +139,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   //     });
   //   }
   // };
-
-
-  const handleSendImage = async (file, type) => {
-    // Display the DownloadIcon immediately
-    setShowDownloadIcon(true);
-
-    // Remove the DownloadIcon and show the image after 2 seconds
-    setTimeout(async () => {
-      setShowDownloadIcon(false);
-      setShowImage(true);
-
-      const data = new FormData();
-      data.append("image", file);
-      data.append("from", currentUser.id);
-      data.append("to", currentChat._id);
-      data.append("msg_type", type);
-
-      const response = await postimage("message/sendImage", data);
-      const res = await response.json();
-      if (res.status === 400) {
-        errorToast(res.error);
-      } else {
-        setMessage((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          const sendingMessageIndex = updatedMessages.findIndex(
-            (message) => message.fromSelf && message.msg_type === "text"
-          );
-          if (sendingMessageIndex !== -1) {
-            updatedMessages.splice(sendingMessageIndex, 1);
-          }
-          return updatedMessages;
-        });
-
-        // Emit a socket event to notify that the image was sent
-        socket.emit("send-msg", {
-          from: currentUser.id,
-          to: currentChat._id,
-          attechment: res.data,
-          msg_type: type,
-        });
-
-        // Set the image source to be displayed
-        setImageSrc(`https://chat-app-backend-l2a8.onrender.com/public/${res.data}`);
-      }
-    }, 2000);
-  };
-
 
   //get message from the database
   const getmessage = async () => {
@@ -206,7 +163,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
   const viewMore = async () => {
-    // Load more messages and check if there are more messages
     const newData = data + 5;
     if (newData >= message.length) {
       setNoMoreMessages(true);
@@ -359,15 +315,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
   const storedDataString = localStorage.getItem('userList')
   const userList = JSON.parse(storedDataString);
-  
+
   const isCurrentUserOnline = onlineUser?.some((user) => user?.userID === currentChat?._id);
-  console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
-  console.log(onlineUser, 'onlineUser')
-  console.log(message, "hello")
+
 
   return (
     <>
-      {/* <ToastContainer /> */}
       <div className="chat-container">
         <div className="back-chat-icon">
           <div className="back-icon p-0 mr-2 d-block d-lg-none" onClick={() => handlehide()}>
@@ -380,14 +333,14 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
               {isCurrentUserOnline ?
                 <div className="user-profile align-items-center">
                   {userList.map((data) => {
-                    if (data._id === currentChat._id) {
+                    if (data?._id === currentChat?._id) {
                       if (data?.contactNumber) {
                         return <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>
                           <div className="online"></div>
                         </div>;
                       } else {
                         return <div className="online-user">
-                          <img className="imgs" src={BDProfile} alt=" " key={data.id} />
+                          <img className="imgs" src={BDProfile} alt=" " key={data?.id} />
                           <div className="online"></div>
                         </div>;
                       }
@@ -404,9 +357,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                       if (data?._id === currentChat?._id) {
                         if (data?.contactNumber) {
-                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>;
+                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
-                          return <img className="imgs" src={BDProfile} alt=" " key={data.id} />;
+                          return <img className="imgs" src={BDProfile} alt=" " key={data?.id} />;
                         }
                       }
                     })}
@@ -420,7 +373,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {!noMoreMessages && message.length >= 5 && (
+          {!noMoreMessages && message?.length >= 5 && (
             <div className="view-btn">
               <button className="view-more-button text-uppercase" onClick={viewMore}>
                 View more
@@ -451,14 +404,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           if (Users?._id === data?.from) {
                             console.log(Users?._id === data?.from, 'Users._id === data?.from')
                             if (Users?.contactNumber) {
-                              console.log(Users?.contactNumber, 'gfdfdsf')
                               return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
                             }
                           }
                           if (Users?._id === data?.to) {
-                            console.log(Users?._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
                             if (Users?.contactNumber) {
                               console.log(Users?.contactNumber, 'gfdfdsf')
                               return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
@@ -485,12 +436,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                     </>
                   )}
-                  {console.log(data.attechment, 'video111111')}
-                  {showDownloadIcon && data.fromSelf && (
-                    <div className="download-icon">
-                      <img src={DownloadIcon} alt="Download Icon" />
-                    </div>
-                  )}
                   {data.attechment &&
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
@@ -499,7 +444,23 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <div className="position-relative">
                               <img
-                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                src={
+                                  (() => {
+                                    switch (ext) {
+                                      case "png":
+                                        return png;
+                                      case "jpeg":
+                                      case "jpg":
+                                        return jpg;
+                                      case "svg":
+                                        return svg;
+                                      case "webp":
+                                        return webp;
+                                      default:
+                                        return png;
+                                    }
+                                  })()
+                                }
                                 className="attched-file"
                                 onClick={() => {
                                   handleDownload(data.attechment);
@@ -518,7 +479,23 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              src={
+                                (() => {
+                                  switch (ext) {
+                                    case "png":
+                                      return png;
+                                    case "jpeg":
+                                    case "jpg":
+                                      return jpg;
+                                    case "svg":
+                                      return svg;
+                                    case "webp":
+                                      return webp;
+                                    default:
+                                      return png;
+                                  }
+                                })()
+                              }
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -532,9 +509,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         {mp4downloading ? (
                           <>
                             <div className="position-relative">
-                              <video
+                              <img
                                 className="attched-file"
-                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                src={mp4}
                                 autoPlay
                                 onClick={() => {
                                   handleDownload(data.attechment);
@@ -552,9 +529,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         ) : (
                           <>
                             <img src={ImageSend} className="seenIcon" />
-                            <video
+                            <img
                               className="attched-file"
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              src={mp4}
                               autoPlay
                               onClick={() => {
                                 handleDownload(data.attechment);

@@ -5,6 +5,7 @@ import "../assets/CSS/chatcontainer.css";
 import { Container, Navbar, Stack, Nav, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { socket } from "../socket";
+import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import BDProfile from "../../public/fevicon-logo.svg";
 // import noDP from "../../public/noDP.jpg";
@@ -19,10 +20,13 @@ import ImageSend from "../../public/double-tick-icon.svg"
 import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
-
+import png from "../../public/png.png";
+import mp4 from "../../public/mp4.png";
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
+import svg from "../../public/svg.png";
+import jpg from "../../public/jpg.png";
 import txt from "../../public/txt-file.png";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutClient } from "../redux/feature/clientSlice";
@@ -56,6 +60,7 @@ function ClientChatConatainer() {
     const [pdfdownloading, setpdfDownloading] = useState(false);
     const [txtdownloading, settxtDownloading] = useState(false);
     const [noMoreMessages, setNoMoreMessages] = useState(false);
+    const [downloadingImage, setDownloadingImage] = useState(null);
     let currentUser = parsedData?._id
     const DataGet = localStorage.getItem('currentChat')
     const currentChat = JSON.parse(DataGet);
@@ -69,9 +74,9 @@ function ClientChatConatainer() {
         console.log("hgdsadsd")
         socket.emit("end-connection");
         dispatch(logoutClient());
-        window.location.href = "/"
-        // navigate("/");
-        // window.location.reload();
+        // window.location.href = "/"
+        navigate("/");
+        window.location.reload();
     };
     const getUsers = async () => {
         const res = await getdata("user/getUser");
@@ -289,94 +294,81 @@ function ClientChatConatainer() {
     }, [message]);
 
     const handleDownload = (img) => {
-        const lastIndex = img.lastIndexOf(".");
-        const part2 = img.substring(lastIndex + 1);
-
-        const downloadFile = (URL, filename, onSuccess) => {
-            fetch(URL)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('File not found');
-                    }
-                    return response.blob();
-                })
-                .then((blob) => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    onSuccess();
-                })
-                .catch((error) => {
-
-                    setImgDownloading(false);
-                    setmp4Downloading(false);
-                    setzipDownloading(false);
-                    setpptDownloading(false);
-                    setxlsDownloading(false);
-                    setdocDownloading(false);
-                    setpdfDownloading(false);
-                    settxtDownloading(false)
-
-                    toast.error('File not found. Please try again later.', {
-                        position: "top-center",
-                        autoClose: 3000,
-                    });
-                });
-        };
-        if (
-            !imgdownloading &&
-            (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
-
-        ) {
-            setImgDownloading(true);
-        } else if (!mp4downloading && part2 === 'mp4') {
-            setmp4Downloading(true);
-        } else if (!zipdownloading && part2 === 'zip') {
-            setzipDownloading(true);
-        } else if (!pptdownloading && part2 === 'ppt') {
-            setpptDownloading(true);
-        } else if (!txtdownloading) {
-            settxtDownloading(true)
-        }
-        else if (
-            (!xlsdownloading && part2 === 'xls') ||
-            (!xlsdownloading && part2 === 'xlsx')
-        ) {
-            setxlsDownloading(true);
-        } else if (
-            (!docdownloading && part2 === 'doc') ||
-            (!docdownloading && part2 === 'docx')
-        ) {
-            setdocDownloading(true);
-        } else if (!pdfdownloading) {
-            setpdfDownloading(true);
-        }
-
-        let URL;
-        if (chatGptImg) {
-            URL = img;
-        } else {
-            URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-        }
-
-        downloadFile(URL, img, () => {
-            // Simulate download completion with a delay
-            setTimeout(() => {
-                setImgDownloading(false);
-                setmp4Downloading(false);
-                setzipDownloading(false);
-                setpptDownloading(false);
-                setxlsDownloading(false);
-                setdocDownloading(false);
-                setpdfDownloading(false);
-                settxtDownloading(false)
-            }, 2000);
-        });
-    };
+        setDownloadingImage(img)
+            const lastIndex = img.lastIndexOf(".");
+            const part2 = img.substring(lastIndex + 1);
+        
+            const resetDownloadingFlags = () => {
+                  setImgDownloading(false);
+                  setmp4Downloading(false);
+                  setzipDownloading(false);
+                  setpptDownloading(false);
+                  setxlsDownloading(false);
+                  setdocDownloading(false);
+                  setpdfDownloading(false);
+                  settxtDownloading(false);
+              setDownloadingImage(false)
+            };
+        
+            if (part2 === "png" || part2 === "jpeg" || part2 === "jpg" || part2 === "svg" || part2 === "webp") {
+              setImgDownloading(true);
+            } else if (part2 === 'mp4' || part2 == 'mkv' || part2 == "webm") {
+              setmp4Downloading(true);
+            } else if (part2 === 'zip') {
+              setzipDownloading(true);
+            } else if (part2 === 'ppt') {
+              setpptDownloading(true);
+            } else if (part2 === 'txt') {
+              settxtDownloading(true);
+            } else if (part2 === 'xls' || part2 === 'xlsx') {
+              setxlsDownloading(true);
+            } else if (part2 === 'doc' || part2 === 'docx') {
+              setdocDownloading(true);
+            } else {
+              setpdfDownloading(true);
+            }
+        
+            let URL;
+            if (chatGptImg) {
+              URL = img;
+            } else {
+              URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
+            }
+        
+            const onSuccess = () => {
+              resetDownloadingFlags();
+            };
+        
+            const onError = () => {
+              resetDownloadingFlags();
+        
+              toast.error('File not found. Please try again later.', {
+                position: "top-center",
+                autoClose: 3000,
+            });
+          };
+        
+        fetch(URL)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error('File not found');
+                }
+                return response.blob();
+              })
+              .then((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = img;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                onSuccess();
+              })
+              .catch((error) => {
+                onError();
+              });
+          };
 
     return (
         <>
@@ -450,13 +442,29 @@ function ClientChatConatainer() {
                                                     <>
                                                         <div className="position-relative">
                                                             <img
-                                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                                  src={
+                                                                    (() => {
+                                                                      switch (ext) {
+                                                                        case "png":
+                                                                          return png;
+                                                                        case "jpeg":
+                                                                        case "jpg":
+                                                                          return jpg;
+                                                                        case "svg":
+                                                                          return svg;
+                                                                        case "webp":
+                                                                          return webp;
+                                                                        default:
+                                                                          return png;
+                                                                      }
+                                                                    })()
+                                                                  }
                                                                 className="attched-file"
                                                                 onClick={() => {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {imgdownloading && (
+                                                            {downloadingImage === data.attechment  && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -470,7 +478,23 @@ function ClientChatConatainer() {
                                                         <img src={ImageSend} className="seenIcon" />
                                                         <img
                                                             className="attched-file"
-                                                            src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                            src={
+                                                                (() => {
+                                                                  switch (ext) {
+                                                                    case "png":
+                                                                      return png;
+                                                                    case "jpeg":
+                                                                    case "jpg":
+                                                                      return jpg;
+                                                                    case "svg":
+                                                                      return svg;
+                                                                    case "webp":
+                                                                      return webp;
+                                                                    default:
+                                                                      return png;
+                                                                  }
+                                                                })()
+                                                              }
                                                             onClick={() => {
                                                                 handleDownload(data.attechment);
                                                             }}
@@ -478,21 +502,21 @@ function ClientChatConatainer() {
                                                     </>
                                                 )}
                                             </div>
-                                        ) : data.attechment && ext == "mp4" ? (
+                                        ) : data.attechment && ext == "mp4" || ext == 'mkv' || ext == 'webm'? (
 
                                             <div className="file-displys position-relative">
                                                 {mp4downloading ? (
                                                     <>
                                                         <div className="position-relative">
-                                                            <video
+                                                            <img
                                                                 className="attched-file"
-                                                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                                src={mp4}
                                                                 autoPlay
                                                                 onClick={() => {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {mp4downloading && (
+                                                            {downloadingImage === data.attechment &&  (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -504,9 +528,9 @@ function ClientChatConatainer() {
                                                 ) : (
                                                     <>
                                                         <img src={ImageSend} className="seenIcon" />
-                                                        <video
+                                                        <img
                                                             className="attched-file"
-                                                            src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                                            src={mp4}
                                                             autoPlay
                                                             onClick={() => {
                                                                 handleDownload(data.attechment);
@@ -530,7 +554,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {pptdownloading && (
+                                                            {downloadingImage === data.attechment &&  (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -564,7 +588,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {zipdownloading && (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -598,7 +622,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {xlsdownloading && (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -633,7 +657,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {txtdownloading && (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -670,7 +694,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {docdownloading && (
+                                                            {downloadingImage === data.attechment &&  (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -704,7 +728,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {pdfdownloading && (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
