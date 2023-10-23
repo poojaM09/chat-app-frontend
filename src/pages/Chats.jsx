@@ -25,7 +25,7 @@ function Chats() {
     const response = await res.json();
     setContact(response.users);
   };
-
+  
   useEffect(() => {
     getUsers();
   }, []);
@@ -33,6 +33,8 @@ function Chats() {
   useEffect(() => {
     if (user) {
       socket.emit("add-user", user.id);
+    }else{
+      socket.emit("add-client", user.id);
     }
   }, [user]);
 
@@ -55,7 +57,7 @@ function Chats() {
   if (!isLoggin) {
     return <Navigate to="/" />;
   }
-
+  
   return (
     <div className="main-container">
       <NavigationBar />
@@ -93,7 +95,7 @@ function Chats() {
                 currentChat={currentChat}
                 currentUser={user}
                 onlineIs={onlineIs}
-                              />
+              />
             )}
           </div>
         ) : null}

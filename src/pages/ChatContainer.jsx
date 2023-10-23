@@ -353,11 +353,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 :
                 <div className="user-profile align-items-center">
                   <div className="online-user">
-                    {userList.map((data) => {
+                    {userList.map((data,index) => {
 
                       if (data?._id === currentChat?._id) {
                         if (data?.contactNumber) {
-                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
+                          return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
                           return <img className="imgs" src={BDProfile} alt=" " key={data?.id} />;
                         }
@@ -398,13 +398,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data?.message && (
                     <>
-
                       <div className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
-                        {userList.map((Users) => {
+                        {userList.map((Users,index) => {
                           if (Users?._id === data?.from) {
                             console.log(Users?._id === data?.from, 'Users._id === data?.from')
                             if (Users?.contactNumber) {
-                              return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
+                              return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
                             }

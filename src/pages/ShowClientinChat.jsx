@@ -20,7 +20,6 @@ let userList = [];
 function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
     console.log(currentChat, 'currentChat1111')
     console.log(currentUser, 'currentUser1111')
-
     const [message, setMessage] = useState([]);
     const [getMsg, setGetMsg] = useState();
     const [data, setData] = useState(5);

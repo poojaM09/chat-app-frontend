@@ -24,7 +24,7 @@ let initialState = {
   },
   isLoggin: user ? true : false,
   errorMsg: null,
-};
+};  
 
 export const loginUser = createAsyncThunk("user/addclient", async (data) => {
   const res = await postdata("user/addclient", data);
@@ -54,7 +54,7 @@ const clientSlice = createSlice({
 
         localStorage.setItem("user", action.payload.token);
         const data = jwtDecode(action.payload.token);
-        socket.emit("login", data.id);
+        socket.emit("client-login", data.id);
         state.user.id = data.id;
         state.user.email = data.email;
         state.user.contactNumber = data.contactNumber;
