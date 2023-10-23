@@ -8,18 +8,18 @@ import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
 import DownloadIcon from "../../public/downloadIcon.svg"
-import video from "../../public/video.jpg";
+
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
 import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
 import txt from "../../public/txt-file.png";
+import png from "../../public/png.png";
+import jpg from "../../public/jpg.png";
+import mp4 from "../../public/mp4.png";
 import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -46,6 +46,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [pdfdownloading, setpdfDownloading] = useState(false);
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const [txtdownloading, settxtDownloading] = useState(false);
+  const [downloadingImage, setDownloadingImage] = useState(null);
+  console.log(message, 'messagemessage')
+  const [showDownloadIcon, setShowDownloadIcon] = useState(false);
+
+
   console.log(data, 'data')
   console.log(message, 'ggdgggdsds')
   console.log(isMobile, 'isMobile')
@@ -74,32 +79,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
   //handle ImagehandleSendImage
 
-  // const handleSendImage = async (file, type) => {
-  //   const data = new FormData();
-  //   data.append("image", file);
-  //   data.append("from", currentUser.id);
-  //   data.append("to", currentChat._id);
-  //   data.append("msg_type", type);
-  //   const response = await postimage("message/sendImage", data);
-  //   const res = await response.json();
-  //   if (res.status == 400) {
-  //     errorToast(res.error);
-  //   }
-
-  //   const info = [...message];
-  //   info.push({ fromSelf: true, attechment: res.data, msg_type: type });
-  //   setMessage(info);
-
-  //   socket.emit("send-msg", {
-  //     from: currentUser.id,
-  //     to: currentChat._id,
-  //     attechment: res.data,
-  //     msg_type: type,
-  //   });
-  // };
   const handleSendImage = async (file, type) => {
-    const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
-    setMessage((prevMessages) => [...prevMessages, sendingMessage]);
     const data = new FormData();
     data.append("image", file);
     data.append("from", currentUser.id);
@@ -107,28 +87,58 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     data.append("msg_type", type);
     const response = await postimage("message/sendImage", data);
     const res = await response.json();
-    if (res.status === 400) {
+    if (res.status == 400) {
       errorToast(res.error);
-    } else {
-      setMessage((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
-        if (sendingMessageIndex !== -1) {
-          updatedMessages.splice(sendingMessageIndex, 1);
-          updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
-        }
-        return updatedMessages;
-      });
-
-      // Emit a socket event to notify that the image was sent
-      socket.emit("send-msg", {
-        from: currentUser.id,
-        to: currentChat._id,
-        attechment: res.data,
-        msg_type: type,
-      });
     }
+
+    const info = [...message];
+    info.push({ fromSelf: true, attechment: res.data, msg_type: type });
+    setMessage(info);
+
+    socket.emit("send-msg", {
+      from: currentUser.id,
+      to: currentChat._id,
+      attechment: res.data,
+      msg_type: type,
+    });
   };
+
+
+  // const handleSendImage = async (file, type) => {
+  //   console.log(file.path,'ASaa')
+  //   console.log(type,'ASDSADSD')
+  //   const sendingMessage = { fromSelf: true, SendFile:file.path, msg_type:type,className:'ddddd'};
+  //   setMessage((prevMessages) => [...prevMessages, sendingMessage]);
+  //   const data = new FormData();
+  //   data.append("image", file);
+  //   data.append("from", currentUser.id);
+  //   data.append("to", currentChat._id);
+  //   data.append("msg_type", type);
+  //   const response = await postimage("message/sendImage", data);
+  //   const res = await response.json();
+  //   if (res.status === 400) {
+  //     errorToast(res.error);
+  //   } else {
+  //     setMessage((prevMessages) => {
+  //       const updatedMessages = [...prevMessages];
+  //       const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
+  //       if (sendingMessageIndex !== -1) {
+  //         updatedMessages.splice(sendingMessageIndex, 1);
+  //         console.log(res.data,'res.datares.datares.datares.data')
+  //         updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
+  //       }
+  //       return updatedMessages;
+  //     });
+
+  //     // Emit a socket event to notify that the image was sent
+  //     socket.emit("send-msg", {
+  //       from: currentUser.id,
+  //       to: currentChat._id,
+  //       attechment: res.data,
+  //       msg_type: type,
+  //     });
+  //   }
+  // };
 
   //get message from the database
   const getmessage = async () => {
@@ -153,7 +163,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
 
   const viewMore = async () => {
-    // Load more messages and check if there are more messages
     const newData = data + 5;
     if (newData >= message.length) {
       setNoMoreMessages(true);
@@ -229,69 +238,37 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   }, [message]);
 
   const handleDownload = (img) => {
+    setDownloadingImage(img)
     const lastIndex = img.lastIndexOf(".");
     const part2 = img.substring(lastIndex + 1);
 
-    const downloadFile = (URL, filename, onSuccess) => {
-      fetch(URL)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('File not found');
-          }
-          return response.blob();
-        })
-        .then((blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          onSuccess();
-        })
-        .catch((error) => {
-
-          setImgDownloading(false);
-          setmp4Downloading(false);
-          setzipDownloading(false);
-          setpptDownloading(false);
-          setxlsDownloading(false);
-          setdocDownloading(false);
-          setpdfDownloading(false);
-          settxtDownloading(false)
-
-          toast.error('File not found. Please try again later.', {
-            position: "top-center",
-            autoClose: 3000,
-          });
-        });
+    const resetDownloadingFlags = () => {
+      setImgDownloading(false);
+      setmp4Downloading(false);
+      setzipDownloading(false);
+      setpptDownloading(false);
+      setxlsDownloading(false);
+      setdocDownloading(false);
+      setpdfDownloading(false);
+      settxtDownloading(false);
+      setDownloadingImage(false)
     };
-    if (
-      !imgdownloading &&
-      (part2 == "png" || part2 == "jpeg" || part2 == "jpg" || part2 == "svg" || part2 == "webp")
-    ) {
+
+    if (part2 === "png" || part2 === "jpeg" || part2 === "jpg" || part2 === "svg" || part2 === "webp") {
       setImgDownloading(true);
-    } else if (!mp4downloading && part2 === 'mp4') {
+    } else if (part2 === 'mp4') {
       setmp4Downloading(true);
-    } else if (!zipdownloading && part2 === 'zip') {
+    } else if (part2 === 'zip') {
       setzipDownloading(true);
-    } else if (!pptdownloading && part2 === 'ppt') {
+    } else if (part2 === 'ppt') {
       setpptDownloading(true);
-    } else if (!txtdownloading) {
-      settxtDownloading(false)
-    }
-    else if (
-      (!xlsdownloading && part2 === 'xls') ||
-      (!xlsdownloading && part2 === 'xlsx')
-    ) {
+    } else if (part2 === 'txt') {
+      settxtDownloading(true);
+    } else if (part2 === 'xls' || part2 === 'xlsx') {
       setxlsDownloading(true);
-    } else if (
-      (!docdownloading && part2 === 'doc') ||
-      (!docdownloading && part2 === 'docx')
-    ) {
+    } else if (part2 === 'doc' || part2 === 'docx') {
       setdocDownloading(true);
-    } else if (!pdfdownloading) {
+    } else {
       setpdfDownloading(true);
     }
 
@@ -302,33 +279,48 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
     }
 
-    downloadFile(URL, img, () => {
-      // Simulate download completion with a delay
-      setTimeout(() => {
-        setImgDownloading(false);
-        setmp4Downloading(false);
-        setzipDownloading(false);
-        setpptDownloading(false);
-        setxlsDownloading(false);
-        setdocDownloading(false);
-        setpdfDownloading(false);
-        settxtDownloading(false)
-      }, 2000);
-    });
+    const onSuccess = () => {
+      resetDownloadingFlags();
+    };
+
+    const onError = () => {
+      resetDownloadingFlags();
+
+      toast.error('File not found. Please try again later.', {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    };
+
+    fetch(URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('File not found');
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = img;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        onSuccess();
+      })
+      .catch((error) => {
+        onError();
+      });
   };
-
-
   const storedDataString = localStorage.getItem('userList')
   const userList = JSON.parse(storedDataString);
 
   const isCurrentUserOnline = onlineUser?.some((user) => user?.userID === currentChat?._id);
-  console.log(isCurrentUserOnline, 'isCurrentUserOnlineisCurrentUserOnline')
-  console.log(onlineUser, 'onlineUser')
-  console.log(message, "hello")
+
 
   return (
     <>
-      {/* <ToastContainer /> */}
       <div className="chat-container">
         <div className="back-chat-icon">
           <div className="back-icon p-0 mr-2 d-block d-lg-none" onClick={() => handlehide()}>
@@ -341,14 +333,14 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
               {isCurrentUserOnline ?
                 <div className="user-profile align-items-center">
                   {userList.map((data) => {
-                    if (data._id === currentChat._id) {
+                    if (data?._id === currentChat?._id) {
                       if (data?.contactNumber) {
                         return <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>
                           <div className="online"></div>
                         </div>;
                       } else {
                         return <div className="online-user">
-                          <img className="imgs" src={BDProfile} alt=" " key={data.id} />
+                          <img className="imgs" src={BDProfile} alt=" " key={data?.id} />
                           <div className="online"></div>
                         </div>;
                       }
@@ -365,9 +357,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
                       if (data?._id === currentChat?._id) {
                         if (data?.contactNumber) {
-                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name.charAt(0) && data?.name.charAt(0)}</span>;
+                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
-                          return <img className="imgs" src={BDProfile} alt=" " key={data.id} />;
+                          return <img className="imgs" src={BDProfile} alt=" " key={data?.id} />;
                         }
                       }
                     })}
@@ -378,19 +370,10 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 </div>
               }
             </div>
-            {/* <div className="search-user-msg">
-                <div className="icon-color">
-                  <FontAwesomeIcon icon={faSearch} />
-                </div>
-                <div className="icon-color">
-                  <FontAwesomeIcon icon={faEllipsisV} />
-                </div>
-              </div> */}
-
           </div>
         </div >
         <div id="scrollTop" className="messages-container" ref={scroll}>
-          {!noMoreMessages && message.length >= 5 && (
+          {!noMoreMessages && message?.length >= 5 && (
             <div className="view-btn">
               <button className="view-more-button text-uppercase" onClick={viewMore}>
                 View more
@@ -421,14 +404,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           if (Users?._id === data?.from) {
                             console.log(Users?._id === data?.from, 'Users._id === data?.from')
                             if (Users?.contactNumber) {
-                              console.log(Users?.contactNumber, 'gfdfdsf')
                               return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
                               return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
                             }
                           }
                           if (Users?._id === data?.to) {
-                            console.log(Users?._id === data?.to, 'Users._id === data?.toUsers._id === data?.to')
                             if (Users?.contactNumber) {
                               console.log(Users?.contactNumber, 'gfdfdsf')
                               return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
@@ -446,21 +427,15 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                               ).format("h:mm: a")}
                             </span>
                           </div>
-
-
                           <p className={data.fromSelf ? "sender-msg" : "receiver-msg"}>
                             {data.message}
                             <br />
                           </p>
-
-
-
                         </div>
                       </div>
 
                     </>
                   )}
-                  {console.log(data.attechment, 'video')}
                   {data.attechment &&
                     (data.attechment &&
                       (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
@@ -469,16 +444,31 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           <>
                             <div className="position-relative">
                               <img
-                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                src={
+                                  (() => {
+                                    switch (ext) {
+                                      case "png":
+                                        return png;
+                                      case "jpeg":
+                                      case "jpg":
+                                        return jpg;
+                                      case "svg":
+                                        return svg;
+                                      case "webp":
+                                        return webp;
+                                      default:
+                                        return png;
+                                    }
+                                  })()
+                                }
                                 className="attched-file"
                                 onClick={() => {
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {imgdownloading && (
-                                <div
-                                  className="img-loader"
-                                >
+
+                              {downloadingImage === data.attechment && (
+                                <div className="img-loader">
                                   <Loader />
                                 </div>
                               )}
@@ -489,7 +479,23 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             <img src={ImageSend} className="seenIcon" />
                             <img
                               className="attched-file"
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              src={
+                                (() => {
+                                  switch (ext) {
+                                    case "png":
+                                      return png;
+                                    case "jpeg":
+                                    case "jpg":
+                                      return jpg;
+                                    case "svg":
+                                      return svg;
+                                    case "webp":
+                                      return webp;
+                                    default:
+                                      return png;
+                                  }
+                                })()
+                              }
                               onClick={() => {
                                 handleDownload(data.attechment);
                               }}
@@ -503,9 +509,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         {mp4downloading ? (
                           <>
                             <div className="position-relative">
-                              <video
+                              <img
                                 className="attched-file"
-                                src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                                src={mp4}
                                 autoPlay
                                 onClick={() => {
                                   handleDownload(data.attechment);
@@ -523,9 +529,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         ) : (
                           <>
                             <img src={ImageSend} className="seenIcon" />
-                            <video
+                            <img
                               className="attched-file"
-                              src={`https://chat-app-backend-l2a8.onrender.com/public/${data.attechment}`}
+                              src={mp4}
                               autoPlay
                               onClick={() => {
                                 handleDownload(data.attechment);
@@ -652,10 +658,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                   handleDownload(data.attechment);
                                 }}
                               />
-                              {txtdownloading && (
-                                <div
-                                  className="img-loader"
-                                >
+                              {downloadingImage === data.attechment && (
+                                <div className="img-loader">
                                   <Loader />
                                 </div>
                               )}
@@ -690,10 +694,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                     handleDownload(data.attechment);
                                   }}
                                 />
-                                {docdownloading && (
-                                  <div
-                                    className="img-loader"
-                                  >
+                                {downloadingImage === data.attechment && (
+                                  <div className="img-loader">
                                     <Loader />
                                   </div>
                                 )}
@@ -724,10 +726,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                     handleDownload(data.attechment);
                                   }}
                                 />
-                                {pdfdownloading && (
-                                  <div
-                                    className="img-loader"
-                                  >
+                                {downloadingImage === data.attechment && (
+                                  <div className="img-loader">
                                     <Loader />
                                   </div>
                                 )}

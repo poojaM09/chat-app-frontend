@@ -75,9 +75,11 @@ function ClientForm() {
 
     useEffect(() => {
         if (isLoggin) {
-            setTimeout(() => {
+            // setTimeout(() => {
                 window.location.href = "/client-chat"
-            }, 1000)
+            // }, 1000)
+            // navigate("/client-chat");
+            // window.location.reload();
         }
     }, [isLoggin]);
     console.log(oUser, 'oUseroUseroUser')
