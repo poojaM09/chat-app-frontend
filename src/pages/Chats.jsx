@@ -25,8 +25,8 @@ function Chats() {
     const response = await res.json();
     setContact(response.users);
   };
-  
-  useEffect(() => {
+
+    useEffect(() => {
     getUsers();
   }, []);
 

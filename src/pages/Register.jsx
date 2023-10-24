@@ -2,12 +2,13 @@ import { useFormik } from "formik";
 import { postdata } from "../Utils/http.class";
 import { useNavigate } from "react-router-dom";
 import { errorToast } from "../Components/Toast";
+import {successToast} from "../Components/Toast"
 import "../../src/assets/CSS/register.css";
 import { Link } from "react-router-dom";
 import screen from "../../public/screen.jpg";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; 
+import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import login from "../../public/login.png";
 import logo from "../../public/Plutus_logo.svg";
 import React, { useState } from "react";
@@ -18,7 +19,12 @@ function Register() {
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { values, handleChange, handleSubmit } = useFormik({
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    password: false,
+  });
+  const { values, handleChange, handleSubmit, errors } = useFormik({
     initialValues: {
       name: "",
       email: "",
@@ -27,6 +33,20 @@ function Register() {
     onSubmit: () => {
       register();
     },
+    validate: (values) => {
+      const errors = {};
+      if (!validateEmail(values.email)) {
+        errors.email = "Please enter a valid email address.";
+      }
+      if (!validatePassword(values.password)) {
+        errors.password = "Password does not meet the criteria.";
+      }
+      if(!validateName(values.name)){
+        errors.name = "Please enter a valid name";
+      }
+      return errors;
+    },
+
   });
 
   const validatePassword = (password) => {
@@ -71,18 +91,24 @@ function Register() {
     setPasswordVisible(!passwordVisible);
   };
 
+  const handleInputBlur = (fieldName) => {
+    setTouched((prevTouched) => ({
+      ...prevTouched,
+      [fieldName]: true,
+    }));
+  };
 
   const validateName = (name) => {
     if (name.trim() === "") {
       setNameError("Name cannot be empty.");
       return false;
     }
-    if (name.trim().length < 3) {
+    if (name.trim().length < 3 ) {
       setNameError("Name should be at least 3 characters long.");
       return false;
     }
-    if (!/^[A-Za-z]{3}$/.test(name)) {
-      setNameError("Name should contain exactly 3 letters.");
+    if (!/^[A-Za-z]+$/.test(name)) {
+      setNameError("Name should contain only letters (no numbers or special characters).");
       return false;
     }
 
@@ -103,9 +129,10 @@ function Register() {
     const response = await res.json();
     if (response.status === 1) {
       navigate("/login");
+      successToast("Register Successful Done")
     } else {
       errorToast(response.message);
-    }
+    } 
   };
   return (
     <div className="login-wrapper d-flex align-items-center position-relative">
@@ -133,6 +160,7 @@ function Register() {
                       name="name"
                       onChange={handleChange}
                       value={values.name}
+                      onFocus={() => handleInputBlur("name")}
                       placeholder="Enter username "
                     />
                   </div>
@@ -147,12 +175,11 @@ function Register() {
                       name="email"
                       onChange={handleChange}
                       value={values.email}
+                      onFocus={() => handleInputBlur("email")}
                       placeholder="Enter email"
                     />
                   </div>
-                  {emailError && (
-                    <div className="text-danger">{emailError}</div>
-                  )}
+                  {touched.email && errors.email && <div className="text-danger">{errors.email}</div>}
                 </div>
                 <div className="form-group mb-4">
                   <div className="input">
@@ -161,17 +188,16 @@ function Register() {
                       name="password"
                       placeholder="Enter password"
                       onChange={handleChange}
+                      onFocus={() => handleInputBlur("password")}
                       value={values.password}
                     />
-                   <FontAwesomeIcon
+                    <FontAwesomeIcon
                       icon={passwordVisible ? faEyeSlash : faEye}
                       className="password-toggle"
                       onClick={togglePasswordVisibility}
                     />
                   </div>
-                  {passwordError && (
-                    <div className="text-danger">{passwordError}</div>
-                  )}
+                  {touched.password && errors.password && <div className="text-danger">{errors.password}</div>}
                 </div>
                 <Button className="login-btn mb-0" type="Submit">Register</Button>
               </form>
