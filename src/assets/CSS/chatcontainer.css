@@ -144,15 +144,17 @@
 }
 
 .view-more-button {
-  padding: 7px 16px;
+  padding: 10px 20px;
   border-radius: 50px;
   width: auto;
-  height: auto;
-  background-color: transparent;
-  border: 1px solid #212121;
+  height: auto; 
+  border: 1px solid transparent;
   color: #212121 !important;
   letter-spacing: 1px;
   font-weight: 500;
+  background-color: #ffffff;
+  box-shadow: 0 0 15px 0 rgba(0,0,0,0.2);
+  line-height: normal;
 }
 .view-more-button:hover{
   background-color: #D9D9D9;

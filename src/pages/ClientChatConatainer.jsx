@@ -382,7 +382,7 @@ function ClientChatConatainer() {
                 <div id="scrollTop" className="messages-container" ref={scroll}>
                     {message.length > 10 && (
                         <div className="view-btn">
-                            <button className="view-more-button" onClick={() => viewMore()}>
+                            <button className="view-more-button text-uppercase" onClick={() => viewMore()}>
                                 View more
                             </button>
                         </div>
