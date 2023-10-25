@@ -26,13 +26,15 @@ function Chats() {
     setContact(response.users);
   };
 
-  useEffect(() => {
+    useEffect(() => {
     getUsers();
   }, []);
 
   useEffect(() => {
     if (user) {
       socket.emit("add-user", user.id);
+    }else{
+      socket.emit("add-client", user.id);
     }
   }, [user]);
 
@@ -55,7 +57,7 @@ function Chats() {
   if (!isLoggin) {
     return <Navigate to="/" />;
   }
-
+  
   return (
     <div className="main-container">
       <NavigationBar />

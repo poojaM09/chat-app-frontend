@@ -9,7 +9,6 @@ let user = null;
 
 if (token) {
   user = jwtDecode(token);
-  console.log(user,'dwdsadsad')
 } else {
   user = null
 }
@@ -24,14 +23,12 @@ let initialState = {
   },
   isLoggin: user ? true : false,
   errorMsg: null,
-};
+};  
 
 export const loginUser = createAsyncThunk("user/addclient", async (data) => {
   const res = await postdata("user/addclient", data);
   const response = await res.json();
-  console.log(response,'response')
   localStorage.setItem('client', JSON.stringify(response?.user))
-  console.log(response?.user, 'respon24343243se')
   return response;
 });
 
@@ -54,7 +51,7 @@ const clientSlice = createSlice({
 
         localStorage.setItem("user", action.payload.token);
         const data = jwtDecode(action.payload.token);
-        socket.emit("login", data.id);
+        socket.emit("client-login", data.id);
         state.user.id = data.id;
         state.user.email = data.email;
         state.user.contactNumber = data.contactNumber;

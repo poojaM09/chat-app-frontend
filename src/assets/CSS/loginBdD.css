@@ -28,7 +28,14 @@
 .input-container .input:active {
     outline: none;
 }
-
+.input{
+  position: relative;
+}
+svg{
+  position: absolute;
+  right: 15px;
+  bottom: 22px;
+}
 @media (max-width: 991px) { 
   .login-right-image,.register-right-image,.register-right-images{
     display: none;
@@ -51,4 +58,7 @@
   .title-login h3 {
     font-size: 20px;
   } 
+}
+.Toastify__toast-container--top-center{
+  z-index: 99999999999 !important;
 }

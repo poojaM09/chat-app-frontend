@@ -6,8 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { saveAs } from "file-saver";
 function ImageModel({ Img, setShowImg, chatGptImg }) {
-  console.log("Img...", Img);
-  console.log("chatGptImg", chatGptImg);
+
 
   const handleDownload = (Img) => {
     let URL;

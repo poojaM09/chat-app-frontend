@@ -16,6 +16,7 @@ import moment from "moment";
 let userList = [];
 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData, handleShow }) {
+
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
@@ -24,21 +25,17 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
-  console.log(userList, 'userList')
 
 
   // Function to get the last message for a user
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
-    console.log(userMessages, 'userMessages')
     const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
-    console.log(lastMessage, 'lastMessagelastMessage')
     return lastMessage;
   };
 
   const getSenderUsername = (message) => {
     const AllMessage = userList?.map((users) => {
-      console.log(users, 'usersusers')
       if (message?.from === users?._id) {
         return 'You';
       } else {
@@ -124,7 +121,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
     };
     const res = await postdata("user/searchUser", data);
     const response = await res.json();
-    console.log(response, 'responseresponse')
     if (response.message == "No result Found ") {
       setsearchDataFound(true)
     } else {
@@ -186,9 +182,8 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
-            console.log(data._id, 'sssssss')
             const userNote = userNotification(data);
-            const lastMessage = getLastMessage(data._id);
+            const lastMessage = getLastMessage(data?._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';
 
             return (
@@ -206,20 +201,19 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                 }}
               >
                 <div className="position-relative">
-                  {console.log(data, 'dasasasata')}
-                  {data.contactNumber ? (
-                    //  <img className="img" src={noDP} alt=" " />
+  
+                  {data?.contactNumber ? (
                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
                   ) :
                     <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
-                  }
+                  } 
                   {isOnline ? <div className="online"></div> : null}
                 </div>
                 <div className="contact-name">{data?.name}</div>
                 {currentChat?._id === data?._id
                   ? " "
                   : userNote.length > 0 && (
-                    <div className="notification">{userNote.length}</div>
+                    <div className="notification">{userNote?.length}</div>
                   )}
               </div>
             );
@@ -228,40 +222,41 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
+        
             const userNote = userNotification(data);
             const lastMessage = getLastMessage(data._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';
-
             return (
-              <div
-                key={index}
-                className="wrapper"
-                onClick={() => {
-                  handleCurrentChat(data);
-                  setCurrentChat(data);
-                }}
-              >
-                <div className="position-relative">
-                  {/* <img className="img" src={noDP} alt=" " /> */}
-                  {data.contactNumber ? (
-                    //  <img className="img" src={noDP} alt=" " />
-                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name.charAt(0)}</span>
-                  ):
-                  <img className="imgs mr-2" src={BDProfile} alt=" " />  
-                  }
-                  {isOnline ? <div className="online"></div> : null}
-                </div>
-                <div className="contact-name">
-                  {data?.name}
-                </div> 
-                {/* {currentChat?._id === data?._id
+              <>
+                <div
+                  key={index}
+                  className="wrapper"
+                  onClick={() => {
+                    handleCurrentChat(data);
+                    setCurrentChat(data);
+                  }}
+                >
+                  <div className="contact-img">
+                    {data.contactNumber ? (
+                      //  <img className="img" src={noDP} alt=" " />
+                      <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
+                    ) :
+                      <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
+                    }
+                    {isOnline ? <div className="online"></div> : null}
+                  </div>
+                  <div className="contact-name">
+                    <p style={{ color: "black" }}>{data?.name}</p>
+                  </div>
+                  {currentChat?._id === data?._id
                     ? " "
-                    : userNote.length > 0 && (
+                    : userNote?.length > 0 && (
                       <>
-                        <div className="notification">{userNote.length}</div>
+                        <div className="notification">{userNote?.length}</div>
                       </>
-                    )} */}
-              </div>
+                    )}
+                </div>
+              </>
             );
           })}
       </div>
