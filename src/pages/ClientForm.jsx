@@ -107,7 +107,7 @@ function ClientForm() {
             {oUser.length > 0 ?
                 <Container className="Welcome">
                     <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-rght-image">
+                        <Col lg={6} className="register-right-image">
                         </Col>
                         <Col lg={6} className="px-3 px-lg-0">
                             <div className="register-form ">

@@ -1,6 +1,6 @@
 .login-right-image {
     /* background: url('../../../public/LoginPage.jpg'); */
-    background: url('../../../public/login-bg.jpg'); 
+    background-image: url('../../../public/login-bg.jpg'); 
     background-size: cover !important;
     border-radius: 8px 0 0 8px;
     position: relative;
