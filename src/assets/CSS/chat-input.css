@@ -20,6 +20,11 @@
 .input-container .send-box .send-button{
   right: 26px;
 }
+.input-container .attechment svg{
+  position: relative;
+  left: 0;
+  bottom: 0;
+}
 @media (max-width: 375px) {
   .input-container{
     padding: 10px 10px !important;

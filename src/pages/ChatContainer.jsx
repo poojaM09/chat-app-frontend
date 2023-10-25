@@ -8,7 +8,6 @@ import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
 import DownloadIcon from "../../public/downloadIcon.svg"
-
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
 import zip from "../../public/zip.png";
@@ -22,10 +21,11 @@ import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
-  console.log(handlehide, 'handlehide')
-  console.log(onlineUser, 'onlineUseronlineUserchat')
+
   const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
   const [data, setData] = useState(5);
@@ -47,13 +47,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [noMoreMessages, setNoMoreMessages] = useState(false);
   const [txtdownloading, settxtDownloading] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(null);
-  console.log(message, 'messagemessage')
   const [showDownloadIcon, setShowDownloadIcon] = useState(false);
 
 
-  console.log(data, 'data')
-  console.log(message, 'ggdgggdsds')
-  console.log(isMobile, 'isMobile')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
     const data = {
@@ -62,10 +58,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       message: msg,
       msg_type: type,
     };
-    console.log(data, 'datadata')
     const response = await postdata("message/sendMessage", data);
     const res = await response.json();
-    console.log(res, 'fadffsaf')
     socket.emit("send-msg", {
       from: currentUser?.id,
       to: currentChat?._id,
@@ -105,8 +99,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
 
   // const handleSendImage = async (file, type) => {
-  //   console.log(file.path,'ASaa')
-  //   console.log(type,'ASDSADSD')
   //   const sendingMessage = { fromSelf: true, SendFile:file.path, msg_type:type,className:'ddddd'};
   //   setMessage((prevMessages) => [...prevMessages, sendingMessage]);
   //   const data = new FormData();
@@ -124,7 +116,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   //       const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
   //       if (sendingMessageIndex !== -1) {
   //         updatedMessages.splice(sendingMessageIndex, 1);
-  //         console.log(res.data,'res.datares.datares.datares.data')
   //         updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
   //       }
   //       return updatedMessages;
@@ -148,7 +139,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     };
     const response = await postdata("message/getAllMessage", data);
     const res = await response.json();
-    console.log(res, 'resDSSDSDSDSDSD')
     setMessage(res.message);
     setLoadding(false);
   };
@@ -285,7 +275,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
     const onError = () => {
       resetDownloadingFlags();
-
       toast.error('File not found. Please try again later.', {
         position: "top-center",
         autoClose: 3000,
@@ -323,6 +312,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     <>
       <div className="chat-container">
         <div className="back-chat-icon">
+      
+          {/* {isMobile == false ? (
+            <div className="back-icon" onClick={() => handlehide()}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </div>
+          ) : null} */}
           <div className="back-icon p-0 mr-2 d-block d-lg-none" onClick={() => handlehide()}>
             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512">
               <path fill="#ff6c37" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
@@ -353,11 +348,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 :
                 <div className="user-profile align-items-center">
                   <div className="online-user">
-                    {userList.map((data) => {
+                    {userList.map((data, index) => {
 
                       if (data?._id === currentChat?._id) {
                         if (data?.contactNumber) {
-                          return <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
+                          return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
                           return <img className="imgs" src={BDProfile} alt=" " key={data?.id} />;
                         }
@@ -387,7 +382,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
           ) : (
             message &&
             message.slice(-data).map((data, index) => {
-              console.log(message, 'sadsadasdsdsdsd')
               const ext = data.attechment?.split(".").pop();
               return (
                 <div
@@ -398,23 +392,20 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data?.message && (
                     <>
-
-                      <div className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
-                        {userList.map((Users) => {
+                      <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
+                        {userList.map((Users, index) => {
                           if (Users?._id === data?.from) {
-                            console.log(Users?._id === data?.from, 'Users._id === data?.from')
                             if (Users?.contactNumber) {
-                              return <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
+                              return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
                             } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users?._id} />;
                             }
                           }
                           if (Users?._id === data?.to) {
                             if (Users?.contactNumber) {
-                              console.log(Users?.contactNumber, 'gfdfdsf')
-                              return <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
+                              return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
                             } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users?.id} />;
+                              return <img className="imgs" src={BDProfile} alt=" " key={Users?._id} />;
                             }
                           }
                         })}
@@ -433,7 +424,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           </p>
                         </div>
                       </div>
-
                     </>
                   )}
                   {data.attechment &&

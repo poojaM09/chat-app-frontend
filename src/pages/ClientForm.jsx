@@ -5,6 +5,7 @@ import { socket } from "../socket";
 import { loginUser } from "../redux/feature/clientSlice";
 import { useEffect, useState } from "react";
 import { errorToast } from "../Components/Toast";
+import { successToast } from "../Components/Toast"
 import { Link } from "react-router-dom";
 // import "../../src/assets/CSS/register.css";
 import "../../src/assets/CSS/clientForm.css";
@@ -25,19 +26,87 @@ function ClientForm() {
     const [onlineUser, setOnlineUser] = useState([]);
     const [oUser, setOUser] = useState([]);
     const [contact, setContact] = useState();
-    const { values, handleChange, handleSubmit } = useFormik({
+    const [contactNumberError, setCNumberError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [nameError, setNameError] = useState("");
+    const [touched, setTouched] = useState({
+        name: false,
+        email: false,
+        contactNumber: false,
+    });
+
+    const { values, handleChange, handleSubmit, errors } = useFormik({
         initialValues: {
             name: "",
             email: "",
             contactNumber: "",
         },
-        onSubmit: (event) => {
-            dispatch(loginUser(values));
+        onSubmit: () => {
+            const isNameValid = validateName(values.name);
+            const isEmailValid = validateEmail(values.email);
+            const isContactValid = validateContactNumber(values.contactNumber);
+
+            if (isNameValid && isEmailValid && isContactValid) {
+                dispatch(loginUser(values));
+            }
         },
+        validate: (values) => {
+            const errors = {};
+            if (!validateName(values.name)) {
+                errors.name = "Name is required and should be at least 3 characters long.";
+            }
+            if (!validateEmail(values.email)) {
+                errors.email = "Please enter a valid email address.";
+            }
+            if (!validateContactNumber(values.contactNumber)) {
+                errors.contactNumber = "Enter exactly 10 digits.";
+            }
+            return errors;
+        },
+
     });
+    const validateEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailPattern.test(email)) {
+            setEmailError("Please enter a valid email address.");
+            return false;
+        } else {
+            setEmailError("");
+            return true;
+        }
+    };
+
+    const validateName = (name) => {
+        if (name.trim() === "") {
+            setNameError("Name cannot be empty.");
+            return false;
+        }
+        if (name.trim().length < 3) {
+            setNameError("Name should be at least 3 characters long.");
+            return false;
+        }
+        if (!/^[A-Za-z]+$/.test(name)) {
+            setNameError("Name should contain only letters (no numbers or special characters).");
+            return false;
+        } else {
+            setNameError("");
+            return true;
+        }
+    };
+
+    const validateContactNumber = (contactNumber) => {
+        const numberPattern = /^[0-9]{10}$/;
+
+        if (!numberPattern.test(contactNumber)) {
+            setCNumberError("Enter exactly 10 digits.");
+            return false;
+        } else {
+            setCNumberError("");
+            return true;
+        }
+    };
 
     //Is Online
-
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
@@ -47,7 +116,6 @@ function ClientForm() {
         getUsers();
     }, []);
 
-    console.log(contact, 'dsasadaasd')
     userList = contact?.map((data) => { data });
     useEffect(() => {
         if (socket) {
@@ -63,39 +131,43 @@ function ClientForm() {
             });
         }
     }, [socket, userList]);
-    console.log(userList, 'userListuserListuserList')
     if (oUser.length > 0) {
         localStorage.setItem('currentChat', JSON.stringify(oUser[0]))
     }
-        useEffect(() => {
+    useEffect(() => {
         if (errorMsg !== null) {
             errorToast(errorMsg);
         }
     }, [errorMsg]);
 
+    const handleInputBlur = (fieldName) => {
+        setTouched((prevTouched) => ({
+            ...prevTouched,
+            [fieldName]: true,
+        }));
+    };
+
+
     useEffect(() => {
         if (isLoggin) {
-            // setTimeout(() => {
+            successToast("Welcome to Chat!");
+            setTimeout(() => {
                 window.location.href = "/client-chat"
-            // }, 1000)
-            // navigate("/client-chat");
-            // window.location.reload();
+            }, 1000)
         }
     }, [isLoggin]);
-    console.log(oUser, 'oUseroUseroUser')
     // const userWithNewMessage = contact?.find((user) => {
-    //     console.log(user, 'sdsdsds')
     //     user?._id === oUser.userID
     // });
-    // console.log(userWithNewMessage, 'userWithNewMessage')
+
     // useEffect(() => {
     //     if (oUser?.length > 0) {
     //         const userWithCondition = userList?.find((user) => {
     //             return oUser.some((online) => online?.userID === user?._id) && !user?.contactNumber;
     //         });
-    
-    //         console.log(userWithCondition, 'userWithNewMessage');
-    
+
+    //
+
     //         if (userWithCondition) {
     //             // Display the form if a user meets the condition
     //             navigate("/client-form");
@@ -109,7 +181,7 @@ function ClientForm() {
             {oUser.length > 0 ?
                 <Container className="Welcome">
                     <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-rght-image">
+                        <Col lg={6} className="register-right-image">
                         </Col>
                         <Col lg={6} className="px-3 px-lg-0">
                             <div className="register-form ">
@@ -123,10 +195,12 @@ function ClientForm() {
                                                 type="text"
                                                 name="name"
                                                 onChange={handleChange}
+                                                onFocus={() => handleInputBlur("name")}
                                                 value={values.name}
                                                 className="Input-Field"
                                             />
                                         </div>
+                                        {touched.name && errors.name && <div className="text-danger">{errors.name}</div>}
                                     </div>
                                     <div className="form-group mb-4">
                                         <div className="input">
@@ -135,22 +209,27 @@ function ClientForm() {
                                                 type="text"
                                                 name="email"
                                                 onChange={handleChange}
+                                                onFocus={() => handleInputBlur("email")}
                                                 value={values.email}
                                                 className="Input-Field"
                                             />
                                         </div>
+                                        {touched.email && errors.email && <div className="text-danger">{errors.email}</div>}
                                     </div>
                                     <div className="form-group mb-4">
                                         <div className="input">
                                             <input
-                                                type="number"
+                                                type="text"
                                                 name="contactNumber"
                                                 placeholder="Enter contact number"
                                                 onChange={handleChange}
+                                                onFocus={() => handleInputBlur("contactNumber")}
                                                 value={values.contactNumber}
+                                                maxLength={10}
                                                 className="Input-Field"
                                             />
                                         </div>
+                                        {touched.contactNumber && errors.contactNumber && <div className="text-danger">{errors.contactNumber}</div>}
                                     </div>
                                     <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
                                 </form>
@@ -162,13 +241,6 @@ function ClientForm() {
                 <Container className="Welcome">
                     <Row className="p-0 m-0 w-100 h-100">
                         <Col lg={6} className="register-right-image">
-                            {/* <div className="main-text">
-                                <h3 className="text-title">Plutus Technologies</h3>
-                                <span className="text">Plutus Technologies has steadfastly upheld its commitment to delivering exceptional services since its establishment in 2014.
-                                    We remain committed to being at the forefront as a custom software development company.
-                                    Innovative and technologically driven, we are constantly pushing the boundaries of our industry
-                                    and setting new standards of excellence.</span>
-                            </div> */}
                         </Col>
                         <Col lg={6} className="px-3 px-lg-0">
                             <div className="register-form">
@@ -235,220 +307,3 @@ function ClientForm() {
 }
 
 export default ClientForm;
-
-// import React, { useEffect, useState } from "react";
-// import { useFormik } from "formik";
-// import { useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { socket } from "../socket";
-// import { loginUser } from "../redux/feature/clientSlice";
-// import { errorToast } from "../Components/Toast";
-// import { getdata } from "../Utils/http.class";
-// import { Container, Row, Col, Button } from "react-bootstrap";
-// import logo from "../../public/Plutus_logo.svg";
-
-// let userList = [];
-
-// function ClientForm() {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const { isLoggin, errorMsg } = useSelector((state) => state.client);
-//   const [onlineUser, setOnlineUser] = useState([]);
-//   const [oUser, setOUser] = useState([]);
-//   const [contact, setContact] = useState();
-//   const { values, handleChange, handleSubmit } = useFormik({
-//     initialValues: {
-//       name: "",
-//       email: "",
-//       contactNumber: "",
-//     },
-//     onSubmit: (event) => {
-//       dispatch(loginUser(values));
-//     },
-//   });
-
-//   const getUsers = async () => {
-//     const res = await getdata("user/getUser");
-//     const response = await res.json();
-//     setContact(response.users);
-//   };
-
-//   useEffect(() => {
-//     getUsers();
-//   }, []);
-
-//   userList = contact?.map((data) => data);
-
-//   useEffect(() => {
-//     if (socket) {
-//       socket.on("online-user", (data) => {
-//         setOUser(data);
-//         data.forEach((element) => {
-//           let index = userList?.findIndex((item) => item?._id === element?.userID);
-//           if (index >= 0) {
-//             userList[index].socketid = data.socketId;
-//           }
-//         });
-//         setOnlineUser(data);
-//       });
-//     }
-//   }, [socket, userList]);
-
-//   if (oUser.length > 0) {
-//     localStorage.setItem("currentChat", JSON.stringify(oUser[0]));
-//   }
-
-//   useEffect(() => {
-//     if (errorMsg !== null) {
-//       errorToast(errorMsg);
-//     }
-//   }, [errorMsg]);
-
-//   useEffect(() => {
-//     if (isLoggin) {
-//       setTimeout(() => {
-//         window.location.href = "/client-chat";
-//       }, 1000);
-//     }
-//   }, [isLoggin]);
-
-//   // Use setInterval to periodically check for online users and update the UI
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       // Check if any user is online and meets the condition
-//       const userWithCondition = userList?.find(
-//         (user) =>
-//           oUser.length > 0 &&
-//           oUser[0]?.userID === user._id &&
-//           !user.contactNumber
-//       );
-
-//       if (userWithCondition) {
-//         // Display the form for the user who meets the condition
-//         navigate("/client-form");
-//       }
-//     }, 5000); // Adjust the interval as needed (e.g., every 5 seconds)
-
-//     return () => {
-//       clearInterval(interval); // Clean up the interval when the component unmounts
-//     };
-//   }, [oUser, userList, navigate]);
-
-//   return (
-//     <div className="login-wrapper d-flex align-items-center position-relative">
-//       <div className="login-bg"></div>
-//       {userList?.find(
-//         (user) =>
-//           oUser.length > 0 &&
-//           oUser[0]?.userID === user._id &&
-//           !user.contactNumber
-//       ) ? (
-//         <Container className="Welcome">
-//           <Row className="p-0 m-0 w-100 h-100">
-//             <Col lg={6} className="register-right-image">
-//               {/* Your content here */}
-//             </Col>
-//             <Col lg={6} className="px-3 px-lg-0">
-//               <div className="register-form">
-//                 <img src={logo} className="mb-3" width="211" height="79" />
-//                 <form onSubmit={handleSubmit} className="my-auto">
-//                   <p className="medium-title text-center">Please fill out the form.</p>
-//                   <div className="form-group mb-4">
-//                     <div className="input">
-//                       <input
-//                         placeholder="Enter name"
-//                         type="text"
-//                         name="name"
-//                         onChange={handleChange}
-//                         value={values.name}
-//                         className="Input-Field"
-//                       />
-//                     </div>
-//                   </div>
-//                   <div className="form-group mb-4">
-//                     <div className="input">
-//                       <input
-//                         placeholder="Enter email"
-//                         type="text"
-//                         name="email"
-//                         onChange={handleChange}
-//                         value={values.email}
-//                         className="Input-Field"
-//                       />
-//                     </div>
-//                   </div>
-//                   <div className="form-group mb-4">
-//                     <div className="input">
-//                       <input
-//                         type="number"
-//                         name="contactNumber"
-//                         placeholder="Enter contact number"
-//                         onChange={handleChange}
-//                         value={values.contactNumber}
-//                         className="Input-Field"
-//                       />
-//                     </div>
-//                   </div>
-//                   <Button className="login-btn mb-0" type="Submit">
-//                     Talk with sales
-//                   </Button>
-//                 </form>
-//               </div>
-//             </Col>
-//           </Row>
-//         </Container>
-//       ) : (
-//         <Container className="Welcome">
-//           <Row className="p-0 m-0 w-100 h-100">
-//             <Col lg={6} className="register-right-image">
-//               {/* Your content here */}
-//             </Col>
-//             <Col lg={6} className="px-3 px-lg-0">
-//               <div className="register-form">
-//                 <img src={logo} className="mb-3" width="211" height="79" />
-//                 <div className="my-auto">
-//                   <p className="medium-title text-center">
-//                     Currently, the team is not available, please send the message on this link{" "}
-//                     <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">
-//                       www.plutustec.com/contact-us
-//                     </a>{" "}
-//                     to share your details
-//                   </p>
-//                   <form className="d-none">
-//                     <div>
-//                       <div className="form-group mb-4">
-//                         <div className="input">
-//                           <input placeholder="Enter Name" type="text" name="name" />
-//                         </div>
-//                       </div>
-//                       <div className="form-group mb-4">
-//                         <div className="input">
-//                           <input placeholder="Enter Email" type="text" name="email" />
-//                         </div>
-//                       </div>
-//                       <div className="form-group mb-4">
-//                         <div className="input">
-//                           <input type="number" name="contactNumber" placeholder="Enter Contact Number" />
-//                         </div>
-//                       </div>
-//                       <div className="form-group mb-4">
-//                         <div className="input">
-//                           <input type="text" name="message" placeholder="Enter Message" />
-//                         </div>
-//                       </div>
-//                       <Button className="login-btn mb-0" type="Submit">
-//                         Send To Mail
-//                       </Button>
-//                     </div>
-//                   </form>
-//                 </div>
-//               </div>
-//             </Col>
-//           </Row>
-//         </Container>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default ClientForm;
