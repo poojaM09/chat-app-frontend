@@ -28,6 +28,7 @@ import xls from "../../public/xls.png";
 import svg from "../../public/svg.png";
 import jpg from "../../public/jpg.png";
 import txt from "../../public/txt-file.png";
+import webp from "../../public/webp.png"
 import { useSelector, useDispatch } from "react-redux";
 import { logoutClient } from "../redux/feature/clientSlice";
 import { useNavigate } from "react-router-dom";
