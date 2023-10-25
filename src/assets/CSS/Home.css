@@ -280,7 +280,7 @@ aside.EmojiPickerReact.epr-main{
     max-width: 100%;
   }
   .main-container .chat{
-    /* position: fixed; */
+    position: fixed;  
     right: -110%;
     top: 73px;
     z-index: 9999;
@@ -294,7 +294,7 @@ aside.EmojiPickerReact.epr-main{
     width: 50px;
     flex: 0 0 50px;
   }
-  .main-container .chat.open{
+  .main-container .open{
     right: 0;
   }
 }
