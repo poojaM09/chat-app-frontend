@@ -14,9 +14,11 @@ import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
 import txt from "../../public/txt-file.png";
+import svg from '../../public/svg.png'
 import png from "../../public/png.png";
 import jpg from "../../public/jpg.png";
 import mp4 from "../../public/mp4.png";
+import webp from "../../public/webp.png"
 import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
 import { toast } from 'react-toastify';
@@ -48,7 +50,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [txtdownloading, settxtDownloading] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(null);
   const [showDownloadIcon, setShowDownloadIcon] = useState(false);
-
 
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
@@ -96,7 +97,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       msg_type: type,
     });
   };
-
 
   // const handleSendImage = async (file, type) => {
   //   const sendingMessage = { fromSelf: true, SendFile:file.path, msg_type:type,className:'ddddd'};
