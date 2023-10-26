@@ -25,11 +25,16 @@
   display: flex;
   align-items: center;
   padding: 10px 15px;
+  gap: 1rem;
   border-bottom: 1px solid #D9D9D9;
 }
 
 .back-icon {
   cursor: pointer;
+  z-index: 9999999;
+}
+.back-icon svg{
+  position: initial !important;
 }
 
 .user-profile {
@@ -247,8 +252,8 @@
   /* Define the styles for your loader icon here */
   /* For example, you can use a CSS spinner or custom icon */
   /* Here, we'll use a simple spinner as an example */
-  border: 4px solid rgba(0, 0, 0, 0.3);
-  border-top: 4px solid #3498db;
+  border: 3px solid rgba(0, 0, 0, 0.3); 
+  border-top: 3px solid #ff6c37;
   border-radius: 50%;
   width: 24px;
   height: 24px;

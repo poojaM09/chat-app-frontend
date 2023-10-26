@@ -79,7 +79,7 @@
 }
 
 .register-right-images{
-  background: url('../../../public/bde-register.jpg');
+  background-image: url('../../../public/bde-register.jpg');
   width: 100%; 
   height: 100%;
   background-size: cover !important;

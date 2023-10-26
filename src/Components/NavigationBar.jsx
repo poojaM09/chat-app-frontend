@@ -10,24 +10,22 @@ import logo from "../../public/Plutus_logo.svg";
 import noDP from "../../public/profile-user.png";
 import "../../src/assets/CSS/navigationbar.css";
 import { useEffect } from "react";
+import { successToast } from "./Toast";
 
 function NavigationBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoggin, user } = useSelector((state) => state.auth);
 
-  console.log(user, 'user2222')
-  console.log(isLoggin, 'userisLoggin2222')
+
   const logout = () => {
     socket.emit("end-connection");
     dispatch(logoutUser());
-    // navigate("/login");
     window.location.href='/login';
   };
   const logoutClients = () => {
     socket.emit("end-connection");
     dispatch(logoutClient());
-    // navigate("/");
     window.location.href='/';
       // navigate("/client-chat");
     // window.location.reload();
@@ -35,7 +33,6 @@ function NavigationBar() {
 
   return (
     <Navbar className="p-0 w-100 header  navbar">
-      {/* <Link to="/chat"> */}
       {" "}
       <div className="w-100 px-3 py-2 logo">
         <img src={logo} width="211" height="79" />
@@ -76,7 +73,6 @@ function NavigationBar() {
           <nav>
             <Dropdown className="dropdown">
               <Dropdown.Toggle className="d-flex align-items-center" id="dropdown-basic">
-                {console.log(user, 'user?.name?.charAt(0)')}
                 <span className="avatar_circle d-flex align-items-center justify-content-center">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
                 <span className="d-none d-lg-block">
                   {user?.name && user.name.length > 0 ? user.name[0].toUpperCase() + user.name.slice(1) : ""}

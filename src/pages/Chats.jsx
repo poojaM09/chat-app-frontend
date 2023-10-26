@@ -33,6 +33,8 @@ function Chats() {
   useEffect(() => {
     if (user) {
       socket.emit("add-user", user.id);
+    } else {
+      socket.emit("add-client", user.id);
     }
   }, [user]);
 
@@ -73,9 +75,9 @@ function Chats() {
             />
           </div>
         )}
-
+        {/* 
         {showChat || isMobile ? (
-          <div className="chat">
+          <div className="chat open">
             {currentChat === undefined ? (
               <Welcome />
             ) : currentChat === "AI" ? (
@@ -93,10 +95,31 @@ function Chats() {
                 currentChat={currentChat}
                 currentUser={user}
                 onlineIs={onlineIs}
-                              />
+              />
             )}
           </div>
-        ) : null}
+        ) : null} */}
+        <div className={`chat ${showChat  ? 'open' : ''}`}>
+          {currentChat === undefined ? (
+            <Welcome />
+          ) : currentChat === "AI" ? (
+            <AiImageContainer currentUser={user} />
+          ) : user.contactNumber !== null ? (
+            <ChatContainer
+              currentChat={currentChat}
+              currentUser={user}
+              onlineUser={onlineUser}
+              setChatMsgData={setChatMsgData}
+              handlehide={handleHide}
+            />
+          ) : (
+            <ClientChatConatainer
+              currentChat={currentChat}
+              currentUser={user}
+              onlineIs={onlineIs}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

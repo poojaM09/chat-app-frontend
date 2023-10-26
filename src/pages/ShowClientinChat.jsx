@@ -18,9 +18,6 @@ import { Button } from "react-bootstrap";
 let userList = [];
 
 function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
-    console.log(currentChat, 'currentChat1111')
-    console.log(currentUser, 'currentUser1111')
-
     const [message, setMessage] = useState([]);
     const [getMsg, setGetMsg] = useState();
     const [data, setData] = useState(5);
@@ -32,18 +29,15 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
     const [chatGptImg, setChatGptImg] = useState(false);
     const msgBox = document.getElementById("scrollTop");
     userList = contact?.filter((data) => data._id !== currentUser.id);
-    console.log(userList, 'userList')
     const isUserOnline = onlineUser.some(user => user.userID === currentChat._id);
     //handle msg(database,socket,and frontend)
     const handleSendChat = async (msg, type) => {
-        console.log("send chat called", type);
         const data = {
             from: currentUser.id,
             to: currentChat._id,
             message: msg,
             msg_type: type,
         };
-        // console.log("data", data);
         const response = await postdata("message/sendMessage", data);
         const res = await response.json();
         socket.emit("send-msg", {
@@ -54,13 +48,11 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
             msg_type: type,
         });
         const info = [...message];
-        console.log(info, 'info')
         info.push({ fromSelf: true, message: msg, msg_type: type });
         setMessage(info);
     };
     //handle ImagehandleSendImage
     const handleSendImage = async (file, type) => {
-        console.log("send image called", type);
         const data = new FormData();
         data.append("image", file);
         data.append("from", currentUser.id);
@@ -68,7 +60,7 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
-        console.log("resssssss", res.data);
+
         if (res.status == 400) {
             errorToast(res.error);
         }
@@ -92,8 +84,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
         };
         const response = await postdata("message/getAllMessage", data);
         const res = await response.json();
-        console.log("res res", res);
-
         setMessage(res.message);
         setLoadding(false);
     };
@@ -169,8 +159,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
         }
     }, [message]);
 
-    console.log("...", showImg);
-    console.log("data", data);
     const handleDownload = (Img) => {
         let URL;
         if (chatGptImg) {
@@ -181,7 +169,7 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
             saveAs(URL, Img);
         }
     };
-    console.log(message, 'gggggg')
+
     return (
         <>
             {/* <ToastContainer /> */}

@@ -28,6 +28,7 @@ import xls from "../../public/xls.png";
 import svg from "../../public/svg.png";
 import jpg from "../../public/jpg.png";
 import txt from "../../public/txt-file.png";
+import webp from "../../public/webp.png"
 import { useSelector, useDispatch } from "react-redux";
 import { logoutClient } from "../redux/feature/clientSlice";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +72,6 @@ function ClientChatConatainer() {
     const { isLoggin, user } = useSelector((state) => state.auth);
 
     const logoutClients = () => {
-        console.log("hgdsadsd")
         socket.emit("end-connection");
         dispatch(logoutClient());
         // window.location.href = "/"
@@ -433,7 +433,6 @@ function ClientChatConatainer() {
 
                                         </>
                                     )}
-                                    {console.log(data.attechment, 'video')}
                                     {data.attechment &&
                                         (data.attechment &&
                                             (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
