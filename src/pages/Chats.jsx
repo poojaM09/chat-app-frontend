@@ -19,8 +19,6 @@ function Chats() {
   const [chatMsgData, setChatMsgData] = useState([]);
   const [onlineUser, setOnlineUser] = useState([]);
   const { isLoggin, user } = useSelector((state) => state.auth);
-  const { isLoggin1, user1 } = useSelector((state) => state.client);
-  console.log(isLoggin1, user1 ,'isLoggin1, user1 isLoggin1, user1 ')
   const getUsers = async () => {
     const res = await getdata("user/getUser");
     const response = await res.json();
@@ -73,8 +71,8 @@ function Chats() {
               handleShow={handleShow}
             />
           </div>
-        )} 
-        <div className={`chat ${showChat  ? 'open' : ''}`}>
+        )}
+        <div className={`chat ${showChat ? 'open' : ''}`}>
           {currentChat === undefined ? (
             <Welcome />
           ) : currentChat === "AI" ? (
@@ -92,6 +90,7 @@ function Chats() {
               currentChat={currentChat}
               currentUser={user}
               onlineIs={onlineIs}
+              onlineUser={onlineUser}
             />
           )}
         </div>

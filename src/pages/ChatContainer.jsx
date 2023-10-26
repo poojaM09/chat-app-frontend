@@ -246,7 +246,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     if (chatGptImg) {
       URL = img;
     } else {
-      URL = `http://localhost:9090/public/${img}`;
+      URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
     }
 
     const onSuccess = () => {

@@ -62,14 +62,13 @@ function ClientChatConatainer() {
 
 
     const { isLoggin, user } = useSelector((state) => state.auth);
-    
-    const logoutClients = () => {
-        socket.emit("end-connection");
-        dispatch(logoutClient());
-        // window.location.href = "/"
-        navigate("/");
-        window.location.reload();
-};
+
+    useEffect(() => {
+        if (user) {
+            socket.emit("add-client", user?.id);
+        }
+    }, [user]);
+
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
@@ -96,7 +95,8 @@ function ClientChatConatainer() {
     useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
-                                setOUser(data)
+                console.log(data, 'data111')
+                setOUser(data)
                 data.forEach((element) => {
                     let index = userList?.findIndex((item) => item?._id == element?.userID);
                     if (index >= 0) {
@@ -107,7 +107,7 @@ function ClientChatConatainer() {
             });
         }
     }, [socket, userList]);
-
+console.log()
     const handleSendChat = async (msg, type) => {
         const data = {
             from: currentUser,
@@ -289,7 +289,7 @@ function ClientChatConatainer() {
         if (chatGptImg) {
             URL = img;
         } else {
-            URL = `http://localhost:9090/public/${img}`;
+            URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
         }
 
         const onSuccess = () => {
