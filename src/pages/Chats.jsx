@@ -19,7 +19,8 @@ function Chats() {
   const [chatMsgData, setChatMsgData] = useState([]);
   const [onlineUser, setOnlineUser] = useState([]);
   const { isLoggin, user } = useSelector((state) => state.auth);
-
+  const { isLoggin1, user1 } = useSelector((state) => state.client);
+  console.log(isLoggin1, user1 ,'isLoggin1, user1 isLoggin1, user1 ')
   const getUsers = async () => {
     const res = await getdata("user/getUser");
     const response = await res.json();
@@ -33,8 +34,6 @@ function Chats() {
   useEffect(() => {
     if (user) {
       socket.emit("add-user", user.id);
-    } else {
-      socket.emit("add-client", user.id);
     }
   }, [user]);
 
@@ -74,31 +73,7 @@ function Chats() {
               handleShow={handleShow}
             />
           </div>
-        )}
-        {/* 
-        {showChat || isMobile ? (
-          <div className="chat open">
-            {currentChat === undefined ? (
-              <Welcome />
-            ) : currentChat === "AI" ? (
-              <AiImageContainer currentUser={user} />
-            ) : user.contactNumber !== null ? (
-              <ChatContainer
-                currentChat={currentChat}
-                currentUser={user}
-                onlineUser={onlineUser}
-                setChatMsgData={setChatMsgData}
-                handlehide={handleHide}
-              />
-            ) : (
-              <ClientChatConatainer
-                currentChat={currentChat}
-                currentUser={user}
-                onlineIs={onlineIs}
-              />
-            )}
-          </div>
-        ) : null} */}
+        )} 
         <div className={`chat ${showChat  ? 'open' : ''}`}>
           {currentChat === undefined ? (
             <Welcome />

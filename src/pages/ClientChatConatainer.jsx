@@ -2,22 +2,16 @@ import ChatInput from "./ChatInput";
 import { postdata, getdata, postimage } from "../Utils/http.class";
 import { useEffect, useRef, useState } from "react";
 import "../assets/CSS/chatcontainer.css";
-import { Container, Navbar, Stack, Nav, Dropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { socket } from "../socket";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import BDProfile from "../../public/fevicon-logo.svg";
-// import noDP from "../../public/noDP.jpg";
-import noDP from "../../public/profile-user.png";
 import logo from "../../public/fevicon-logo.svg";
-import placeholderImage from "../../public/placeholderImage.png";
 import moment from "moment";
+import DownloadIcon from "../../public/downloadIcon.svg"
 import { errorToast } from "../Components/Toast";
 import Loader from "../Components/Loader";
 import ImageModel from "../Components/ImageModel";
 import ImageSend from "../../public/double-tick-icon.svg"
-import video from "../../public/video.jpg";
 import pdf from "../../public/pdf.png";
 import ppt from "../../public/ppt.png";
 import png from "../../public/png.png";
@@ -66,18 +60,16 @@ function ClientChatConatainer() {
     const DataGet = localStorage.getItem('currentChat')
     const currentChat = JSON.parse(DataGet);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const { isLoggin, user } = useSelector((state) => state.auth);
-
+    
     const logoutClients = () => {
         socket.emit("end-connection");
         dispatch(logoutClient());
         // window.location.href = "/"
         navigate("/");
         window.location.reload();
-    };
+};
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
@@ -104,7 +96,7 @@ function ClientChatConatainer() {
     useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
-                setOUser(data)
+                                setOUser(data)
                 data.forEach((element) => {
                     let index = userList?.findIndex((item) => item?._id == element?.userID);
                     if (index >= 0) {
@@ -137,55 +129,16 @@ function ClientChatConatainer() {
         info.push({ fromSelf: true, message: msg, msg_type: type });
         setMessage(info);
     };
-    // //handle ImagehandleSendImage
-    // const handleSendImage = async (file, type) => {
-    //     // Display "File Sending...." message immediately
-    //     const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
-    //     setMessage((prevMessages) => [...prevMessages, sendingMessage]);
-
-    //     const data = new FormData();
-    //     data.append("image", file);
-    //     data.append("from", currentUser.id);
-    //     data.append("to", currentChat._id);
-    //     data.append("msg_type", type);
-
-    //     try {
-    //         const response = await postimage("message/sendImage", data);
-    //         const res = await response.json();
-
-    //         if (res.status === 400) {
-    //             errorToast(res.error);
-    //         } else {
-    //             // Delay showing the image for 2 seconds
-    //             setTimeout(() => {
-    //                 setMessage((prevMessages) => {
-    //                     const updatedMessages = [...prevMessages];
-    //                     const sendingMessageIndex = updatedMessages.findIndex(
-    //                         (message) => message === sendingMessage
-    //                     );
-    //                     if (sendingMessageIndex !== -1) {
-    //                         updatedMessages.splice(sendingMessageIndex, 1);
-    //                         updatedMessages.push({ fromSelf: true, attachment: res.data, msg_type: type });
-    //                     }
-    //                     return updatedMessages;
-    //                 });
-    //             }, 2000);
-
-    //             // Emit a socket event to notify that the image was sent
-    //             socket.emit("send-msg", {
-    //                 from: currentUser.id,
-    //                 to: currentChat._id,
-    //                 attechment: res.data,
-    //                 msg_type: type,
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
 
 
     const handleSendImage = async (file, type) => {
+        const sendingMessage = {
+            fromSelf: true,
+            loading: true,
+            msg_type: type,
+            id: Date.now(),
+        };
+        setMessage((prevMessages) => [...prevMessages, sendingMessage]);
         const data = new FormData();
         data.append("image", file);
         data.append("from", currentUser);
@@ -193,22 +146,26 @@ function ClientChatConatainer() {
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
-        if (res.status == 400) {
+        if (res.status === 400) {
             errorToast(res.error);
+        } else {
+            setMessage((prevMessages) => {
+                const updatedMessages = [...prevMessages];
+                const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
+                if (sendingMessageIndex !== -1) {
+                    updatedMessages.splice(sendingMessageIndex, 1);
+                    updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type, loading: false, });
+                }
+                return updatedMessages;
+            });
+            socket.emit("send-msg", {
+                from: currentUser,
+                to: currentChat.userID,
+                attechment: res?.data,
+                msg_type: type,
+            });
         }
-
-        const info = [...message];
-        info.push({ fromSelf: true, attechment: res.data, msg_type: type });
-        setMessage(info);
-
-        socket.emit("send-msg", {
-            from: currentUser,
-            to: currentChat.userID,
-            attechment: res?.data,
-            msg_type: type,
-        });
     };
-
 
     //get message from the database
     const getmessage = async () => {
@@ -295,67 +252,67 @@ function ClientChatConatainer() {
 
     const handleDownload = (img) => {
         setDownloadingImage(img)
-            const lastIndex = img.lastIndexOf(".");
-            const part2 = img.substring(lastIndex + 1);
-        
-            const resetDownloadingFlags = () => {
-                  setImgDownloading(false);
-                  setmp4Downloading(false);
-                  setzipDownloading(false);
-                  setpptDownloading(false);
-                  setxlsDownloading(false);
-                  setdocDownloading(false);
-                  setpdfDownloading(false);
-                  settxtDownloading(false);
-              setDownloadingImage(false)
-            };
-        
-            if (part2 === "png" || part2 === "jpeg" || part2 === "jpg" || part2 === "svg" || part2 === "webp") {
-              setImgDownloading(true);
-            } else if (part2 === 'mp4' || part2 == 'mkv' || part2 == "webm") {
-              setmp4Downloading(true);
-            } else if (part2 === 'zip') {
-              setzipDownloading(true);
-            } else if (part2 === 'ppt') {
-              setpptDownloading(true);
-            } else if (part2 === 'txt') {
-              settxtDownloading(true);
-            } else if (part2 === 'xls' || part2 === 'xlsx') {
-              setxlsDownloading(true);
-            } else if (part2 === 'doc' || part2 === 'docx') {
-              setdocDownloading(true);
-            } else {
-              setpdfDownloading(true);
-            }
-        
-            let URL;
-            if (chatGptImg) {
-              URL = img;
-            } else {
-              URL = `https://chat-app-backend-l2a8.onrender.com/public/${img}`;
-            }
-        
-            const onSuccess = () => {
-              resetDownloadingFlags();
-            };
-        
-            const onError = () => {
-              resetDownloadingFlags();
-        
-              toast.error('File not found. Please try again later.', {
+        const lastIndex = img.lastIndexOf(".");
+        const part2 = img.substring(lastIndex + 1);
+
+        const resetDownloadingFlags = () => {
+            setImgDownloading(false);
+            setmp4Downloading(false);
+            setzipDownloading(false);
+            setpptDownloading(false);
+            setxlsDownloading(false);
+            setdocDownloading(false);
+            setpdfDownloading(false);
+            settxtDownloading(false);
+            setDownloadingImage(false)
+        };
+
+        if (part2 === "png" || part2 === "jpeg" || part2 === "jpg" || part2 === "svg" || part2 === "webp") {
+            setImgDownloading(true);
+        } else if (part2 === 'mp4' || part2 == 'mkv' || part2 == "webm") {
+            setmp4Downloading(true);
+        } else if (part2 === 'zip') {
+            setzipDownloading(true);
+        } else if (part2 === 'ppt') {
+            setpptDownloading(true);
+        } else if (part2 === 'txt') {
+            settxtDownloading(true);
+        } else if (part2 === 'xls' || part2 === 'xlsx') {
+            setxlsDownloading(true);
+        } else if (part2 === 'doc' || part2 === 'docx') {
+            setdocDownloading(true);
+        } else {
+            setpdfDownloading(true);
+        }
+
+        let URL;
+        if (chatGptImg) {
+            URL = img;
+        } else {
+            URL = `http://localhost:9090/public/${img}`;
+        }
+
+        const onSuccess = () => {
+            resetDownloadingFlags();
+        };
+
+        const onError = () => {
+            resetDownloadingFlags();
+
+            toast.error('File not found. Please try again later.', {
                 position: "top-center",
                 autoClose: 3000,
             });
-          };
-        
+        };
+
         fetch(URL)
-              .then((response) => {
+            .then((response) => {
                 if (!response.ok) {
-                  throw new Error('File not found');
+                    throw new Error('File not found');
                 }
                 return response.blob();
-              })
-              .then((blob) => {
+            })
+            .then((blob) => {
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -364,11 +321,11 @@ function ClientChatConatainer() {
                 a.click();
                 window.URL.revokeObjectURL(url);
                 onSuccess();
-              })
-              .catch((error) => {
+            })
+            .catch((error) => {
                 onError();
-              });
-          };
+            });
+    };
 
     return (
         <>
@@ -433,6 +390,17 @@ function ClientChatConatainer() {
 
                                         </>
                                     )}
+                                    {data?.loading && (
+                                        <div className="file-displys position-relative">
+                                            <div>
+                                                <div style={{ position: "relative" }}>
+                                                    <img src={webp} style={{ filter: "blur(4px)" }} />
+                                                </div>
+                                                <div style={{ position: "absolute", top: "50px", left: "38%" }}><img style={{ height: "30px" }} src={DownloadIcon}
+                                                /></div>
+                                            </div>
+                                        </div>
+                                    )}
                                     {data.attechment &&
                                         (data.attechment &&
                                             (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
@@ -441,29 +409,29 @@ function ClientChatConatainer() {
                                                     <>
                                                         <div className="position-relative">
                                                             <img
-                                                                  src={
+                                                                src={
                                                                     (() => {
-                                                                      switch (ext) {
-                                                                        case "png":
-                                                                          return png;
-                                                                        case "jpeg":
-                                                                        case "jpg":
-                                                                          return jpg;
-                                                                        case "svg":
-                                                                          return svg;
-                                                                        case "webp":
-                                                                          return webp;
-                                                                        default:
-                                                                          return png;
-                                                                      }
+                                                                        switch (ext) {
+                                                                            case "png":
+                                                                                return png;
+                                                                            case "jpeg":
+                                                                            case "jpg":
+                                                                                return jpg;
+                                                                            case "svg":
+                                                                                return svg;
+                                                                            case "webp":
+                                                                                return webp;
+                                                                            default:
+                                                                                return png;
+                                                                        }
                                                                     })()
-                                                                  }
+                                                                }
                                                                 className="attched-file"
                                                                 onClick={() => {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {downloadingImage === data.attechment  && (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -479,21 +447,21 @@ function ClientChatConatainer() {
                                                             className="attched-file"
                                                             src={
                                                                 (() => {
-                                                                  switch (ext) {
-                                                                    case "png":
-                                                                      return png;
-                                                                    case "jpeg":
-                                                                    case "jpg":
-                                                                      return jpg;
-                                                                    case "svg":
-                                                                      return svg;
-                                                                    case "webp":
-                                                                      return webp;
-                                                                    default:
-                                                                      return png;
-                                                                  }
+                                                                    switch (ext) {
+                                                                        case "png":
+                                                                            return png;
+                                                                        case "jpeg":
+                                                                        case "jpg":
+                                                                            return jpg;
+                                                                        case "svg":
+                                                                            return svg;
+                                                                        case "webp":
+                                                                            return webp;
+                                                                        default:
+                                                                            return png;
+                                                                    }
                                                                 })()
-                                                              }
+                                                            }
                                                             onClick={() => {
                                                                 handleDownload(data.attechment);
                                                             }}
@@ -501,7 +469,7 @@ function ClientChatConatainer() {
                                                     </>
                                                 )}
                                             </div>
-                                        ) : data.attechment && ext == "mp4" || ext == 'mkv' || ext == 'webm'? (
+                                        ) : data.attechment && ext == "mp4" || ext == 'mkv' || ext == 'webm' ? (
 
                                             <div className="file-displys position-relative">
                                                 {mp4downloading ? (
@@ -515,7 +483,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {downloadingImage === data.attechment &&  (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -553,7 +521,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {downloadingImage === data.attechment &&  (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
@@ -693,7 +661,7 @@ function ClientChatConatainer() {
                                                                     handleDownload(data.attechment);
                                                                 }}
                                                             />
-                                                            {downloadingImage === data.attechment &&  (
+                                                            {downloadingImage === data.attechment && (
                                                                 <div
                                                                     className="img-loader"
                                                                 >
