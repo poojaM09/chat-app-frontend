@@ -60,7 +60,6 @@ function ClientChatConatainer() {
     const DataGet = localStorage.getItem('currentChat')
     const currentChat = JSON.parse(DataGet);
 
-
     const { isLoggin, user } = useSelector((state) => state.auth);
 
     useEffect(() => {
@@ -107,7 +106,6 @@ function ClientChatConatainer() {
             });
         }
     }, [socket, userList]);
-console.log()
     const handleSendChat = async (msg, type) => {
         const data = {
             from: currentUser,
@@ -142,7 +140,7 @@ console.log()
         const data = new FormData();
         data.append("image", file);
         data.append("from", currentUser);
-        data.append("to", currentChat.userID);
+        data.append("to", currentChat._id);
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
@@ -154,20 +152,21 @@ console.log()
                 const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
                 if (sendingMessageIndex !== -1) {
                     updatedMessages.splice(sendingMessageIndex, 1);
-                    updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type, loading: false, });
+                    updatedMessages.push({ fromSelf: true, attechment: res?.data, msg_type: type, loading: false, });
                 }
                 return updatedMessages;
             });
+
             socket.emit("send-msg", {
                 from: currentUser,
-                to: currentChat.userID,
+                to: currentChat?._id,
                 attechment: res?.data,
                 msg_type: type,
             });
         }
     };
 
-    //get message from the database
+    console.log(currentChat, 'currentUsercurrentUsercurrentUser')
     const getmessage = async () => {
         const data = {
             id: currentUser,
@@ -401,8 +400,8 @@ console.log()
                                             </div>
                                         </div>
                                     )}
-                                    {data.attechment &&
-                                        (data.attechment &&
+                                    {data?.attechment &&
+                                        (data?.attechment &&
                                             (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
                                             <div className="file-displys position-relative">
                                                 {imgdownloading ? (
