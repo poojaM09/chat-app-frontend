@@ -80,7 +80,7 @@ function ClientChatConatainer() {
 
     const getUsersID = async () => {
         const data = {
-            "id": currentChat?.userID
+            "id":  currentChat?._id
         }
         const res = await postdata("user/getbyid", data);
         const response = await res.json();
@@ -109,7 +109,7 @@ function ClientChatConatainer() {
     const handleSendChat = async (msg, type) => {
         const data = {
             from: currentUser,
-            to: currentChat?.userID,
+            to:  currentChat?._id,
             message: msg,
             msg_type: type,
         };
@@ -118,7 +118,7 @@ function ClientChatConatainer() {
         const res = await response.json();
         socket.emit("send-msg", {
             from: currentUser,
-            to: currentChat.userID,
+            to: currentChat._id,
             socketid: currentChat?.socketid,
             message: msg,
             msg_type: type,
@@ -170,7 +170,6 @@ function ClientChatConatainer() {
     const getmessage = async () => {
         const data = {
             id: currentUser,
-            //   to: currentChat,
         };
         const response = await postdata("message/userMessage", data);
         const res = await response.json();
@@ -182,7 +181,7 @@ function ClientChatConatainer() {
     const changeStatus = async () => {
         const data = {
             to: currentUser,
-            from: currentChat?.userID,
+            from: currentChat?._id,
         };
         const res = await postdata("message/changeStatus", data);
     };
