@@ -1,17 +1,23 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { errorToast } from "../Components/Toast";
-import { Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import NavigationBar from "../Components/NavigationBar";
 import Carousel from 'react-bootstrap/Carousel';
 import '../assets/CSS/Home.css'
 import CompanySite from "../../public/Company_Info.png"
+import { useEffect } from "react";
 
 function Home() {
   const notify = () => errorToast("errrrooo");
   const navigate = useNavigate();
 
+  const handleClick = () => {
+
+    // window.location.href = '/client'
+    navigate('/client')
+  };
   return (
     <>
       {/* <div className="Welcome">
@@ -61,7 +67,7 @@ function Home() {
                 </Carousel.Item>
                 <Carousel.Item>
                   <h1 className="slider-title mb-3 text-center">We provide</h1>
-                  <div className="slider-text text-center">CMS & E-commerce ● Mobile applications ● Web application <br/>● SEO & Digital marketing ● Responsive design</div>
+                  <div className="slider-text text-center">CMS & E-commerce ● Mobile applications ● Web application <br />● SEO & Digital marketing ● Responsive design</div>
                 </Carousel.Item>
               </Carousel>
             </div>
@@ -82,9 +88,9 @@ function Home() {
                   </Link>
                 </div> */}
                 <div className="btn-sale">
-                  <Link to="/client" className="login-btn">
+                  <Button to="/client" onClick={handleClick} className="login-btn">
                     Talk with sales
-                  </Link>
+                  </Button>
                 </div>
               </div>
             </div>
