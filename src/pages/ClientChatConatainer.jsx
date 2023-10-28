@@ -118,7 +118,7 @@ function ClientChatConatainer() {
         const res = await response.json();
         socket.emit("send-msg", {
             from: currentUser,
-            to: currentChat._id,
+            to: currentChat?._id,
             socketid: currentChat?.socketid,
             message: msg,
             msg_type: type,
@@ -140,7 +140,7 @@ function ClientChatConatainer() {
         const data = new FormData();
         data.append("image", file);
         data.append("from", currentUser);
-        data.append("to", currentChat._id);
+        data.append("to", currentChat?._id);
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
@@ -170,6 +170,7 @@ function ClientChatConatainer() {
     const getmessage = async () => {
         const data = {
             id: currentUser,
+            //   to: currentChat,
         };
         const response = await postdata("message/userMessage", data);
         const res = await response.json();
@@ -296,7 +297,6 @@ function ClientChatConatainer() {
 
         const onError = () => {
             resetDownloadingFlags();
-
             toast.error('File not found. Please try again later.', {
                 position: "top-center",
                 autoClose: 3000,
@@ -363,6 +363,7 @@ function ClientChatConatainer() {
                                             <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                                                 <div>
                                                     {data.fromSelf ?
+                                                        // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
                                                         <span className="avatar_circle d-flex align-items-center justify-content-center mr-0">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />

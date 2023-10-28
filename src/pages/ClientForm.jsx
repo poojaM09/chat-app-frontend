@@ -213,7 +213,7 @@ function ClientForm() {
 
     useEffect(() => {
         if (oUser) {
-            localStorage.setItem('currentChat', JSON.stringify(oUser))
+            localStorage.setItem('currentChat', JSON.stringify(onlineUsers))
         }
     })
     useEffect(() => {
