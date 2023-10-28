@@ -206,7 +206,7 @@ function ClientChatConatainer() {
     useEffect(() => {
         if (socket) {
             socket.on("msg-recieve", (data) => {
-                if (data.to === currentChat) {
+                if (data.to === currentChat?._id) {
                     if (data.message) {
                         setGetMsg({
                             fromSelf: false,
@@ -363,7 +363,6 @@ function ClientChatConatainer() {
                                             <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                                                 <div>
                                                     {data.fromSelf ?
-                                                        // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
                                                         <span className="avatar_circle d-flex align-items-center justify-content-center mr-0">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />

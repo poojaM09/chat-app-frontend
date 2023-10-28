@@ -16,7 +16,7 @@ import moment from "moment";
 let userList = [];
 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData, handleShow }) {
-
+  console.log(onlineUser,'onlineUseronlineUser')
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
@@ -25,17 +25,22 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [searchLoader, setSearchLoader] = useState(false);
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
+  
+  console.log(userList, 'userList')
 
 
   // Function to get the last message for a user
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
+    console.log(userMessages, 'userMessages')
     const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
+    console.log(lastMessage, 'lastMessagelastMessage')
     return lastMessage;
   };
 
   const getSenderUsername = (message) => {
     const AllMessage = userList?.map((users) => {
+      console.log(users, 'usersusers')
       if (message?.from === users?._id) {
         return 'You';
       } else {
@@ -121,6 +126,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
     };
     const res = await postdata("user/searchUser", data);
     const response = await res.json();
+    console.log(response, 'responseresponse')
     if (response.message == "No result Found ") {
       setsearchDataFound(true)
     } else {
@@ -201,7 +207,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                 }}
               >
                 <div className="position-relative">
-  
+                  {console.log(data, 'dasasasata')}
                   {data?.contactNumber ? (
                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
                   ) :
@@ -243,6 +249,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                     ) :
                       <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
                     }
+                  {  console.log(isOnline,'isOnlineisOnline')}
                     {isOnline ? <div className="online"></div> : null}
                   </div>
                   <div className="contact-name">
