@@ -144,33 +144,33 @@ function ClientForm() {
 
     userList = contact?.map((data) => { data });
 
-    let OnlineUsers = []
-    let Users = []
+    // let OnlineUsers = []
+    // let Users = []
 
-    useEffect(() => {
-        if (socket) {
-            socket.on("online-user", (data) => {
-                userList = contact?.map((datas) => {
-                    OnlineUsers = data.map((Onlines) => {
-                        if (datas._id == Onlines?.userID) {
-                            if (!datas.contactNumber) {
-                                console.log(datas, 'datasdatasdatas')
-                                Users?.push(datas)
-                                setOUser(datas)
-                            }
-                        }
-                    })
-                });
-                data.forEach((element) => {
-                    let index = userList?.findIndex((item) => item?._id == element?.userID);
-                    if (index >= 0) {
-                        userList[index].socketid = data.socketId;
-                    }
-                });
-                setOnlineUser(data);
-            });
-        }
-    }, [socket, userList]);
+    // useEffect(() => {
+    //     if (socket) {
+    //         socket.on("online-user", (data) => {
+    //             userList = contact?.map((datas) => {
+    //                 OnlineUsers = data.map((Onlines) => {
+    //                     if (datas._id == Onlines?.userID) {
+    //                         if (!datas.contactNumber) {
+    //                             console.log(datas, 'datasdatasdatas')
+    //                             Users?.push(datas)
+    //                             setOUser(datas)
+    //                         }
+    //                     }
+    //                 })
+    //             });
+    //             data.forEach((element) => {
+    //                 let index = userList?.findIndex((item) => item?._id == element?.userID);
+    //                 if (index >= 0) {
+    //                     userList[index].socketid = data.socketId;
+    //                 }
+    //             });
+    //             setOnlineUser(data);
+    //         });
+    //     }
+    // }, [socket, userList]);
 
     // useEffect(() => {
     //     if (socket) {
@@ -212,8 +212,8 @@ function ClientForm() {
 
 
     useEffect(() => {
-        if (oUser) {
-            localStorage.setItem('currentChat', JSON.stringify(onlineUsers))
+        if (onlineUsers) {
+            localStorage.setItem('currentChat', JSON.stringify(onlineUsers[0]))
         }
     })
     useEffect(() => {

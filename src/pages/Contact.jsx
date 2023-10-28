@@ -30,12 +30,20 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
 
 
   // Function to get the last message for a user
+  // const getLastMessage = (userId) => {
+  //   const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
+  //   console.log(userMessages, 'userMessages')
+  //   const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
+  //   console.log(lastMessage, 'lastMessagelastMessage')
+  //   return lastMessage;
+  // };
+
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
-    console.log(userMessages, 'userMessages')
-    const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
-    console.log(lastMessage, 'lastMessagelastMessage')
-    return lastMessage;
+    const sortedMessages = userMessages?.sort((a, b) => {
+      return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+    return sortedMessages?.length > 0 ? sortedMessages[0] : null;
   };
 
   const getSenderUsername = (message) => {
