@@ -14,9 +14,11 @@ import zip from "../../public/zip.png";
 import doc from "../../public/doc.png";
 import xls from "../../public/xls.png";
 import txt from "../../public/txt-file.png";
+import svg from '../../public/svg.png'
 import png from "../../public/png.png";
 import jpg from "../../public/jpg.png";
 import mp4 from "../../public/mp4.png";
+import webp from "../../public/webp.png"
 import ViewMore from "../../public/view-more.svg";
 import ChatInput from "./ChatInput";
 import { toast } from 'react-toastify';
@@ -49,7 +51,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [downloadingImage, setDownloadingImage] = useState(null);
   const [showDownloadIcon, setShowDownloadIcon] = useState(false);
 
-
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
     const data = {
@@ -72,8 +73,14 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     setMessage(info);
   };
   //handle ImagehandleSendImage
-
   const handleSendImage = async (file, type) => {
+    const sendingMessage = {
+      fromSelf: true,
+      loading: true,
+      msg_type: type,
+      id: Date.now(),
+    };
+    setMessage((prevMessages) => [...prevMessages, sendingMessage]);
     const data = new FormData();
     data.append("image", file);
     data.append("from", currentUser.id);
@@ -81,55 +88,28 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     data.append("msg_type", type);
     const response = await postimage("message/sendImage", data);
     const res = await response.json();
-    if (res.status == 400) {
+    if (res.status === 400) {
       errorToast(res.error);
+    } else {
+      setMessage((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
+        if (sendingMessageIndex !== -1) {
+          updatedMessages.splice(sendingMessageIndex, 1);
+          updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type, loading: false, });
+        }
+        return updatedMessages;
+      });
+
+      // Emit a socket event to notify that the image was sent
+      socket.emit("send-msg", {
+        from: currentUser.id,
+        to: currentChat._id,
+        attechment: res.data,
+        msg_type: type,
+      });
     }
-
-    const info = [...message];
-    info.push({ fromSelf: true, attechment: res.data, msg_type: type });
-    setMessage(info);
-
-    socket.emit("send-msg", {
-      from: currentUser.id,
-      to: currentChat._id,
-      attechment: res.data,
-      msg_type: type,
-    });
   };
-
-
-  // const handleSendImage = async (file, type) => {
-  //   const sendingMessage = { fromSelf: true, SendFile:file.path, msg_type:type,className:'ddddd'};
-  //   setMessage((prevMessages) => [...prevMessages, sendingMessage]);
-  //   const data = new FormData();
-  //   data.append("image", file);
-  //   data.append("from", currentUser.id);
-  //   data.append("to", currentChat._id);
-  //   data.append("msg_type", type);
-  //   const response = await postimage("message/sendImage", data);
-  //   const res = await response.json();
-  //   if (res.status === 400) {
-  //     errorToast(res.error);
-  //   } else {
-  //     setMessage((prevMessages) => {
-  //       const updatedMessages = [...prevMessages];
-  //       const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
-  //       if (sendingMessageIndex !== -1) {
-  //         updatedMessages.splice(sendingMessageIndex, 1);
-  //         updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type });
-  //       }
-  //       return updatedMessages;
-  //     });
-
-  //     // Emit a socket event to notify that the image was sent
-  //     socket.emit("send-msg", {
-  //       from: currentUser.id,
-  //       to: currentChat._id,
-  //       attechment: res.data,
-  //       msg_type: type,
-  //     });
-  //   }
-  // };
 
   //get message from the database
   const getmessage = async () => {
@@ -312,7 +292,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     <>
       <div className="chat-container">
         <div className="back-chat-icon">
-      
           {/* {isMobile == false ? (
             <div className="back-icon" onClick={() => handlehide()}>
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -425,6 +404,17 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         </div>
                       </div>
                     </>
+                  )}
+                  {data.loading && (
+                    <div className="file-displys position-relative">
+                      <div>
+                        <div style={{ position: "relative" }}>
+                          <img src={webp} style={{ filter: "blur(4px)" }} />
+                        </div>
+                        <div style={{ position: "absolute", top: "50px", left: "38%" }}><img style={{ height: "30px" }} src={DownloadIcon}
+                        /></div>
+                      </div>
+                    </div>
                   )}
                   {data.attechment &&
                     (data.attechment &&

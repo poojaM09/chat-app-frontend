@@ -18,23 +18,21 @@ function ChatInput({ handleSendChat, handleSendImage }) {
   const [type, setType] = useState("");
 
   const { getInputProps, getRootProps, fileRejections } = useDropzone({
-    accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "text/html": [".html", ".htm"],
-      "application/pdf": [".pdf"],
-      "video/mp4": [".mp4"],
-      "video/mpeg": [".mpeg"],
-      "audio/mpeg": [".mp3"],
-      "application/vnd.ms-powerpoint": [".ppt"],
-      "image/svg+xml": [".svg"],
-      "text/plain": [".txt"],
-      "application/zip": [".zip"],
-      "text/csv": [".csv"],
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docs"],
-    },
+    accept: [
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "application/pdf",
+      "text/html",
+      "text/plain",
+      "application/x-zip-compressed",
+      "application/zip",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "video/mp4",
+      "application/vnd.ms-excel",
+      "application/vnd.ms-powerpoint",
+      "image/webp",
+    ],
 
     onDrop: async (acceptFile) => {
       if (validation(acceptFile[0])) {
@@ -51,6 +49,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
       sendChat();
     }
   }, [attechment]);
+
   const validation = (file) => {
     if (file.size > 5 * 1024 * 1024) {
       errorToast("invalid size lenth");
@@ -62,10 +61,14 @@ function ChatInput({ handleSendChat, handleSendImage }) {
       file.type != "image/jpeg" &&
       file.type != "image/png" &&
       file.type != "image/jpeg" &&
+      file.type != "image/webp" &&
+      file.type !=   "image/svg+xml" &&
       file.type != "application/pdf" &&
       file.type != "text/html" &&
       file.type != "text/plain" &&
       file.type != "application/x-zip-compressed" &&
+      file.type != "application/vnd.ms-excel" && 
+      file.type !=  "application/vnd.ms-powerpoint" &&
        file.type != "application/zip" &&
       file.type !=
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&

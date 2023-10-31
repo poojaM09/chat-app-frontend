@@ -24,7 +24,7 @@ function ClientForm() {
     const navigate = useNavigate();
     const { isLoggin, errorMsg } = useSelector((state) => state.client);
     const [onlineUser, setOnlineUser] = useState([]);
-    const [oUser, setOUser] = useState([]);
+    const [oUser, setOUser] = useState();
     const [contact, setContact] = useState();
     const [contactNumberError, setCNumberError] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -96,7 +96,6 @@ function ClientForm() {
 
     const validateContactNumber = (contactNumber) => {
         const numberPattern = /^[0-9]{10}$/;
-
         if (!numberPattern.test(contactNumber)) {
             setCNumberError("Enter exactly 10 digits.");
             return false;
@@ -117,10 +116,23 @@ function ClientForm() {
     }, []);
 
     userList = contact?.map((data) => { data });
+
+    let OnlineUsers = []
+    let Users = []
+  
     useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
-                setOUser(data)
+                userList = contact?.map((datas) => {
+                    OnlineUsers = data.map((Onlines) => {
+                        if (datas._id == Onlines?.userID) {
+                            if (!datas.contactNumber) {
+                                Users?.push(datas)
+                                setOUser(datas)
+                            }
+                        }
+                    })
+                });
                 data.forEach((element) => {
                     let index = userList?.findIndex((item) => item?._id == element?.userID);
                     if (index >= 0) {
@@ -131,9 +143,12 @@ function ClientForm() {
             });
         }
     }, [socket, userList]);
-    if (oUser.length > 0) {
-        localStorage.setItem('currentChat', JSON.stringify(oUser[0]))
-    }
+
+    useEffect(()=>{
+        if (oUser) {
+            localStorage.setItem('currentChat', JSON.stringify(oUser))
+        }
+    })
     useEffect(() => {
         if (errorMsg !== null) {
             errorToast(errorMsg);
@@ -156,29 +171,11 @@ function ClientForm() {
             }, 1000)
         }
     }, [isLoggin]);
-    // const userWithNewMessage = contact?.find((user) => {
-    //     user?._id === oUser.userID
-    // });
-
-    // useEffect(() => {
-    //     if (oUser?.length > 0) {
-    //         const userWithCondition = userList?.find((user) => {
-    //             return oUser.some((online) => online?.userID === user?._id) && !user?.contactNumber;
-    //         });
-
-    //
-
-    //         if (userWithCondition) {
-    //             // Display the form if a user meets the condition
-    //             navigate("/client-form");
-    //         }
-    //     }
-    // }, [oUser, userList, navigate]);
 
     return (
         <div className="login-wrapper d-flex align-items-center position-relative">
             <div className="login-bg"></div>
-            {oUser.length > 0 ?
+            {oUser !== undefined  ||  oUser !== undefined ?
                 <Container className="Welcome">
                     <Row className="p-0 m-0 w-100 h-100">
                         <Col lg={6} className="register-right-image">

@@ -16,9 +16,9 @@ if (token) {
 
 let initialState = {
   user: {
-    id: user?.id ? user.id : null,
-    email: user?.email ? user.email : null,
-    contactNumber: user?.contactNumber ? user.contactNumber : null,
+    id: user?.id ? user?.id : null,
+    email: user?.email ? user?.email : null,
+    contactNumber: user?.contactNumber ? user?.contactNumber : null,
     name: user?.name ? user?.name : null,
   },
   isLoggin: user ? true : false,

@@ -162,9 +162,6 @@ function Login() {
                 <Button className="login-btn mb-0" type="submit">Login</Button> 
               </form>
               <div className="mt-3">
-                Forgot Password ? <Link to="/register" className="text-orange">Forgot Password</Link>
-              </div>
-              <div className="mt-3">
                 New User? <Link to="/register" className="text-orange">Create Account</Link>
               </div>
             </div>
