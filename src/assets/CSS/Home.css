@@ -229,16 +229,17 @@ aside.EmojiPickerReact.epr-main{
 .EmojiPickerReact .epr-preview{
   display: none !important;
 }
-.Toastify__toast-container--top-center{
+.Toastify__toast-container--top-center {
   top: auto !important; 
   transform: none !important;
   bottom: 20px;
   left: auto !important;
   right: 20px;
   padding: 0;
+  margin-bottom: 20px;
 }
 .Toastify__toast{
-  margin: 0px !important;
+  margin: 8px 0 0 !important;
   padding: 8px 16px !important;
 }
 .Toastify__close-button{
