@@ -31,7 +31,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
   const [data, setData] = useState(5);
-  const [loadding, setLoadding] = useState(true);
+  const [loadding, setLoadding] = useState(false);
+
   const [showImg, setShowImg] = useState(false);
   const [Img, setImg] = useState(null);
   const scroll = useRef(null);
@@ -83,8 +84,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     setMessage((prevMessages) => [...prevMessages, sendingMessage]);
     const data = new FormData();
     data.append("image", file);
-    data.append("from", currentUser.id);
-    data.append("to", currentChat._id);
+    data.append("from", currentUser?.id);
+    data.append("to", currentChat?._id);
     data.append("msg_type", type);
     const response = await postimage("message/sendImage", data);
     const res = await response.json();
@@ -103,9 +104,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
 
       // Emit a socket event to notify that the image was sent
       socket.emit("send-msg", {
-        from: currentUser.id,
-        to: currentChat._id,
-        attechment: res.data,
+        from: currentUser?.id,
+        to: currentChat?._id,
+        attechment: res?.data,
         msg_type: type,
       });
     }
@@ -119,9 +120,16 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     };
     const response = await postdata("message/getAllMessage", data);
     const res = await response.json();
-    setMessage(res.message);
-    setLoadding(false);
+    console.log(res, 'resresres')
+
+    setTimeout(() => {
+      setLoadding(false);
+      setMessage(res.message);
+    }, 2000);
+ 
+
   };
+  console.log(loadding, 'loaddingloaddingloadding')
 
   //change message status seen or unseen
   const changeStatus = async () => {
@@ -145,6 +153,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       setNoMoreMessages(false);
     }
   }, [message, data]);
+
   const handleScroll = () => {
     const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
     if (scrolldown >= msgBox.scrollHeight) {
@@ -163,21 +172,24 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     setChatMsgData(message)
   }, [message])
 
+  console.log(currentChat?._id,"currentChat111111")
+
   useEffect(() => {
+    
     if (socket) {
       socket.on("msg-recieve", (data) => {
-        if (data.to === currentChat._id) {
-          if (data.message) {
+        if (data?.to === currentChat?._id) {
+          if (data?.message) {
             setGetMsg({
               fromSelf: false,
-              message: data.message,
-              msg_type: data.msg_type,
+              message: data?.message,
+              msg_type: data?.msg_type,
             });
           } else {
             setGetMsg({
               fromSelf: false,
-              attechment: data.attechment,
-              msg_type: data.msg_type,
+              attechment: data?.attechment,
+              msg_type: data?.msg_type,
             });
           }
         } else {
@@ -186,6 +198,13 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       });
     }
   }, []);
+
+  useEffect(()=>{
+   console.log("hello chat")
+    socket.on("msg-notification", (data) => {
+        console.log(data,'datasssaqqqqqqqqqqqqqqqqqqq')
+    });
+  })
 
   useEffect(() => {
     {
@@ -197,6 +216,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     changeStatus();
   }, [message]);
   useEffect(() => {
+    setLoadding(true);
     setData(10);
     getmessage();
   }, [currentChat]);
@@ -292,11 +312,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     <>
       <div className="chat-container">
         <div className="back-chat-icon">
-          {/* {isMobile == false ? (
-            <div className="back-icon" onClick={() => handlehide()}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </div>
-          ) : null} */}
           <div className="back-icon p-0 mr-2 d-block d-lg-none" onClick={() => handlehide()}>
             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512">
               <path fill="#ff6c37" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
@@ -372,22 +387,11 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                   {data?.message && (
                     <>
                       <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
-                        {userList.map((Users, index) => {
-                          if (Users?._id === data?.from) {
-                            if (Users?.contactNumber) {
-                              return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>;
-                            } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users?._id} />;
-                            }
-                          }
-                          if (Users?._id === data?.to) {
-                            if (Users?.contactNumber) {
-                              return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0) && currentUser?.name?.charAt(0)}</span>;
-                            } else {
-                              return <img className="imgs" src={BDProfile} alt=" " key={Users?._id} />;
-                            }
-                          }
-                        })}
+                        {data?.fromSelf ?
+                          <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0)}</span>
+                          :
+                          <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0)}</span>
+                        }
                         <div>
                           <div className="time-user-chat">
                             <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
@@ -446,7 +450,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                                   handleDownload(data.attechment);
                                 }}
                               />
-
                               {downloadingImage === data.attechment && (
                                 <div className="img-loader">
                                   <Loader />

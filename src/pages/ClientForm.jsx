@@ -41,31 +41,41 @@ function ClientForm() {
             email: "",
             contactNumber: "",
         },
-        onSubmit: () => {
-            const isNameValid = validateName(values.name);
-            const isEmailValid = validateEmail(values.email);
-            const isContactValid = validateContactNumber(values.contactNumber);
-
-            if (isNameValid && isEmailValid && isContactValid) {
-                dispatch(loginUser(values));
-            }
-        },
         validate: (values) => {
             const errors = {};
-            if (!validateName(values.name)) {
+            if (!values.name) {
                 errors.name = "Name is required and should be at least 3 characters long.";
+            } else if (values.name.length < 3) {
+                errors.name = "Name should be at least 3 characters long.";
+            } else if (!/^[A-Za-z]+$/i.test(values.name)) {
+                errors.name = "Name should contain only letters (no numbers or special characters).";
             }
-            if (!validateEmail(values.email)) {
+            if (!values.email) {
+                errors.email = "Please enter a valid email address.";
+            } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(values.email)) {
                 errors.email = "Please enter a valid email address.";
             }
-            if (!validateContactNumber(values.contactNumber)) {
+            if (!values.contactNumber) {
+                errors.contactNumber = "Enter exactly 10 digits.";
+            } else if (!/^[0-9]{10}$/.test(values.contactNumber)) {
                 errors.contactNumber = "Enter exactly 10 digits.";
             }
             return errors;
         },
-
+        onSubmit: (values) => {
+            const isNameValid = validateName(values.name);
+            const isEmailValid = validateEmail(values.email);
+            const isContactValid = validateContactNumber(values.contactNumber);
+            if (isNameValid && isEmailValid && isContactValid) {
+                dispatch(loginUser(values));
+            }
+        },
     });
     const validateEmail = (email) => {
+        if (email.trim() == "") {
+            setEmailError("Email cannot be empty.");
+            return false;
+        }
         const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!emailPattern.test(email)) {
             setEmailError("Please enter a valid email address.");
@@ -75,9 +85,8 @@ function ClientForm() {
             return true;
         }
     };
-
     const validateName = (name) => {
-        if (name.trim() === "") {
+        if (name.trim() == "") {
             setNameError("Name cannot be empty.");
             return false;
         }
@@ -93,8 +102,11 @@ function ClientForm() {
             return true;
         }
     };
-
     const validateContactNumber = (contactNumber) => {
+        if (contactNumber.trim() == "") {
+            setNameError("Name cannot be empty.");
+            return false;
+        }
         const numberPattern = /^[0-9]{10}$/;
         if (!numberPattern.test(contactNumber)) {
             setCNumberError("Enter exactly 10 digits.");

@@ -16,16 +16,17 @@ import moment from "moment";
 let userList = [];
 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData, handleShow }) {
-
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const [currentChat, setCurrentChat] = useState();
   const [notification, setNotification] = useState([]);
   const [searchLoader, setSearchLoader] = useState(false);
+  const [userData, setUserData] = useState([]);
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
 
+  console.log(userData, 'userDatauserDatauserDatauserData')
 
   // Function to get the last message for a user
   const getLastMessage = (userId) => {
@@ -60,6 +61,14 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       });
     }
   }, [socket, userList]);
+
+  useEffect(() => {
+    socket.emit("fetch-data-from-database");
+    socket.on("fetched-data", (data) => {
+      setUserData(data);
+    });
+  }, []);
+
 
   //fileter message notification
   const userNotification = (user) => {
@@ -169,13 +178,13 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
           ) : (
             <div style={{ height: "1px" }}></div>
           )}
-            
+
         </div>
         {searchDataFound && search.length !== 0 &&
-            <div>
-              Data Not Found
-            </div>
-          }
+          <div>
+            Data Not Found
+          </div>
+        }
         {search == ""
           ? userList?.map((data, index) => {
 
@@ -206,7 +215,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
                   ) :
                     <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
-                  } 
+                  }
                   {isOnline ? <div className="online"></div> : null}
                 </div>
                 <div className="contact-name">{data?.name}</div>
@@ -222,7 +231,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
             );
-        
+
             const userNote = userNotification(data);
             const lastMessage = getLastMessage(data._id);
             const senderUsername = lastMessage ? getSenderUsername(lastMessage) : '';

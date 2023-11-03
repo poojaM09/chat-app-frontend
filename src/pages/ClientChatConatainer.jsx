@@ -171,13 +171,14 @@ console.log()
     const getmessage = async () => {
         const data = {
             id: currentUser,
-            //   to: currentChat,
         };
         const response = await postdata("message/userMessage", data);
         const res = await response.json();
         setBD(res)
-        setMessage(res.message);
-        setLoadding(false);
+        setTimeout(() => {
+            setLoadding(false);
+            setMessage(res.message);
+          }, 2000);
     };
 
     const changeStatus = async () => {
@@ -240,6 +241,7 @@ console.log()
     }, [message]);
 
     useEffect(() => {
+        setLoadding(true);
         setData(10);
         getmessage();
     }, []);
@@ -722,7 +724,6 @@ console.log()
                             );
                         })
                     )}
-
                     {showImg ? (
                         <ImageModel
                             Img={Img}
