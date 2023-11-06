@@ -59,6 +59,10 @@ function ClientChatConatainer() {
     let currentUser = parsedData?._id
     const DataGet = localStorage.getItem('currentChat')
     const currentChat = JSON.parse(DataGet);
+    console.log(currentChat, 'currentChatcurrentChat')
+    console.log(currentUser, 'currentUsercurrentUsercurrentUser')
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
 
     const { isLoggin, user } = useSelector((state) => state.auth);
@@ -81,7 +85,7 @@ function ClientChatConatainer() {
 
     const getUsersID = async () => {
         const data = {
-            "id": currentChat?.userID
+            "id": currentChat?._id
         }
         const res = await postdata("user/getbyid", data);
         const response = await res.json();
@@ -95,7 +99,6 @@ function ClientChatConatainer() {
     useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
-                console.log(data, 'data111')
                 setOUser(data)
                 data.forEach((element) => {
                     let index = userList?.findIndex((item) => item?._id == element?.userID);
@@ -107,11 +110,17 @@ function ClientChatConatainer() {
             });
         }
     }, [socket, userList]);
-console.log()
+
+    console.log({
+        from: currentUser,
+        to: currentChat?._id,
+        socketid: currentChat?.socketid,
+    }, 'sadasasdasdadasdsads')
+
     const handleSendChat = async (msg, type) => {
         const data = {
             from: currentUser,
-            to: currentChat?.userID,
+            to: currentChat?._id,
             message: msg,
             msg_type: type,
         };
@@ -120,7 +129,7 @@ console.log()
         const res = await response.json();
         socket.emit("send-msg", {
             from: currentUser,
-            to: currentChat.userID,
+            to: currentChat?._id,
             socketid: currentChat?.socketid,
             message: msg,
             msg_type: type,
@@ -129,6 +138,52 @@ console.log()
         info.push({ fromSelf: true, message: msg, msg_type: type });
         setMessage(info);
     };
+    // //handle ImagehandleSendImage
+    // const handleSendImage = async (file, type) => {
+    //     // Display "File Sending...." message immediately
+    //     const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
+    //     setMessage((prevMessages) => [...prevMessages, sendingMessage]);
+
+    //     const data = new FormData();
+    //     data.append("image", file);
+    //     data.append("from", currentUser.id);
+    //     data.append("to", currentChat._id);
+    //     data.append("msg_type", type);
+
+    //     try {
+    //         const response = await postimage("message/sendImage", data);
+    //         const res = await response.json();
+
+    //         if (res.status === 400) {
+    //             errorToast(res.error);
+    //         } else {
+    //             // Delay showing the image for 2 seconds
+    //             setTimeout(() => {
+    //                 setMessage((prevMessages) => {
+    //                     const updatedMessages = [...prevMessages];
+    //                     const sendingMessageIndex = updatedMessages.findIndex(
+    //                         (message) => message === sendingMessage
+    //                     );
+    //                     if (sendingMessageIndex !== -1) {
+    //                         updatedMessages.splice(sendingMessageIndex, 1);
+    //                         updatedMessages.push({ fromSelf: true, attachment: res.data, msg_type: type });
+    //                     }
+    //                     return updatedMessages;
+    //                 });
+    //             }, 2000);
+
+    //             // Emit a socket event to notify that the image was sent
+    //             socket.emit("send-msg", {
+    //                 from: currentUser.id,
+    //                 to: currentChat._id,
+    //                 attechment: res.data,
+    //                 msg_type: type,
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
 
 
     const handleSendImage = async (file, type) => {
@@ -138,11 +193,15 @@ console.log()
             msg_type: type,
             id: Date.now(),
         };
+        console.log({
+            from: currentUser,
+            to: currentChat?._id,
+        },"afdfsfsafdsfdsf")
         setMessage((prevMessages) => [...prevMessages, sendingMessage]);
         const data = new FormData();
         data.append("image", file);
         data.append("from", currentUser);
-        data.append("to", currentChat.userID);
+        data.append("to", currentChat?._id);
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
@@ -154,20 +213,21 @@ console.log()
                 const sendingMessageIndex = updatedMessages.findIndex((message) => message === sendingMessage);
                 if (sendingMessageIndex !== -1) {
                     updatedMessages.splice(sendingMessageIndex, 1);
-                    updatedMessages.push({ fromSelf: true, attechment: res.data, msg_type: type, loading: false, });
+                    updatedMessages.push({ fromSelf: true, attechment: res?.data, msg_type: type, loading: false, });
                 }
                 return updatedMessages;
             });
+
             socket.emit("send-msg", {
                 from: currentUser,
-                to: currentChat.userID,
+                to: currentChat?._id,
                 attechment: res?.data,
                 msg_type: type,
             });
         }
     };
 
-    //get message from the database
+console.log(currentChat, 'currentUsercurrentUsercurrentUser')
     const getmessage = async () => {
         const data = {
             id: currentUser,
@@ -184,7 +244,7 @@ console.log()
     const changeStatus = async () => {
         const data = {
             to: currentUser,
-            from: currentChat?.userID,
+            from: currentChat?._id,
         };
         const res = await postdata("message/changeStatus", data);
     };
@@ -209,7 +269,8 @@ console.log()
     useEffect(() => {
         if (socket) {
             socket.on("msg-recieve", (data) => {
-                if (data.to === currentChat) {
+                console.log(currentChat?._id, 'asdsdsadasdsa')
+                if (data.to === currentChat?._id) {
                     if (data.message) {
                         setGetMsg({
                             fromSelf: false,
@@ -251,6 +312,7 @@ console.log()
             div.scroll({ top: div.scrollHeight, left: 0, behavior: "smooth" });
         }
     }, [message]);
+
 
     const handleDownload = (img) => {
         setDownloadingImage(img)
@@ -300,7 +362,6 @@ console.log()
 
         const onError = () => {
             resetDownloadingFlags();
-
             toast.error('File not found. Please try again later.', {
                 position: "top-center",
                 autoClose: 3000,
@@ -403,8 +464,8 @@ console.log()
                                             </div>
                                         </div>
                                     )}
-                                    {data.attechment &&
-                                        (data.attechment &&
+                                    {data?.attechment &&
+                                        (data?.attechment &&
                                             (ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "svg" || ext == "webp") ? (
                                             <div className="file-displys position-relative">
                                                 {imgdownloading ? (

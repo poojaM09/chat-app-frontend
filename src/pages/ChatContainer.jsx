@@ -25,9 +25,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from "react-redux";
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
-
   const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
   const [data, setData] = useState(5);
@@ -39,6 +39,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [chatGptImg, setChatGptImg] = useState(false);
   const msgBox = document.getElementById("scrollTop");
   const [width, setWidth] = useState(window.innerWidth);
+  const { isLoggin, user } = useSelector((state) => state.auth);
+  console.log(user.name, 'useruseruser')
   const isMobile = width >= 768;
   const [imgdownloading, setImgDownloading] = useState(false);
   const [mp4downloading, setmp4Downloading] = useState(false);
@@ -582,8 +584,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       </div>
 
                     ) : data.attechment && ext == "ppt" ? (
-
-
                       <div className="file-displys position-relative">
                         {pptdownloading ? (
                           <>
@@ -786,7 +786,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             </>
                           )}
                         </div>
-                      ))}
+                    ))}
                 </div>
               );
             })

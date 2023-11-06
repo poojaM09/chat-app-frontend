@@ -68,9 +68,6 @@ function ContactAS() {
                 <Button className="submit-button" type="Submit">Send To Mail</Button>
               </div>
             </form>
-            {/* <div>
-              New User? <Link to="/register">Create Account</Link>
-            </div> */}
           </div>
         </Col>
       </Row>
