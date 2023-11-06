@@ -2,7 +2,7 @@ import Picker from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import "../assets/CSS/chat-input.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { errorToast } from "../Components/Toast";
 import Emoji from "../../public/chat-emoji.svg";
@@ -16,7 +16,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
   const [selected, setSelected] = useState(false);
 
   const [type, setType] = useState("");
-
+  const emojiPickerRef = useRef(null);
   const { getInputProps, getRootProps, fileRejections } = useDropzone({
     accept: [
       "image/jpeg",
@@ -50,6 +50,18 @@ function ChatInput({ handleSendChat, handleSendImage }) {
     }
   }, [attechment]);
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target)) {
+        setShowEmoji(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
+
   const validation = (file) => {
     if (file.size > 5 * 1024 * 1024) {
       errorToast("invalid size lenth");
@@ -62,14 +74,14 @@ function ChatInput({ handleSendChat, handleSendImage }) {
       file.type != "image/png" &&
       file.type != "image/jpeg" &&
       file.type != "image/webp" &&
-      file.type !=   "image/svg+xml" &&
+      file.type != "image/svg+xml" &&
       file.type != "application/pdf" &&
       file.type != "text/html" &&
       file.type != "text/plain" &&
       file.type != "application/x-zip-compressed" &&
-      file.type != "application/vnd.ms-excel" && 
-      file.type !=  "application/vnd.ms-powerpoint" &&
-       file.type != "application/zip" &&
+      file.type != "application/vnd.ms-excel" &&
+      file.type != "application/vnd.ms-powerpoint" &&
+      file.type != "application/zip" &&
       file.type !=
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
       file.type != "video/mp4"
@@ -87,7 +99,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
   const setEmoji = (emoji, event) => {
     setMsg((prevMsg) => prevMsg + emoji.emoji);
   };
- 
+
   const sendChat = () => {
     if (attechment) {
       handleSendImage(attechment[0], type && type);
@@ -111,21 +123,6 @@ function ChatInput({ handleSendChat, handleSendImage }) {
             sendChat();
           }}
         >
-          {/* <div className="emoji">
-            <FontAwesomeIcon
-              className="icons"
-              icon={faFaceSmile}
-              onClick={() => setShowEmoji(!showEmoji)}
-            />
-            <div className="emoji-picker">
-              {showExmoji && <Picker onEmojiClick={setEmoji} />}
-            </div>
-          </div>
-          <div className="attechment" {...getRootProps()}>
-            <input {...getInputProps()} />
-            <FontAwesomeIcon icon={faPaperclip} className="icons" />
-          </div> */}
-
           <input
             className="input w-100"
             type="text"
@@ -136,7 +133,7 @@ function ChatInput({ handleSendChat, handleSendImage }) {
             }}
           />
           <div className="send-icons-all">
-            <div className="emoji">
+          <div className="emoji" ref={emojiPickerRef}>
               <img src={Emoji} alt="Emoji"
                 onClick={() => setShowEmoji(!showEmoji)}
               />
@@ -150,10 +147,6 @@ function ChatInput({ handleSendChat, handleSendImage }) {
                 <path fill="#ff6c37" d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" />
               </svg>
             </div>
-            {/* <div className="attechment" {...getRootProps()}>
-              <input {...getInputProps()} />
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 448 512"><path fill="#ff6c37" d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" /></svg>
-            </div> */}
             {(msg !== "" || selected) && (
               <button id="sub" className="send-button p-0 border-0 bg-transparent" type="submit">
                 <img src={Send} alt="Send" />

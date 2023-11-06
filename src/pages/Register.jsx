@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { postdata } from "../Utils/http.class";
 import { useNavigate } from "react-router-dom";
 import { errorToast } from "../Components/Toast";
-import {successToast} from "../Components/Toast"
+import { successToast } from "../Components/Toast"
 import "../../src/assets/CSS/register.css";
 import { Link } from "react-router-dom";
 import screen from "../../public/screen.jpg";
@@ -19,34 +19,75 @@ function Register() {
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [touched, setTouched] = useState({
-    name: false,
-    email: false,
-    password: false,
-  });
-  const { values, handleChange, handleSubmit, errors } = useFormik({
+  // const [touched, setTouched] = useState({
+  //   name: false,
+  //   email: false,
+  //   password: false,
+  // });
+  // const { values, handleChange, handleSubmit, errors ,touched,setTouched} = useFormik({
+  //   initialValues: {
+  //     name: "",
+  //     email: "",
+  //     password: "",
+  //   },
+  //   onSubmit: () => {
+  //     register();
+  //   },
+  //   validate: (values) => {
+  //     const errors = {};
+  //     if (!values.email) {
+  //       errors.email = "Please enter a valid email address.";
+  //     }
+  //     if (!values.password) {
+  //       errors.password = "Password does not meet the criteria.";
+  //     }
+  //     if(!values.name){
+  //       errors.name = "Please enter a valid name";
+  //     }
+  //     return errors;
+  //   },
+
+  // });
+
+  const { handleSubmit, handleChange, values, errors, touched, setTouched } = useFormik({
     initialValues: {
       name: "",
       email: "",
       password: "",
     },
-    onSubmit: () => {
-      register();
-    },
     validate: (values) => {
       const errors = {};
-      if (!validateEmail(values.email)) {
+      if (!values.email) {
         errors.email = "Please enter a valid email address.";
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+        errors.email = "Invalid email address.";
       }
-      if (!validatePassword(values.password)) {
+      if (!values.password) {
         errors.password = "Password does not meet the criteria.";
+      } else if (values.password.length < 8) {
+        errors.password = "Password should be at least 8 characters long.";
+      } else if (!/[a-z]/i.test(values.password)) {
+        errors.password = "Password should contain at least one lowercase letter.";
+      } else if (!/[A-Z]/i.test(values.password)) {
+        errors.password = "Password should contain at least one uppercase letter.";
+      } else if (!/\d/i.test(values.password)) {
+        errors.password = "Password should contain at least one digit.";
+      } else if (!/[!@#$%^&*]/i.test(values.password)) {
+        errors.password = "Password should contain at least one special character (!@#$%^&*).";
       }
-      if(!validateName(values.name)){
-        errors.name = "Please enter a valid name";
+      if (!values.name) {
+        errors.name = "Please enter a valid Username";
+      } else if (values.name.length < 3) {
+        errors.name = "Username should be at least 3 characters long.";
+      } else if (!/^[A-Za-z]+$/i.test(values.name)) {
+        errors.name = "Username should contain only letters (no numbers or special characters)."
+        return false;
       }
       return errors;
     },
-
+    onSubmit: () => {
+      register();
+    },
   });
 
   const validatePassword = (password) => {
@@ -100,15 +141,15 @@ function Register() {
 
   const validateName = (name) => {
     if (name.trim() === "") {
-      setNameError("Name cannot be empty.");
+      setNameError("Username cannot be empty.");
       return false;
     }
-    if (name.trim().length < 3 ) {
-      setNameError("Name should be at least 3 characters long.");
+    if (name.trim().length < 3) {
+      setNameError("Username should be at least 3 characters long.");
       return false;
     }
     if (!/^[A-Za-z]+$/.test(name)) {
-      setNameError("Name should contain only letters (no numbers or special characters).");
+      setNameError("Username should contain only letters (no numbers or special characters).");
       return false;
     }
 
@@ -132,7 +173,7 @@ function Register() {
       successToast("Register Successful Done")
     } else {
       errorToast(response.message);
-    } 
+    }
   };
   return (
     <div className="login-wrapper d-flex align-items-center position-relative">
@@ -164,9 +205,9 @@ function Register() {
                       placeholder="Enter username "
                     />
                   </div>
-                  {nameError && (
-                    <div className="text-danger">{nameError}</div>
-                  )}
+
+                  {touched.name && errors.name && <div className="text-danger">{errors.name}</div>}
+
                 </div>
                 <div className="form-group mb-4">
                   <div className="input">

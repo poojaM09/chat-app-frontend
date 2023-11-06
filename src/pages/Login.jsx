@@ -19,32 +19,66 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [touched, setTouched] = useState({
-    email: false,
-    password: false,
-  });
-  const { values, handleChange, handleSubmit, errors } = useFormik({
+  // const [touched, setTouched] = useState({
+  //   email: false,
+  //   password: false,
+  // });
+  // const { values, handleChange, handleSubmit, errors,touched,setTouched } = useFormik({
+  //   initialValues: {
+  //     email: "",
+  //     password: "",
+  //   },
+  //   onSubmit: () => {
+  //     if (validateEmail(values.email) && validatePassword(values.password)) {
+  //       dispatch(loginUser(values));
+  //     }
+  //   },
+  //   validate: (values) => {
+  //     const errors = {};
+  //     if (!values.email) {
+  //       errors.email = "Please enter a valid email address.";
+  //     }
+  //     if (!values.password) {
+  //       errors.password = "Password does not meet the criteria.";
+  //     }
+  //     return errors;
+  //   },
+  // });
+
+
+  const { handleSubmit, handleChange, values, errors, touched, setTouched } = useFormik({
     initialValues: {
-      email: "",
       password: "",
+      email: "",
+    },
+    validate: (values) => {
+      const errors = {};
+      if (!values.email) {
+        errors.email = "Please enter a valid email address.";
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+        errors.email = "Invalid email address.";
+      }
+      if (!values.password) {
+        errors.password = "Password does not meet the criteria.";
+      } else if (values.password.length < 8) {
+        errors.password = "Password should be at least 8 characters long.";
+      } else if (!/[a-z]/i.test(values.password)) {
+        errors.password = "Password should contain at least one lowercase letter.";
+      } else if (!/[A-Z]/i.test(values.password)) {
+        errors.password = "Password should contain at least one uppercase letter.";
+      }else if (!/\d/i.test(values.password)) {
+        errors.password = "Password should contain at least one digit.";
+      }else if (!/[!@#$%^&*]/i.test(values.password)) {
+        errors.password = "Password should contain at least one special character (!@#$%^&*).";
+      }
+      return errors;
     },
     onSubmit: () => {
       if (validateEmail(values.email) && validatePassword(values.password)) {
         dispatch(loginUser(values));
       }
     },
-    validate: (values) => {
-      const errors = {};
-      if (!validateEmail(values.email)) {
-        errors.email = "Please enter a valid email address.";
-      }
-      if (!validatePassword(values.password)) {
-        errors.password = "Password does not meet the criteria.";
-      }
-      return errors;
-    },
   });
-
 
   const handleInputBlur = (fieldName) => {
     setTouched((prevTouched) => ({
@@ -52,8 +86,6 @@ function Login() {
       [fieldName]: true,
     }));
   };
-
-
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailPattern.test(email)) {
@@ -159,7 +191,7 @@ function Login() {
                   </div>
                   {touched.password && errors.password && <div className="text-danger">{errors.password}</div>}
                 </div>
-                <Button className="login-btn mb-0" type="submit">Login</Button> 
+                <Button className="login-btn mb-0" type="submit">Login</Button>
               </form>
               <div className="mt-3">
                 New User? <Link to="/register" className="text-orange">Create Account</Link>
