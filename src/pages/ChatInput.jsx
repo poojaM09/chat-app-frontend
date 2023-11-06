@@ -14,7 +14,6 @@ function ChatInput({ handleSendChat, handleSendImage }) {
   const [msg, setMsg] = useState([]);
   const [attechment, setAttechment] = useState(null);
   const [selected, setSelected] = useState(false);
-
   const [type, setType] = useState("");
   const emojiPickerRef = useRef(null);
   const { getInputProps, getRootProps, fileRejections } = useDropzone({
