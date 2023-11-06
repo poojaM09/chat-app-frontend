@@ -15,7 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faEnvelope, faMobileAlt, faComment } from "@fortawesome/free-solid-svg-icons";
 import { getdata } from "../Utils/http.class";
 import logo from "../../public/Plutus_logo.svg";
-
+import axios from "axios"
+import Loader from "../Components/Loader";
 
 let userList = [];
 
@@ -29,6 +30,32 @@ function ClientForm() {
     const [contactNumberError, setCNumberError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [nameError, setNameError] = useState("");
+    const [onlineUsers, setOnlineUsers] = useState([])
+
+    console.log(onlineUsers, 'onlineUsers')
+    useEffect(() => {
+        const fetchOnlineUsers = async () => {
+            try {
+                const response = await axios.get('https://chat-app-backend-l2a8.onrender.com/api/online-users');
+                console.log(response?.data, 'dsafsdfdsfd')
+                console.log(contact, 'contact')
+                const filteredUsers = contact?.filter((contactData) => {
+                    return response?.data?.some((onlineUser) => contactData._id === onlineUser.userID && !contactData.contactNumber);
+                });
+                // window.location.reload()
+                console.log(filteredUsers, 'filteredUsersfilteredUsersfilteredUsers')
+                setOnlineUsers(filteredUsers);
+            } catch (error) {
+                console.error('Error fetching online users:', error);
+            }
+        };
+
+
+        fetchOnlineUsers();
+
+
+    }, [contact]);
+
     const [touched, setTouched] = useState({
         name: false,
         email: false,
@@ -129,36 +156,76 @@ function ClientForm() {
 
     userList = contact?.map((data) => { data });
 
-    let OnlineUsers = []
-    let Users = []
-  
-    useEffect(() => {
-        if (socket) {
-            socket.on("online-user", (data) => {
-                userList = contact?.map((datas) => {
-                    OnlineUsers = data.map((Onlines) => {
-                        if (datas._id == Onlines?.userID) {
-                            if (!datas.contactNumber) {
-                                Users?.push(datas)
-                                setOUser(datas)
-                            }
-                        }
-                    })
-                });
-                data.forEach((element) => {
-                    let index = userList?.findIndex((item) => item?._id == element?.userID);
-                    if (index >= 0) {
-                        userList[index].socketid = data.socketId;
-                    }
-                });
-                setOnlineUser(data);
-            });
-        }
-    }, [socket, userList]);
+    // let OnlineUsers = []
+    // let Users = []
 
-    useEffect(()=>{
-        if (oUser) {
-            localStorage.setItem('currentChat', JSON.stringify(oUser))
+    // useEffect(() => {
+    //     if (socket) {
+    //         socket.on("online-user", (data) => {
+    //             userList = contact?.map((datas) => {
+    //                 OnlineUsers = data.map((Onlines) => {
+    //                     if (datas._id == Onlines?.userID) {
+    //                         if (!datas.contactNumber) {
+    //                             console.log(datas, 'datasdatasdatas')
+    //                             Users?.push(datas)
+    //                             setOUser(datas)
+    //                         }
+    //                     }
+    //                 })
+    //             });
+    //             data.forEach((element) => {
+    //                 let index = userList?.findIndex((item) => item?._id == element?.userID);
+    //                 if (index >= 0) {
+    //                     userList[index].socketid = data.socketId;
+    //                 }
+    //             });
+    //             setOnlineUser(data);
+    //         });
+    //     }
+    // }, [socket, userList]);
+
+    // useEffect(() => {
+    //     if (socket) {
+    //         const fetchData = () => {
+    //             socket.on("online-user", (data) => {
+    //                 // Your data processing logic
+    //                 let newUserList = contact?.map((datas) => {
+    //                     let newOnlineUsers = data.map((Onlines) => {
+    //                         if (datas._id === Onlines?.userID && !datas.contactNumber) {
+    //                             console.log(datas, 'datasdatasdatas');
+    //                             Users?.push(datas);
+    //                             setOUser(datas);
+    //                         }
+    //                     });
+    //                 });
+
+    //                 data.forEach((element) => {
+    //                     let index = newUserList?.findIndex((item) => item?._id === element?.userID);
+    //                     if (index >= 0) {
+    //                         newUserList[index].socketid = data.socketId;
+    //                     }
+    //                 });
+
+    //                 setOnlineUser(data);
+    //             });
+    //         };
+
+    //         fetchData(); // Initial data fetch
+
+    //         // Set up a timer to periodically refresh the data
+    //         const refreshInterval = setInterval(() => {
+    //             fetchData();
+    //         }, 5000); // Refresh every 5 seconds (adjust as needed)
+
+    //         // Clean up the interval when the component unmounts
+    //         return () => clearInterval(refreshInterval);
+    //     }
+    // }, [socket]);
+
+
+    useEffect(() => {
+        if (onlineUsers) {
+            localStorage.setItem('currentChat', JSON.stringify(onlineUsers[0]))
         }
     })
     useEffect(() => {
@@ -187,129 +254,130 @@ function ClientForm() {
     return (
         <div className="login-wrapper d-flex align-items-center position-relative">
             <div className="login-bg"></div>
-            {oUser !== undefined  ||  oUser !== undefined ?
-                <Container className="Welcome">
-                    <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-right-image">
-                        </Col>
-                        <Col lg={6} className="px-3 px-lg-0">
-                            <div className="register-form ">
-                                <img src={logo} className="mb-3" width="211" height="79" />
-                                <form onSubmit={handleSubmit} className="my-auto">
-                                    <p className="medium-title text-center"> Please fill out the form.</p>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                placeholder="Enter name"
-                                                type="text"
-                                                name="name"
-                                                onChange={handleChange}
-                                                onFocus={() => handleInputBlur("name")}
-                                                value={values.name}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                        {touched.name && errors.name && <div className="text-danger">{errors.name}</div>}
-                                    </div>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                placeholder="Enter email"
-                                                type="text"
-                                                name="email"
-                                                onChange={handleChange}
-                                                onFocus={() => handleInputBlur("email")}
-                                                value={values.email}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                        {touched.email && errors.email && <div className="text-danger">{errors.email}</div>}
-                                    </div>
-                                    <div className="form-group mb-4">
-                                        <div className="input">
-                                            <input
-                                                type="text"
-                                                name="contactNumber"
-                                                placeholder="Enter contact number"
-                                                onChange={handleChange}
-                                                onFocus={() => handleInputBlur("contactNumber")}
-                                                value={values.contactNumber}
-                                                maxLength={10}
-                                                className="Input-Field"
-                                            />
-                                        </div>
-                                        {touched.contactNumber && errors.contactNumber && <div className="text-danger">{errors.contactNumber}</div>}
-                                    </div>
-                                    <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
-                                </form>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-                :
-                <Container className="Welcome">
-                    <Row className="p-0 m-0 w-100 h-100">
-                        <Col lg={6} className="register-right-image">
-                        </Col>
-                        <Col lg={6} className="px-3 px-lg-0">
-                            <div className="register-form">
-                                <img src={logo} className="mb-3" width="211" height="79" />
-                                <div className="my-auto">
-                                    <p className="medium-title text-center">Currently team is not available, <br />please send the message on this link <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">www.plutustec.com/contact-us</a> <br />to share your details</p>
-                                    <form className="d-none">
-                                        <div>
-                                            <div className="form-group mb-4">
-                                                <div className="input">
-                                                    <input
-                                                        placeholder="Enter Name"
-                                                        type="text"
-                                                        name="name"
-                                                    // onChange={handleChange}
-                                                    // value={values.name}
-                                                    />
-                                                </div>
+            {
+                onlineUsers?.length > 0 ?
+                    <Container className="Welcome">
+                        <Row className="p-0 m-0 w-100 h-100">
+                            <Col lg={6} className="register-right-image">
+                            </Col>
+                            <Col lg={6} className="px-3 px-lg-0">
+                                <div className="register-form ">
+                                    <img src={logo} className="mb-3" width="211" height="79" />
+                                    <form onSubmit={handleSubmit} className="my-auto">
+                                        <p className="medium-title text-center"> Please fill out the form.</p>
+                                        <div className="form-group mb-4">
+                                            <div className="input">
+                                                <input
+                                                    placeholder="Enter name"
+                                                    type="text"
+                                                    name="name"
+                                                    onChange={handleChange}
+                                                    onFocus={() => handleInputBlur("name")}
+                                                    value={values.name}
+                                                    className="Input-Field"
+                                                />
                                             </div>
-                                            <div className="form-group mb-4">
-                                                <div className="input">
-                                                    <input
-                                                        placeholder="Enter Email"
-                                                        type="text"
-                                                        name="email"
-                                                    // onChange={handleChange}
-                                                    // value={values.email}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="form-group mb-4">
-                                                <div className="input">
-                                                    <input
-                                                        type="number"
-                                                        name="contactNumber"
-                                                        placeholder="Enter Contact Number"
-                                                    // onChange={handleChange}
-                                                    // value={values.contactNumber}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="form-group mb-4">
-                                                <div className="input">
-                                                    <input
-                                                        type="text"
-                                                        name="message"
-                                                        placeholder="Enter Message"
-                                                    // onChange={handleChange}
-                                                    // value={values.contactNumber}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <Button className="login-btn mb-0" type="Submit">Send To Mail</Button>
+                                            {touched.name && errors.name && <div className="text-danger">{errors.name}</div>}
                                         </div>
+                                        <div className="form-group mb-4">
+                                            <div className="input">
+                                                <input
+                                                    placeholder="Enter email"
+                                                    type="text"
+                                                    name="email"
+                                                    onChange={handleChange}
+                                                    onFocus={() => handleInputBlur("email")}
+                                                    value={values.email}
+                                                    className="Input-Field"
+                                                />
+                                            </div>
+                                            {touched.email && errors.email && <div className="text-danger">{errors.email}</div>}
+                                        </div>
+                                        <div className="form-group mb-4">
+                                            <div className="input">
+                                                <input
+                                                    type="text"
+                                                    name="contactNumber"
+                                                    placeholder="Enter contact number"
+                                                    onChange={handleChange}
+                                                    onFocus={() => handleInputBlur("contactNumber")}
+                                                    value={values.contactNumber}
+                                                    maxLength={10}
+                                                    className="Input-Field"
+                                                />
+                                            </div>
+                                            {touched.contactNumber && errors.contactNumber && <div className="text-danger">{errors.contactNumber}</div>}
+                                        </div>
+                                        <Button className="login-btn mb-0" type="Submit">Talk with sales</Button>
                                     </form>
                                 </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
+                            </Col>
+                        </Row>
+                    </Container>
+                    :
+                    <Container className="Welcome">
+                        <Row className="p-0 m-0 w-100 h-100">
+                            <Col lg={6} className="register-right-image">
+                            </Col>
+                            <Col lg={6} className="px-3 px-lg-0">
+                                <div className="register-form">
+                                    <img src={logo} className="mb-3" width="211" height="79" />
+                                    <div className="my-auto">
+                                        <p className="medium-title text-center">Currently team is not available, <br />please send the message on this link <a href="https://plutustec.com/contact-us" target="_blank" className="text-orange">www.plutustec.com/contact-us</a> <br />to share your details</p>
+                                        <form className="d-none">
+                                            <div>
+                                                <div className="form-group mb-4">
+                                                    <div className="input">
+                                                        <input
+                                                            placeholder="Enter Name"
+                                                            type="text"
+                                                            name="name"
+                                                        // onChange={handleChange}
+                                                        // value={values.name}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="form-group mb-4">
+                                                    <div className="input">
+                                                        <input
+                                                            placeholder="Enter Email"
+                                                            type="text"
+                                                            name="email"
+                                                        // onChange={handleChange}
+                                                        // value={values.email}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="form-group mb-4">
+                                                    <div className="input">
+                                                        <input
+                                                            type="number"
+                                                            name="contactNumber"
+                                                            placeholder="Enter Contact Number"
+                                                        // onChange={handleChange}
+                                                        // value={values.contactNumber}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="form-group mb-4">
+                                                    <div className="input">
+                                                        <input
+                                                            type="text"
+                                                            name="message"
+                                                            placeholder="Enter Message"
+                                                        // onChange={handleChange}
+                                                        // value={values.contactNumber}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <Button className="login-btn mb-0" type="Submit">Send To Mail</Button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
             }
         </div>
     );

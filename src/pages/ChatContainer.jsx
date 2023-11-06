@@ -25,9 +25,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEllipsisV, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from "react-redux";
 
 function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, handlehide, setShowChat }) {
-
   const [message, setMessage] = useState([]);
   const [getMsg, setGetMsg] = useState();
   const [data, setData] = useState(5);
@@ -39,6 +39,8 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [chatGptImg, setChatGptImg] = useState(false);
   const msgBox = document.getElementById("scrollTop");
   const [width, setWidth] = useState(window.innerWidth);
+  const { isLoggin, user } = useSelector((state) => state.auth);
+  console.log(user.name, 'useruseruser')
   const isMobile = width >= 768;
   const [imgdownloading, setImgDownloading] = useState(false);
   const [mp4downloading, setmp4Downloading] = useState(false);
@@ -387,11 +389,13 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                   {data?.message && (
                     <>
                       <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
+
                         {data?.fromSelf ?
                           <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0)}</span>
                           :
                           <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0)}</span>
                         }
+
                         <div>
                           <div className="time-user-chat">
                             <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
@@ -525,8 +529,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       </div>
 
                     ) : data.attechment && ext == "ppt" ? (
-
-
                       <div className="file-displys position-relative">
                         {pptdownloading ? (
                           <>
@@ -729,7 +731,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             </>
                           )}
                         </div>
-                      ))}
+                    ))}
                 </div>
               );
             })
