@@ -19,6 +19,7 @@ function Chats() {
   const [chatMsgData, setChatMsgData] = useState([]);
   const [onlineUser, setOnlineUser] = useState([]);
   const { isLoggin, user } = useSelector((state) => state.auth);
+  
   const getUsers = async () => {
     const res = await getdata("user/getUser");
     const response = await res.json();
@@ -38,6 +39,9 @@ function Chats() {
   const [width, setWidth] = useState(window.innerWidth);
   const [showChat, setShowChat] = useState(false);
   const isMobile = width >= 768;
+  const storedItem = localStorage.getItem('item');
+  const getItem = JSON.parse(storedItem);
+  console.log(getItem, '111111111111111111111111111111')
 
   const handleCurrentChat = (chat) => {
     setCurrentChat(chat);

@@ -22,13 +22,11 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [currentChat, setCurrentChat] = useState();
   const [notification, setNotification] = useState([]);
   const [searchLoader, setSearchLoader] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [items, setItems] = useState([]);
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
+  // console.log(userData, 'userDatauserDatauserDatauserData')
 
-  console.log(userData, 'userDatauserDatauserDatauserData')
-
-  // Function to get the last message for a user
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
     const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
@@ -44,7 +42,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
         return sender ? sender.name : 'Unknown User';
       }
     })
-
   };
 
   //online user
@@ -59,18 +56,20 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
         });
         setOnlineUser(data);
       });
+      socket.emit('getItems');
+      socket.on('items', (data) => {
+        setItems(data);
+      });
+      return () => {
+        socket.off('items');
+      };
     }
   }, [socket, userList]);
 
-  useEffect(() => {
-    socket.emit("fetch-data-from-database");
-    socket.on("fetched-data", (data) => {
-      setUserData(data);
-    });
-  }, []);
+  localStorage.setItem('item', JSON.stringify(items))
+  const storedItem = localStorage.getItem('item');
+  const getItem = JSON.parse(storedItem);
 
-
-  //fileter message notification
   const userNotification = (user) => {
     let filterData;
     if (notification) {
@@ -157,6 +156,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       viewMessage();
     });
   }, []);
+
   localStorage.setItem("userList", JSON.stringify(userList))
 
   return (
@@ -186,7 +186,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
           </div>
         }
         {search == ""
-          ? userList?.map((data, index) => {
+          ? getItem?.map((data, index) => {
 
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
@@ -210,7 +210,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                 }}
               >
                 <div className="position-relative">
-  
+
                   {data?.contactNumber ? (
                     <span className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>
                   ) :

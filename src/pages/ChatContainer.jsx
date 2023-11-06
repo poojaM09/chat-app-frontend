@@ -51,7 +51,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [txtdownloading, settxtDownloading] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(null);
   const [showDownloadIcon, setShowDownloadIcon] = useState(false);
-
+  const storedItem = localStorage.getItem('item');
+  const getItem = JSON.parse(storedItem);
+  console.log(getItem, 'aaaaaaaaaaaaaaaaaaa')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
     const data = {
@@ -73,6 +75,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     info.push({ fromSelf: true, message: msg, msg_type: type });
     setMessage(info);
   };
+
   //handle ImagehandleSendImage
   const handleSendImage = async (file, type) => {
     const sendingMessage = {
@@ -126,9 +129,29 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
       setLoadding(false);
       setMessage(res.message);
     }, 2000);
- 
 
   };
+
+  //   useEffect(() => {
+  //   if (socket) {
+  //     socket.on("online-user", (data) => {
+  //       data.forEach((element) => {
+  //         let index = userList?.findIndex((item) => item._id == element.userID);
+  //         if (index >= 0) {
+  //           userList[index].socketid = data.socketId;
+  //         }
+  //       });
+  //     });
+  //     socket.emit('getItems');
+  //     socket.on('items', (data) => {
+  //       setItems(data);
+  //     });
+  //     return () => {
+  //       socket.off('items');
+  //     };
+  //   }
+  // }, [socket, userList]);
+
   console.log(loadding, 'loaddingloaddingloadding')
 
   //change message status seen or unseen
@@ -172,10 +195,10 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     setChatMsgData(message)
   }, [message])
 
-  console.log(currentChat?._id,"currentChat111111")
+  console.log(currentChat?._id, "currentChat111111")
 
   useEffect(() => {
-    
+
     if (socket) {
       socket.on("msg-recieve", (data) => {
         if (data?.to === currentChat?._id) {
@@ -195,14 +218,15 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
         } else {
           setGetMsg();
         }
+
       });
     }
   }, []);
 
-  useEffect(()=>{
-   console.log("hello chat")
+  useEffect(() => {
+    console.log("hello chat")
     socket.on("msg-notification", (data) => {
-        console.log(data,'datasssaqqqqqqqqqqqqqqqqqqq')
+      console.log(data, 'datasssaqqqqqqqqqqqqqqqqqqq')
     });
   })
 
@@ -321,8 +345,9 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
             <div className="user-status">
               {isCurrentUserOnline ?
                 <div className="user-profile align-items-center">
-                  {userList.map((data) => {
+                  {getItem.map((data) => {
                     if (data?._id === currentChat?._id) {
+                      console.log(data, 'datadatadatadatadata')
                       if (data?.contactNumber) {
                         return <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>
                           <div className="online"></div>
@@ -335,16 +360,28 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       }
                     }
                   })}
-                  <div className="ml-3">
-                    <div className="medium-title"> {currentChat?.name}</div>
-                    <div className="user-status text-uppercase text-success">Active</div></div>
+                  {console.log(currentChat?._id, ' currentChat?.id currentChat?.id')}
+
+                  {getItem.map((datas) => {
+                    return (
+                      <>
+                        {datas?._id == currentChat?._id &&
+                          <div className="ml-3">
+                            <div className="medium-title"> {datas?.name}</div>
+                            <div className="user-status text-uppercase text-success">Active</div>
+                          </div>
+                        }
+                      </>
+                    )
+                  })
+                  }
                 </div>
                 :
                 <div className="user-profile align-items-center">
                   <div className="online-user">
-                    {userList.map((data, index) => {
-
+                    {getItem.map((data, index) => {
                       if (data?._id === currentChat?._id) {
+                        console.log(data, 'datadatadatadatadata')
                         if (data?.contactNumber) {
                           return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
@@ -353,9 +390,18 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       }
                     })}
                   </div>
-                  <div className="ml-3">
-                    <div className="medium-title"> {currentChat?.name}</div>
-                    <div className="user-status text-uppercase text-danger">Offline</div></div>
+                  {getItem.map((datas) => {
+                    return (
+                      <>
+                        {datas?._id == currentChat?._id &&
+                          <div className="ml-3">
+                            <div className="medium-title"> {datas?.name}</div>
+                            <div className="user-status text-uppercase text-danger">Offline</div></div>
+                        }
+                      </>
+                    )
+                  })
+                  }
                 </div>
               }
             </div>
@@ -386,12 +432,23 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data?.message && (
                     <>
-                      <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}>
-                        {data?.fromSelf ?
-                          <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">{currentUser?.name?.charAt(0)}</span>
-                          :
-                          <span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0)}</span>
-                        }
+                      <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}  style={{ gap: "0px !important" }}>
+                        {data?.fromSelf ? (
+                          <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">
+                            {currentUser?.name?.charAt(0)}
+                          </span>
+                        ) : (
+                          getItem.map((datas) => {
+                            console.log(datas, 'datasdatasdatasdatas')
+                            return (
+                              <div key={datas._id}>
+                                {datas._id === currentChat._id && (
+                                  <span className="avatar_circle d-flex align-items-center justify-content-center">{datas?.name?.charAt(0)}</span>
+                                )}
+                              </div>
+                            );
+                          })
+                        )}
                         <div>
                           <div className="time-user-chat">
                             <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
