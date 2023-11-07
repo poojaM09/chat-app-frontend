@@ -434,7 +434,7 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
                                                     }
                                                 </div>
-                                                <div>
+                                                <div className="ml-2 mr-2">
                                                     <div className="time-user-chat">
                                                         <div>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <div className="you-text"> {'Plutustec'}</div>}</div>
                                                         <span className="time">

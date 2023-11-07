@@ -221,7 +221,8 @@
 
 .your-message,
 .chat-msg-data {
-  gap: 0.5rem !important;
+  /* gap: 0.5rem !important; */
+  margin-left: 10px;
 }
 
 .your-message,
