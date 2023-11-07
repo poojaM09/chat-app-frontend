@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 
 let userList = [];
+let newGetItem = [];
 
 function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlineUser, chatMsgData, handleShow }) {
   const [search, setSearch] = useState("");
@@ -25,6 +26,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [items, setItems] = useState([]);
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
+  newGetItem = contact?.filter((data) => data._id !== currentUser.id);
 
   // Function to get the last message for a user
   // const getLastMessage = (userId) => {
@@ -198,7 +200,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
           </div>
         }
         {search == ""
-          ? getItem?.map((data, index) => {
+          ? newGetItem?.map((data, index) => {
 
             const isOnline = onlineUser?.some(
               (user) => user?.userID === data?._id
