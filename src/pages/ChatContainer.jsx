@@ -330,7 +330,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   };
   const storedDataString = localStorage.getItem('userList')
   const userList = JSON.parse(storedDataString);
-
   const isCurrentUserOnline = onlineUser?.some((user) => user?.userID === currentChat?._id);
 
 
@@ -434,7 +433,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 >
                   {data?.message && (
                     <>
-                      <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"}  style={{ gap: "0px !important" }}>
+                      <div key={index} className={data?.fromSelf ? "your-message" : "chat-msg-data"} style={{ gap: "0px !important" }}>
                         {data?.fromSelf ? (
                           <span className="avatar_circle d-flex align-items-center justify-content-center mr-0 ml-2">
                             {currentUser?.name?.charAt(0)}
@@ -453,7 +452,21 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         )}
                         <div>
                           <div className="time-user-chat">
-                            <>{data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>}</>
+                            {getItem.map((users) => (
+                              users._id === currentChat._id && (
+                                <>
+                                  {data.fromSelf ? (
+                                    <span className="you-text ml-2">you</span>
+                                  ) : (
+                                    <span className="you-text">{users?.name}</span>
+                                  )}
+                                </>
+                              )
+                            ))}
+                            <>
+
+                              {/* {data?.fromSelf ? <span className="you-text ml-2">you</span> : <span className="you-text"> {currentChat?.name}</span>} */}
+                            </>
                             <span className="time">
                               {moment(
                                 data.createdAt ? data.createdAt : new Date()
@@ -720,9 +733,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                         )}
                       </div>
                     )
-
                       : data.attechment && (ext == "docx" || ext == "doc") ? (
-
                         <div className="file-displys position-relative">
                           {docdownloading ? (
                             <>
@@ -786,7 +797,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                             </>
                           )}
                         </div>
-                    ))}
+                      ))}
                 </div>
               );
             })
