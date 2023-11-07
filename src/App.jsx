@@ -8,7 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "./index.css";
 import ClientForm from "./pages/ClientForm";
 import ClientChatConatainer from "./pages/ClientChatConatainer";
-import ContactAS from "./pages/ContactAS";
 function App() {
   return (
     <BrowserRouter>
@@ -23,7 +22,6 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Home/>} />
               <Route path="/client-chat" element={<ClientChatConatainer/>} />
-              <Route path="/contact" element={<ContactAS/>} />
             </Routes>
           </div>
         </div>

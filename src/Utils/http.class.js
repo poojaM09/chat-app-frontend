@@ -43,7 +43,7 @@ const imageapicall = (api, data, method) => {
   const token = localStorage.getItem("user")
     ? localStorage.getItem("user")
     : null;
-  console.log("imageapicall", api, data, method);
+
   return fetch(BASE_URL + api, {
     method: method,
     headers: {

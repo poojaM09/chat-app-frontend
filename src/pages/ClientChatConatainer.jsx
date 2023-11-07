@@ -24,8 +24,6 @@ import jpg from "../../public/jpg.png";
 import txt from "../../public/txt-file.png";
 import webp from "../../public/webp.png"
 import { useSelector, useDispatch } from "react-redux";
-import { logoutClient } from "../redux/feature/clientSlice";
-import { useNavigate } from "react-router-dom";
 import NavigationBar from "../Components/NavigationBar"
 let userList = [];
 
@@ -54,17 +52,10 @@ function ClientChatConatainer() {
     const [docdownloading, setdocDownloading] = useState(false);
     const [pdfdownloading, setpdfDownloading] = useState(false);
     const [txtdownloading, settxtDownloading] = useState(false);
-    const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [downloadingImage, setDownloadingImage] = useState(null);
     let currentUser = parsedData?._id
     const DataGet = localStorage.getItem('currentChat')
-    const currentChat = JSON.parse(DataGet);
-    console.log(currentChat, 'currentChatcurrentChat')
-    console.log(currentUser, 'currentUsercurrentUsercurrentUser')
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-
+    const currentChat = JSON.parse(DataGet)
     const { isLoggin, user } = useSelector((state) => state.auth);
 
     useEffect(() => {
@@ -78,10 +69,10 @@ function ClientChatConatainer() {
         const response = await res.json();
         setContact(response.users);
     };
+
     useEffect(() => {
         getUsers();
     }, []);
-
 
     const getUsersID = async () => {
         const data = {
@@ -91,11 +82,13 @@ function ClientChatConatainer() {
         const response = await res.json();
         setChatUser(response.users)
     };
+
     useEffect(() => {
         getUsersID();
     }, []);
 
     userList = contact?.map((data) => data);
+
     useEffect(() => {
         if (socket) {
             socket.on("online-user", (data) => {
@@ -110,12 +103,6 @@ function ClientChatConatainer() {
             });
         }
     }, [socket, userList]);
-
-    console.log({
-        from: currentUser,
-        to: currentChat?._id,
-        socketid: currentChat?.socketid,
-    }, 'sadasasdasdadasdsads')
 
     const handleSendChat = async (msg, type) => {
         const data = {
@@ -138,53 +125,6 @@ function ClientChatConatainer() {
         info.push({ fromSelf: true, message: msg, msg_type: type });
         setMessage(info);
     };
-    // //handle ImagehandleSendImage
-    // const handleSendImage = async (file, type) => {
-    //     // Display "File Sending...." message immediately
-    //     const sendingMessage = { fromSelf: true, message: "File Sending....", msg_type: "text" };
-    //     setMessage((prevMessages) => [...prevMessages, sendingMessage]);
-
-    //     const data = new FormData();
-    //     data.append("image", file);
-    //     data.append("from", currentUser.id);
-    //     data.append("to", currentChat._id);
-    //     data.append("msg_type", type);
-
-    //     try {
-    //         const response = await postimage("message/sendImage", data);
-    //         const res = await response.json();
-
-    //         if (res.status === 400) {
-    //             errorToast(res.error);
-    //         } else {
-    //             // Delay showing the image for 2 seconds
-    //             setTimeout(() => {
-    //                 setMessage((prevMessages) => {
-    //                     const updatedMessages = [...prevMessages];
-    //                     const sendingMessageIndex = updatedMessages.findIndex(
-    //                         (message) => message === sendingMessage
-    //                     );
-    //                     if (sendingMessageIndex !== -1) {
-    //                         updatedMessages.splice(sendingMessageIndex, 1);
-    //                         updatedMessages.push({ fromSelf: true, attachment: res.data, msg_type: type });
-    //                     }
-    //                     return updatedMessages;
-    //                 });
-    //             }, 2000);
-
-    //             // Emit a socket event to notify that the image was sent
-    //             socket.emit("send-msg", {
-    //                 from: currentUser.id,
-    //                 to: currentChat._id,
-    //                 attechment: res.data,
-    //                 msg_type: type,
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
 
     const handleSendImage = async (file, type) => {
         const sendingMessage = {
@@ -193,10 +133,6 @@ function ClientChatConatainer() {
             msg_type: type,
             id: Date.now(),
         };
-        console.log({
-            from: currentUser,
-            to: currentChat?._id,
-        },"afdfsfsafdsfdsf")
         setMessage((prevMessages) => [...prevMessages, sendingMessage]);
         const data = new FormData();
         data.append("image", file);
@@ -227,7 +163,6 @@ function ClientChatConatainer() {
         }
     };
 
-console.log(currentChat, 'currentUsercurrentUsercurrentUser')
     const getmessage = async () => {
         const data = {
             id: currentUser,
@@ -252,6 +187,7 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
     const viewMore = async () => {
         setData(data + 5);
     };
+
     const handleScroll = () => {
         const scrolldown = msgBox.scrollHeight - msgBox.scrollTop;
         if (scrolldown >= msgBox.scrollHeight) {
@@ -269,7 +205,6 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
     useEffect(() => {
         if (socket) {
             socket.on("msg-recieve", (data) => {
-                console.log(currentChat?._id, 'asdsdsadasdsa')
                 if (data.to === currentChat?._id) {
                     if (data.message) {
                         setGetMsg({
@@ -306,6 +241,7 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
         setData(10);
         getmessage();
     }, []);
+
     useEffect(() => {
         const div = scroll.current;
         if (div) {
@@ -313,12 +249,10 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
         }
     }, [message]);
 
-
     const handleDownload = (img) => {
         setDownloadingImage(img)
         const lastIndex = img.lastIndexOf(".");
         const part2 = img.substring(lastIndex + 1);
-
         const resetDownloadingFlags = () => {
             setImgDownloading(false);
             setmp4Downloading(false);
@@ -428,7 +362,6 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
                                             <div className={data.fromSelf ? "your-message" : "chat-msg-data"}>
                                                 <div>
                                                     {data.fromSelf ?
-                                                        // <img className="profile-img" src={noDP} alt=" " style={{ width: "70px", height: "70px" }} />
                                                         <span className="avatar_circle d-flex align-items-center justify-content-center mr-0">{user?.name?.charAt(0) && user?.name?.charAt(0)}</span>
                                                         :
                                                         <img className="profile-img img-fluid" src={logo} alt="plutus" width={70} height={70} />
@@ -571,8 +504,6 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
                                             </div>
 
                                         ) : data.attechment && ext == "ppt" ? (
-
-
                                             <div className="file-displys position-relative">
                                                 {pptdownloading ? (
                                                     <>
@@ -794,17 +725,8 @@ console.log(currentChat, 'currentUsercurrentUsercurrentUser')
                     ) : null}
                     <div ref={scroll}></div>
                 </div>
-                {/* <div className="chat-send-msg-input">
-                <div className="chat-input">
-                    <ChatInput
-                        handleSendChat={handleSendChat}
-                        handleSendImage={handleSendImage}
-                    />
-                </div>
-            </div> */}
             </div>
             <div className="chat-send-msg-input">
-                {/* <div className="type"></div> */}
                 <div className="chat-input">
                     <ChatInput
                         handleSendChat={handleSendChat}

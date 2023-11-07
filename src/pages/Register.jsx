@@ -9,7 +9,6 @@ import screen from "../../public/screen.jpg";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import login from "../../public/login.png";
 import logo from "../../public/Plutus_logo.svg";
 import React, { useState } from "react";
 
@@ -19,35 +18,6 @@ function Register() {
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  // const [touched, setTouched] = useState({
-  //   name: false,
-  //   email: false,
-  //   password: false,
-  // });
-  // const { values, handleChange, handleSubmit, errors ,touched,setTouched} = useFormik({
-  //   initialValues: {
-  //     name: "",
-  //     email: "",
-  //     password: "",
-  //   },
-  //   onSubmit: () => {
-  //     register();
-  //   },
-  //   validate: (values) => {
-  //     const errors = {};
-  //     if (!values.email) {
-  //       errors.email = "Please enter a valid email address.";
-  //     }
-  //     if (!values.password) {
-  //       errors.password = "Password does not meet the criteria.";
-  //     }
-  //     if(!values.name){
-  //       errors.name = "Please enter a valid name";
-  //     }
-  //     return errors;
-  //   },
-
-  // });
 
   const { handleSubmit, handleChange, values, errors, touched, setTouched } = useFormik({
     initialValues: {
@@ -180,13 +150,7 @@ function Register() {
       <div className="login-bg"></div>
       <Container className="Welcome">
         <Row className="p-0 m-0 w-100 h-100">
-          {/* <Col md={6}>
-            <img src={login} className="w-100" />
-          </Col> */}
           <Col lg={6} className="register-right-images">
-            {/* <div className="title-register">
-            <h3>Welcome To Plutus</h3>
-            </div> */}
           </Col>
           <Col lg={6} className="px-3 px-lg-0">
             <div className="register-form ">

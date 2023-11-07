@@ -30,7 +30,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
     const msgBox = document.getElementById("scrollTop");
     userList = contact?.filter((data) => data._id !== currentUser.id);
     const isUserOnline = onlineUser.some(user => user.userID === currentChat._id);
-    //handle msg(database,socket,and frontend)
     const handleSendChat = async (msg, type) => {
         const data = {
             from: currentUser.id,
@@ -60,11 +59,9 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
         data.append("msg_type", type);
         const response = await postimage("message/sendImage", data);
         const res = await response.json();
-
         if (res.status == 400) {
             errorToast(res.error);
         }
-
         const info = [...message];
         info.push({ fromSelf: true, attechment: res.data, msg_type: type });
         setMessage(info);
@@ -138,7 +135,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
         }
     });
 
-
     useEffect(() => {
         {
             getMsg && setMessage([...message, getMsg]);
@@ -148,10 +144,12 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
     useEffect(() => {
         changeStatus();
     }, [message]);
+
     useEffect(() => {
         setData(10);
         getmessage();
     }, [currentChat]);
+    
     useEffect(() => {
         const div = scroll.current;
         if (div) {
@@ -172,7 +170,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
 
     return (
         <>
-            {/* <ToastContainer /> */}
             <div className="chat-container">
                 <div className="user-container">
                     <img className="profile-img" src={noDP} alt=" "></img>
@@ -180,7 +177,6 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
                 </div>
                 {isUserOnline ? (
                     <div id="scrollTop" className="messages-container" ref={scroll}>
-                        {/* Your chat messages rendering code */}
                         {loadding ? (
                             <div className="loader-container">
                                 <Loader />
@@ -316,13 +312,10 @@ function ShowClientinChat({ currentChat, currentUser, onlineUser, contact }) {
                                 <label htmlFor="message">Message:</label>
                                 <textarea
                                     id="message"
-                                    // value={message}
-                                    // onChange={(e) => setMessage(e.target.value)}
                                     required
                                 />
                             </div>
                             <Button className='Button'type="submit">Send</Button>
-                            {/* <button type="submit">Send</button> */}
                         </form>
                     </div>
                 )}

@@ -41,7 +41,6 @@ function Chats() {
   const isMobile = width >= 768;
   const storedItem = localStorage.getItem('item');
   const getItem = JSON.parse(storedItem);
-  console.log(getItem, '111111111111111111111111111111')
 
   const handleCurrentChat = (chat) => {
     setCurrentChat(chat);

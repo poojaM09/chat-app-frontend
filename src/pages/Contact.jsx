@@ -1,6 +1,5 @@
 
 import { useEffect } from "react";
-import noDP from "../../public/profile-user.png";
 import BDProfile from "../../public/fevicon-logo.svg";
 import "../assets/CSS/contact.css";
 import { useState } from "react";
@@ -9,9 +8,6 @@ import { socket } from "../socket";
 import { postdata } from "../Utils/http.class";
 import { errorToast } from "../Components/Toast";
 import Search from "../../public/search.svg";
-import { faMagnifyingGlass, } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import moment from "moment";
 
 let userList = [];
 let newGetItem = [];
@@ -28,16 +24,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   userList = contact?.filter((data) => data._id !== currentUser.id);
   newGetItem = contact?.filter((data) => data._id !== currentUser.id);
 
-
-  // Function to get the last message for a user
-  // const getLastMessage = (userId) => {
-  //   const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
-  //   console.log(userMessages, 'userMessages')
-  //   const lastMessage = userMessages?.length > 0 ? userMessages[userMessages?.length - 1] : null;
-  //   console.log(lastMessage, 'lastMessagelastMessage')
-  //   return lastMessage;
-  // };
-
   const getLastMessage = (userId) => {
     const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
     const sortedMessages = userMessages?.sort((a, b) => {
@@ -48,7 +34,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
 
   const getSenderUsername = (message) => {
     const AllMessage = userList?.map((users) => {
-      console.log(users, 'usersusers')
       if (message?.from === users?._id) {
         return 'You';
       } else {
@@ -143,7 +128,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
     };
     const res = await postdata("user/searchUser", data);
     const response = await res.json();
-    console.log(response, 'responseresponse')
     if (response.message == "No result Found ") {
       setsearchDataFound(true)
     } else {
@@ -265,7 +249,6 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
                     ) :
                       <img className="imgs mr-2" width={32} height={32} src={BDProfile} alt=" " />
                     }
-                  {  console.log(isOnline,'isOnlineisOnline')}
                     {isOnline ? <div className="online"></div> : null}
                   </div>
                   <div className="contact-name">
@@ -285,6 +268,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
       </div>
     </>
   );
+  
 }
 
 export default Contact;

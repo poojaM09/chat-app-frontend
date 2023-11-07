@@ -19,33 +19,6 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  // const [touched, setTouched] = useState({
-  //   email: false,
-  //   password: false,
-  // });
-  // const { values, handleChange, handleSubmit, errors,touched,setTouched } = useFormik({
-  //   initialValues: {
-  //     email: "",
-  //     password: "",
-  //   },
-  //   onSubmit: () => {
-  //     if (validateEmail(values.email) && validatePassword(values.password)) {
-  //       dispatch(loginUser(values));
-  //     }
-  //   },
-  //   validate: (values) => {
-  //     const errors = {};
-  //     if (!values.email) {
-  //       errors.email = "Please enter a valid email address.";
-  //     }
-  //     if (!values.password) {
-  //       errors.password = "Password does not meet the criteria.";
-  //     }
-  //     return errors;
-  //   },
-  // });
-
-
   const { handleSubmit, handleChange, values, errors, touched, setTouched } = useFormik({
     initialValues: {
       password: "",

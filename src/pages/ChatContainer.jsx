@@ -40,7 +40,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const msgBox = document.getElementById("scrollTop");
   const [width, setWidth] = useState(window.innerWidth);
   const { isLoggin, user } = useSelector((state) => state.auth);
-  console.log(user.name, 'useruseruser')
   const isMobile = width >= 768;
   const [imgdownloading, setImgDownloading] = useState(false);
   const [mp4downloading, setmp4Downloading] = useState(false);
@@ -55,7 +54,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   const [showDownloadIcon, setShowDownloadIcon] = useState(false);
   const storedItem = localStorage.getItem('item');
   const getItem = JSON.parse(storedItem);
-  console.log(getItem, 'aaaaaaaaaaaaaaaaaaa')
   //handle msg(database,socket,and fronte nd)
   const handleSendChat = async (msg, type) => {
     const data = {
@@ -125,37 +123,12 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     };
     const response = await postdata("message/getAllMessage", data);
     const res = await response.json();
-    console.log(res, 'resresres')
-
     setTimeout(() => {
       setLoadding(false);
       setMessage(res.message);
     }, 2000);
 
   };
-
-  //   useEffect(() => {
-  //   if (socket) {
-  //     socket.on("online-user", (data) => {
-  //       data.forEach((element) => {
-  //         let index = userList?.findIndex((item) => item._id == element.userID);
-  //         if (index >= 0) {
-  //           userList[index].socketid = data.socketId;
-  //         }
-  //       });
-  //     });
-  //     socket.emit('getItems');
-  //     socket.on('items', (data) => {
-  //       setItems(data);
-  //     });
-  //     return () => {
-  //       socket.off('items');
-  //     };
-  //   }
-  // }, [socket, userList]);
-
-  console.log(loadding, 'loaddingloaddingloadding')
-
   //change message status seen or unseen
   const changeStatus = async () => {
     const data = {
@@ -197,7 +170,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
     setChatMsgData(message)
   }, [message])
 
-  console.log(currentChat?._id, "currentChat111111")
 
   useEffect(() => {
 
@@ -226,9 +198,7 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
   }, []);
 
   useEffect(() => {
-    console.log("hello chat")
     socket.on("msg-notification", (data) => {
-      console.log(data, 'datasssaqqqqqqqqqqqqqqqqqqq')
     });
   })
 
@@ -348,7 +318,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                 <div className="user-profile align-items-center">
                   {getItem.map((data) => {
                     if (data?._id === currentChat?._id) {
-                      console.log(data, 'datadatadatadatadata')
                       if (data?.contactNumber) {
                         return <div className="online-user"><span className="avatar_circle d-flex align-items-center justify-content-center">{currentChat?.name?.charAt(0) && currentChat?.name?.charAt(0)}</span>
                           <div className="online"></div>
@@ -361,8 +330,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                       }
                     }
                   })}
-                  {console.log(currentChat?._id, ' currentChat?.id currentChat?.id')}
-
                   {getItem.map((datas) => {
                     return (
                       <>
@@ -382,7 +349,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                   <div className="online-user">
                     {getItem.map((data, index) => {
                       if (data?._id === currentChat?._id) {
-                        console.log(data, 'datadatadatadatadata')
                         if (data?.contactNumber) {
                           return <span key={index} className="avatar_circle d-flex align-items-center justify-content-center">{data?.name?.charAt(0) && data?.name?.charAt(0)}</span>;
                         } else {
@@ -440,7 +406,6 @@ function ChatContainer({ currentChat, currentUser, onlineUser, setChatMsgData, h
                           </span>
                         ) : (
                           getItem.map((datas) => {
-                            console.log(datas, 'datasdatasdatasdatas')
                             return (
                               <div key={datas._id}>
                                 {datas._id === currentChat._id && (

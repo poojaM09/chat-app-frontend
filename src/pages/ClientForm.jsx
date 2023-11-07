@@ -1,59 +1,39 @@
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { socket } from "../socket";
 import { loginUser } from "../redux/feature/clientSlice";
 import { useEffect, useState } from "react";
 import { errorToast } from "../Components/Toast";
 import { successToast } from "../Components/Toast"
-import { Link } from "react-router-dom";
-// import "../../src/assets/CSS/register.css";
 import "../../src/assets/CSS/clientForm.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import login from "../../public/login.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEnvelope, faMobileAlt, faComment } from "@fortawesome/free-solid-svg-icons";
 import { getdata } from "../Utils/http.class";
 import logo from "../../public/Plutus_logo.svg";
 import axios from "axios"
-import Loader from "../Components/Loader";
 
 let userList = [];
 
 function ClientForm() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const { isLoggin, errorMsg } = useSelector((state) => state.client);
-    const [onlineUser, setOnlineUser] = useState([]);
-    const [oUser, setOUser] = useState();
     const [contact, setContact] = useState();
     const [contactNumberError, setCNumberError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [nameError, setNameError] = useState("");
     const [onlineUsers, setOnlineUsers] = useState([])
 
-    console.log(onlineUsers, 'onlineUsers')
     useEffect(() => {
         const fetchOnlineUsers = async () => {
             try {
                 const response = await axios.get('https://chat-app-backend-l2a8.onrender.com/api/online-users');
-                console.log(response?.data, 'dsafsdfdsfd')
-                console.log(contact, 'contact')
                 const filteredUsers = contact?.filter((contactData) => {
                     return response?.data?.some((onlineUser) => contactData._id === onlineUser.userID && !contactData.contactNumber);
                 });
-                // window.location.reload()
-                console.log(filteredUsers, 'filteredUsersfilteredUsersfilteredUsers')
                 setOnlineUsers(filteredUsers);
             } catch (error) {
                 console.error('Error fetching online users:', error);
             }
         };
-
-
         fetchOnlineUsers();
-
-
     }, [contact]);
 
     const [touched, setTouched] = useState({
@@ -98,6 +78,7 @@ function ClientForm() {
             }
         },
     });
+
     const validateEmail = (email) => {
         if (email.trim() == "") {
             setEmailError("Email cannot be empty.");
@@ -112,6 +93,7 @@ function ClientForm() {
             return true;
         }
     };
+
     const validateName = (name) => {
         if (name.trim() == "") {
             setNameError("Name cannot be empty.");
@@ -129,6 +111,7 @@ function ClientForm() {
             return true;
         }
     };
+
     const validateContactNumber = (contactNumber) => {
         if (contactNumber.trim() == "") {
             setNameError("Name cannot be empty.");
@@ -143,91 +126,24 @@ function ClientForm() {
             return true;
         }
     };
-
     //Is Online
     const getUsers = async () => {
         const res = await getdata("user/getUser");
         const response = await res.json();
         setContact(response.users);
     };
+
     useEffect(() => {
         getUsers();
     }, []);
 
     userList = contact?.map((data) => { data });
-
-    // let OnlineUsers = []
-    // let Users = []
-
-    // useEffect(() => {
-    //     if (socket) {
-    //         socket.on("online-user", (data) => {
-    //             userList = contact?.map((datas) => {
-    //                 OnlineUsers = data.map((Onlines) => {
-    //                     if (datas._id == Onlines?.userID) {
-    //                         if (!datas.contactNumber) {
-    //                             console.log(datas, 'datasdatasdatas')
-    //                             Users?.push(datas)
-    //                             setOUser(datas)
-    //                         }
-    //                     }
-    //                 })
-    //             });
-    //             data.forEach((element) => {
-    //                 let index = userList?.findIndex((item) => item?._id == element?.userID);
-    //                 if (index >= 0) {
-    //                     userList[index].socketid = data.socketId;
-    //                 }
-    //             });
-    //             setOnlineUser(data);
-    //         });
-    //     }
-    // }, [socket, userList]);
-
-    // useEffect(() => {
-    //     if (socket) {
-    //         const fetchData = () => {
-    //             socket.on("online-user", (data) => {
-    //                 // Your data processing logic
-    //                 let newUserList = contact?.map((datas) => {
-    //                     let newOnlineUsers = data.map((Onlines) => {
-    //                         if (datas._id === Onlines?.userID && !datas.contactNumber) {
-    //                             console.log(datas, 'datasdatasdatas');
-    //                             Users?.push(datas);
-    //                             setOUser(datas);
-    //                         }
-    //                     });
-    //                 });
-
-    //                 data.forEach((element) => {
-    //                     let index = newUserList?.findIndex((item) => item?._id === element?.userID);
-    //                     if (index >= 0) {
-    //                         newUserList[index].socketid = data.socketId;
-    //                     }
-    //                 });
-
-    //                 setOnlineUser(data);
-    //             });
-    //         };
-
-    //         fetchData(); // Initial data fetch
-
-    //         // Set up a timer to periodically refresh the data
-    //         const refreshInterval = setInterval(() => {
-    //             fetchData();
-    //         }, 5000); // Refresh every 5 seconds (adjust as needed)
-
-    //         // Clean up the interval when the component unmounts
-    //         return () => clearInterval(refreshInterval);
-    //     }
-    // }, [socket]);
-
-
     useEffect(() => {
         if (onlineUsers) {
             localStorage.setItem('currentChat', JSON.stringify(onlineUsers[0]))
         }
     })
+
     useEffect(() => {
         if (errorMsg !== null) {
             errorToast(errorMsg);
@@ -240,7 +156,6 @@ function ClientForm() {
             [fieldName]: true,
         }));
     };
-
 
     useEffect(() => {
         if (isLoggin) {
@@ -332,8 +247,6 @@ function ClientForm() {
                                                             placeholder="Enter Name"
                                                             type="text"
                                                             name="name"
-                                                        // onChange={handleChange}
-                                                        // value={values.name}
                                                         />
                                                     </div>
                                                 </div>
@@ -343,8 +256,6 @@ function ClientForm() {
                                                             placeholder="Enter Email"
                                                             type="text"
                                                             name="email"
-                                                        // onChange={handleChange}
-                                                        // value={values.email}
                                                         />
                                                     </div>
                                                 </div>
@@ -354,8 +265,6 @@ function ClientForm() {
                                                             type="number"
                                                             name="contactNumber"
                                                             placeholder="Enter Contact Number"
-                                                        // onChange={handleChange}
-                                                        // value={values.contactNumber}
                                                         />
                                                     </div>
                                                 </div>
@@ -365,8 +274,6 @@ function ClientForm() {
                                                             type="text"
                                                             name="message"
                                                             placeholder="Enter Message"
-                                                        // onChange={handleChange}
-                                                        // value={values.contactNumber}
                                                         />
                                                     </div>
                                                 </div>
