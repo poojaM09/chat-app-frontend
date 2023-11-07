@@ -26,6 +26,7 @@ function Contact({ handleCurrentChat, contact, currentUser, setOnlineUser, onlin
   const [searchDataFound, setsearchDataFound] = useState(false);
   userList = contact?.filter((data) => data._id !== currentUser.id);
 
+
   // Function to get the last message for a user
   // const getLastMessage = (userId) => {
   //   const userMessages = chatMsgData?.filter((msg) => msg.from === userId || msg.to === userId);
